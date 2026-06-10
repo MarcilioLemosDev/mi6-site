@@ -1,0 +1,21 @@
+/* Tokens da identidade MI6 (paleta Union Jack, ver CLAUDE.md) */
+:root {
+  /* Cores institucionais */
+  --azul: #012169;
+  --vermelho: #c8102e;
+  --branco: #ffffff;
+
+  /* Neutros de apoio */
+  --cinza-950: #14161a;
+  --cinza-700: #3d434d;
+  --cinza-500: #6b7280;
+  --cinza-300: #c7ccd4;
+  --cinza-100: #eef0f3;
+
+  /* Tipografia base dos protótipos.
+     Georgia herda a assinatura dos e-mails da MI6; os pares definitivos
+     serão propostos e validados com Marcílio antes da fase final. */
+  --fonte-serif: Georgia, 'Times New Roman', serif;
+  --fonte-sans: -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --fonte-mono: 'Courier New', Courier, monospace;
+}

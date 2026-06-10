@@ -1,0 +1,140 @@
+---
+import '../../styles/tokens.css';
+
+// Hub da FASE 2 (Play): três conceitos divergentes de homepage.
+// Os links ativam conforme cada conceito é publicado.
+const conceitos = [
+  {
+    slug: 'conceito-a',
+    nome: 'Conceito A, Dossiê',
+    tese: 'Inteligência britânica: ar editorial de dossiê, navy dominante, vermelho cirúrgico apenas em ação, serif de autoridade.',
+    pronto: false,
+  },
+  {
+    slug: 'conceito-b',
+    nome: 'Conceito B, Aula',
+    tese: 'Editorial com storytelling: o site que melhor explica consórcio no Brasil; quem entende, confia. Fundo claro, leitura longa, fotografia real.',
+    pronto: false,
+  },
+  {
+    slug: 'conceito-c',
+    nome: 'Conceito C, Conversão',
+    tese: 'Orientado a lead: simulação e formulário na primeira dobra, números à frente de adjetivos, cada seção empurra para um único CTA.',
+    pronto: false,
+  },
+];
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>FASE 2 (Play), protótipos de homepage MI6</title>
+  </head>
+  <body>
+    <main>
+      <header>
+        <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="60" />
+        <h1>FASE 2: três direções para a homepage</h1>
+        <p>
+          Protótipos divergentes para sentir direção, não páginas finais.
+          Conteúdo real de <code>content/</code>, paleta Union Jack do projeto.
+          A comparação e a recomendação estão em <code>docs/decisao-direcao.md</code>.
+        </p>
+      </header>
+      <ol>
+        {
+          conceitos.map((c) => (
+            <li>
+              {c.pronto ? (
+                <a href={`/play/${c.slug}/`}>
+                  <strong>{c.nome}</strong>
+                  <span>{c.tese}</span>
+                </a>
+              ) : (
+                <div>
+                  <strong>{c.nome}</strong>
+                  <span>{c.tese}</span>
+                  <em>Em desenho, aguardando referências visuais de Marcílio.</em>
+                </div>
+              )}
+            </li>
+          ))
+        }
+      </ol>
+    </main>
+  </body>
+</html>
+
+<style>
+  body {
+    margin: 0;
+    background: var(--branco);
+    color: var(--cinza-950);
+    font-family: var(--fonte-sans);
+  }
+  main {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+  header img {
+    height: 2.5rem;
+    width: auto;
+  }
+  h1 {
+    font-family: var(--fonte-serif);
+    color: var(--azul);
+    font-size: 2.25rem;
+    line-height: 1.15;
+    margin: 1.5rem 0 0.75rem;
+  }
+  header p {
+    color: var(--cinza-700);
+    line-height: 1.6;
+    margin: 0 0 2.5rem;
+  }
+  code {
+    font-family: var(--fonte-mono);
+    background: var(--cinza-100);
+    padding: 0 0.3em;
+  }
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1px;
+    background: var(--cinza-300);
+    border-top: 3px solid var(--azul);
+  }
+  li {
+    background: var(--branco);
+  }
+  li a,
+  li div {
+    display: grid;
+    gap: 0.4rem;
+    padding: 1.5rem 1.25rem;
+    text-decoration: none;
+    color: inherit;
+  }
+  li a:hover strong {
+    color: var(--vermelho);
+  }
+  strong {
+    font-family: var(--fonte-serif);
+    font-size: 1.25rem;
+    color: var(--azul);
+  }
+  span {
+    color: var(--cinza-700);
+    line-height: 1.5;
+  }
+  em {
+    color: var(--cinza-500);
+    font-size: 0.875rem;
+  }
+</style>
