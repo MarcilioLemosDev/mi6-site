@@ -1,0 +1,929 @@
+---
+import '../../styles/tokens.css';
+
+// CONCEITO A, DOSSIÊ
+// Tese: inteligência britânica. Ar editorial de dossiê institucional,
+// navy dominante, vermelho cirúrgico apenas em ação, serif de autoridade,
+// rótulos em mono, informação tratada como ficha técnica.
+
+const segmentos = [
+  {
+    n: '01',
+    nome: 'Motos',
+    fato: 'Grupos ativos. Parcelas a partir de R$ 200,00.',
+    acao: 'Simular agora',
+    destino: '#conversa',
+    ativo: true,
+  },
+  {
+    n: '02',
+    nome: 'Carros',
+    fato: 'Grupos em preparação. Receba as condições na abertura.',
+    acao: 'Registrar interesse',
+    destino: '#conversa',
+    ativo: false,
+  },
+  {
+    n: '03',
+    nome: 'Pesados',
+    fato: 'Caminhões e frota. Grupos em preparação.',
+    acao: 'Registrar interesse',
+    destino: '#conversa',
+    ativo: false,
+  },
+  {
+    n: '04',
+    nome: 'Imóveis',
+    fato: 'Casa, apartamento ou terreno. Grupos em preparação.',
+    acao: 'Registrar interesse',
+    destino: '#conversa',
+    ativo: false,
+  },
+  {
+    n: '05',
+    nome: 'Serviços',
+    fato: 'Do intercâmbio à reforma. Grupos em preparação.',
+    acao: 'Registrar interesse',
+    destino: '#conversa',
+    ativo: false,
+  },
+  {
+    n: '06',
+    nome: 'Eletro',
+    fato: 'Eletrodomésticos e tecnologia. Grupos em preparação.',
+    acao: 'Registrar interesse',
+    destino: '#conversa',
+    ativo: false,
+  },
+];
+
+const passos = [
+  {
+    n: '01',
+    titulo: 'Escolha o plano',
+    texto:
+      'Defina o valor de crédito e a parcela compatível com o seu objetivo, com apoio de um consultor.',
+  },
+  {
+    n: '02',
+    titulo: 'Entre para um grupo',
+    texto:
+      'Você passa a integrar um grupo de consórcio e contribui com parcelas mensais para o fundo comum.',
+  },
+  {
+    n: '03',
+    titulo: 'Seja contemplado',
+    texto:
+      'Todo mês há contemplações por sorteio pela Loteria Federal e por oferta de lance.',
+  },
+  {
+    n: '04',
+    titulo: 'Use o crédito',
+    texto:
+      'Após a contemplação, a carta de crédito paga o bem ou serviço do segmento contratado.',
+  },
+];
+
+const faq = [
+  {
+    p: 'O que compõe o valor da minha parcela?',
+    r: 'A parcela mensal corresponde à soma dos percentuais referentes ao Fundo Comum, ao Fundo de Reserva, à Taxa de Administração e ao Prêmio de Seguro Prestamista, se contratado.',
+  },
+  {
+    p: 'Consórcio ou financiamento: qual escolher?',
+    r: 'O consórcio é ideal para quem quer planejar a compra sem pressa, pois não tem juros, apenas taxa de administração. O financiamento libera o bem de imediato, mas inclui juros e pode custar mais ao longo do tempo.',
+  },
+  {
+    p: 'Como funciona a contemplação?',
+    r: 'Todo mês, um ou mais participantes do grupo são contemplados por sorteio ou lance e recebem a carta de crédito para adquirir o bem desejado.',
+  },
+  {
+    p: 'Consórcio vale a pena?',
+    r: 'Sim, principalmente para quem deseja planejar a compra sem pagar juros, com parcelas acessíveis e flexibilidade para ofertar lances e antecipar a contemplação.',
+  },
+];
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Conceito A, Dossiê | Play MI6</title>
+    <meta
+      name="description"
+      content="Protótipo da FASE 2: homepage da MI6 na tese de inteligência britânica, editorial de dossiê."
+    />
+  </head>
+  <body>
+    <p class="faixa-topo">
+      <span>Administradora de consórcios autorizada e fiscalizada pelo Banco Central do Brasil</span>
+      <span>SAC 0800 000 5228</span>
+    </p>
+
+    <header class="cabecalho">
+      <a href="/play/conceito-a/" class="marca">
+        <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="60" />
+      </a>
+      <nav aria-label="Navegação principal">
+        <a href="#segmentos">Consórcios</a>
+        <a href="#metodo">Como funciona</a>
+        <a href="#compromissos">Compromissos</a>
+        <a href="https://mi6.evertecinc.com.br/autoatendimento" class="discreto">Área do Cliente</a>
+        <a href="#conversa" class="cta">Fale com um consultor</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-texto">
+          <p class="rotulo">Consórcio Nacional · Porto Alegre · Atuação em todo o Brasil</p>
+          <h1>Seis caminhos.<br />Um método.<br />Nenhum juro.</h1>
+          <p class="hero-apoio">
+            A MI6 administra consórcios para carros, motos, pesados, imóveis,
+            serviços e eletro. Compra planejada, com regra clara do primeiro
+            boleto à contemplação, sob fiscalização do Banco Central.
+          </p>
+          <div class="hero-acoes">
+            <a href="#conversa" class="botao">Quero começar meu plano</a>
+            <a href="https://mi6.evertecinc.com.br/autoatendimento" class="link-seta">Já sou cliente</a>
+          </div>
+        </div>
+        <aside class="ficha" aria-label="Ficha institucional da MI6">
+          <p class="ficha-titulo">Ficha institucional</p>
+          <dl>
+            <div><dt>Autorização</dt><dd>Banco Central do Brasil</dd></div>
+            <div><dt>Em operação desde</dt><dd>dezembro de 2024</dd></div>
+            <div><dt>Sede</dt><dd>Porto Alegre, RS</dd></div>
+            <div><dt>Atuação</dt><dd>nacional</dd></div>
+            <div><dt>Segmentos</dt><dd>seis</dd></div>
+            <div><dt>Lei de regência</dt><dd>nº 11.795/2008</dd></div>
+            <div><dt>SAC</dt><dd>0800 000 5228</dd></div>
+            <div><dt>Ouvidoria</dt><dd>0800 000 5267</dd></div>
+          </dl>
+        </aside>
+      </section>
+
+      <p class="faixa-dado">
+        <strong>1,27 milhão de contemplações</strong> no setor de consórcios em
+        2024. Dado do mercado brasileiro, fonte ABAC, Associação Brasileira de
+        Administradoras de Consórcios.
+      </p>
+
+      <section class="secao" id="metodo">
+        <div class="secao-cabeca">
+          <p class="rotulo">Seção 01 · Método</p>
+          <h2>Como o consórcio funciona</h2>
+        </div>
+        <div class="secao-corpo">
+          <p class="texto-guia">
+            Um modelo de compra inteligente e planejada: um grupo de pessoas
+            contribui todo mês para um fundo comum, e o fundo compra, mês a
+            mês, o bem de cada contemplado. Sem juros; o que existe é uma taxa
+            de administração informada antes da assinatura.
+          </p>
+          <ol class="passos">
+            {
+              passos.map((p) => (
+                <li>
+                  <span class="passo-numero">{p.n}</span>
+                  <h3>{p.titulo}</h3>
+                  <p>{p.texto}</p>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </section>
+
+      <section class="secao secao-navy" id="segmentos">
+        <div class="secao-cabeca">
+          <p class="rotulo">Seção 02 · Segmentos</p>
+          <h2>Os seis caminhos</h2>
+        </div>
+        <div class="secao-corpo">
+          <p class="texto-guia">
+            Planos em seis segmentos, com atendimento consultivo e captação de
+            interesse aberta para os grupos em preparação.
+          </p>
+          <ul class="indice">
+            {
+              segmentos.map((s) => (
+                <li class={s.ativo ? 'ativo' : ''}>
+                  <span class="indice-numero">{s.n}</span>
+                  <span class="indice-nome">{s.nome}</span>
+                  <span class="indice-fato">{s.fato}</span>
+                  <a href={s.destino} class={s.ativo ? 'botao botao-mini' : 'link-seta link-claro'}>
+                    {s.acao}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </section>
+
+      <section class="secao" id="conta">
+        <div class="secao-cabeca">
+          <p class="rotulo">Seção 03 · A conta</p>
+          <h2>Consórcio ou financiamento?</h2>
+        </div>
+        <div class="secao-corpo">
+          <div class="comparativo">
+            <div class="coluna">
+              <h3>Financiamento</h3>
+              <ul>
+                <li>Entrada obrigatória</li>
+                <li>Juros elevados</li>
+                <li>Custo total maior</li>
+                <li>Burocracia no crédito</li>
+                <li>Pressão para comprar</li>
+              </ul>
+            </div>
+            <div class="coluna coluna-mi6">
+              <h3>Consórcio</h3>
+              <ul>
+                <li>Sem entrada</li>
+                <li>Sem juros</li>
+                <li>Economia no custo total</li>
+                <li>Processo transparente</li>
+                <li>Liberdade para comprar</li>
+              </ul>
+            </div>
+          </div>
+          <p class="nota">
+            No consórcio não há juros; há taxa de administração, diluída nas
+            parcelas e apresentada antes da assinatura do contrato.
+          </p>
+        </div>
+      </section>
+
+      <section class="secao" id="compromissos">
+        <div class="secao-cabeca">
+          <p class="rotulo">Seção 04 · Compromissos</p>
+          <h2>O que assinamos embaixo</h2>
+        </div>
+        <div class="secao-corpo">
+          <ol class="manifesto">
+            <li>
+              <h3>Consultoria antes da venda.</h3>
+              <p>Especialistas ajudam a escolher o plano certo, não o plano mais caro.</p>
+            </li>
+            <li>
+              <h3>Contemplação com regra pública.</h3>
+              <p>Sorteios mensais pela Loteria Federal e lances livres, fixos ou embutidos.</p>
+            </li>
+            <li>
+              <h3>Contrato sem letra miúda.</h3>
+              <p>Taxas e regras apresentadas antes da assinatura, com documentos públicos.</p>
+            </li>
+          </ol>
+          <p class="documentos">
+            Leia antes de decidir:
+            <a href="/docs/regulamento.pdf">Regulamento (PDF)</a> e
+            <a href="/docs/contrato-adesao.pdf">Contrato de adesão (PDF)</a>.
+          </p>
+        </div>
+      </section>
+
+      <section class="secao" id="faq">
+        <div class="secao-cabeca">
+          <p class="rotulo">Seção 05 · Perguntas</p>
+          <h2>Perguntas frequentes</h2>
+        </div>
+        <div class="secao-corpo">
+          {
+            faq.map((item) => (
+              <details>
+                <summary>{item.p}</summary>
+                <p>{item.r}</p>
+              </details>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="chamada" id="conversa">
+        <h2>Comece com uma conversa.</h2>
+        <p>
+          Conte seu objetivo e receba as condições do seu segmento, sem
+          compromisso. Quem responde é um consultor, não um robô.
+        </p>
+        <div class="hero-acoes">
+          <a href="#conversa" class="botao">Quero falar com um consultor</a>
+          <a href="https://wa.me/5511981406486" class="link-seta link-claro">WhatsApp (11) 98140-6486</a>
+        </div>
+        <p class="chamada-nota">
+          Aqui entra o formulário de lead (Microsoft Forms incorporado), com o
+          segmento pré-selecionado conforme o caminho de chegada.
+        </p>
+      </section>
+    </main>
+
+    <footer class="rodape">
+      <div class="rodape-grade">
+        <div class="rodape-marca">
+          <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="60" />
+          <p>Seis caminhos para transformar planejamento em conquista.</p>
+        </div>
+        <nav aria-label="Consórcios">
+          <h3>Consórcios</h3>
+          <a href="#segmentos">Motos</a>
+          <a href="#segmentos">Carros</a>
+          <a href="#segmentos">Pesados</a>
+          <a href="#segmentos">Imóveis</a>
+          <a href="#segmentos">Serviços</a>
+          <a href="#segmentos">Eletro</a>
+        </nav>
+        <nav aria-label="Institucional">
+          <h3>Institucional</h3>
+          <a href="#metodo">Como funciona</a>
+          <a href="#compromissos">Compromissos</a>
+          <a href="#faq">Perguntas frequentes</a>
+          <a href="#">Política de privacidade</a>
+        </nav>
+        <div>
+          <h3>Atendimento</h3>
+          <p>SAC 0800 000 5228</p>
+          <p>Ouvidoria 0800 000 5267</p>
+          <p>WhatsApp (11) 98140-6486</p>
+          <p>contato@mi6consorcio.com.br</p>
+        </div>
+        <div>
+          <h3>Acesso</h3>
+          <a href="https://mi6.evertecinc.com.br/autoatendimento">Área do Cliente</a>
+          <a
+            href="https://mi6.evertecinc.com.br/newcon.web/frmCorCCCnsLogin.aspx?applicationKey=3M9zL0+WaLYAeBQwijSQEkhjyy42CGuQj8DXZNFUeAoW7bdn/JfcNmUNbNUgQJqaufUv7kqAamOQCRrx6B2F7w=="
+            >Canal do parceiro</a
+          >
+          <a href="https://www.instagram.com/mi6.consorcio/">Instagram</a>
+          <a href="https://www.facebook.com/61584214719614/">Facebook</a>
+        </div>
+      </div>
+      <p class="rodape-legal">
+        MI6 Consórcio Nacional. Administradora de consórcios autorizada e
+        fiscalizada pelo Banco Central do Brasil, regida pela Lei nº
+        11.795/2008. A MI6 não comercializa cotas contempladas; desconfie de
+        ofertas em nome da empresa fora dos canais oficiais.
+      </p>
+    </footer>
+
+    <nav class="play-nav" aria-label="Navegação entre protótipos">
+      <a href="/play/">Play</a>
+      <a href="/play/conceito-a/" aria-current="page">A</a>
+      <a href="/play/conceito-b/">B</a>
+      <a href="/play/conceito-c/">C</a>
+    </nav>
+  </body>
+</html>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    background: var(--branco);
+    color: var(--cinza-950);
+    font-family: var(--fonte-sans);
+    line-height: 1.55;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--fonte-serif);
+    font-weight: 400;
+    color: var(--azul);
+    margin: 0;
+  }
+  a {
+    color: var(--azul);
+  }
+
+  /* Assinatura do conceito: régua dupla, abstração da Union Jack */
+  .secao-cabeca h2 {
+    border-top: 3px solid var(--azul);
+    position: relative;
+    padding-top: 1rem;
+  }
+  .secao-cabeca h2::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 0;
+    width: 4rem;
+    border-top: 1px solid var(--vermelho);
+  }
+
+  .rotulo {
+    font-family: var(--fonte-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cinza-500);
+    margin: 0 0 0.75rem;
+  }
+
+  .faixa-topo {
+    margin: 0;
+    background: var(--azul);
+    color: var(--branco);
+    font-family: var(--fonte-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 2rem;
+  }
+
+  .cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 1.1rem 2rem;
+    border-bottom: 1px solid var(--cinza-300);
+  }
+  .cabecalho img {
+    height: 2.4rem;
+    width: auto;
+    display: block;
+  }
+  .cabecalho nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-size: 0.95rem;
+  }
+  .cabecalho nav a {
+    text-decoration: none;
+    color: var(--cinza-700);
+  }
+  .cabecalho nav a:hover {
+    color: var(--azul);
+  }
+  .cabecalho .discreto {
+    color: var(--azul);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .botao {
+    display: inline-block;
+    background: var(--vermelho);
+    color: var(--branco) !important;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.8rem 1.6rem;
+    font-size: 0.95rem;
+  }
+  .botao:hover {
+    background: #a50d26;
+  }
+  .botao-mini {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+  .cabecalho .cta {
+    background: var(--vermelho);
+    color: var(--branco);
+    padding: 0.6rem 1.2rem;
+    font-weight: 600;
+  }
+  .cabecalho .cta:hover {
+    background: #a50d26;
+    color: var(--branco);
+  }
+
+  .link-seta {
+    color: var(--azul);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .link-seta::after {
+    content: ' \2192';
+  }
+  .link-seta:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    gap: 4rem;
+    padding: 5rem 2rem 4.5rem;
+    max-width: 72rem;
+    margin: 0 auto;
+  }
+  .hero h1 {
+    font-size: clamp(2.6rem, 6vw, 4.4rem);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    margin: 0 0 1.5rem;
+  }
+  .hero-apoio {
+    font-size: 1.1rem;
+    color: var(--cinza-700);
+    max-width: 34rem;
+    margin: 0 0 2rem;
+  }
+  .hero-acoes {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .ficha {
+    background: var(--azul);
+    color: var(--branco);
+    padding: 2rem;
+    align-self: start;
+    border-top: 4px solid var(--vermelho);
+  }
+  .ficha-titulo {
+    font-family: var(--fonte-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cinza-300);
+    margin: 0 0 1.25rem;
+  }
+  .ficha dl {
+    margin: 0;
+    display: grid;
+    gap: 0.7rem;
+  }
+  .ficha dl div {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+    padding-bottom: 0.7rem;
+  }
+  .ficha dt {
+    font-family: var(--fonte-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cinza-300);
+  }
+  .ficha dd {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  .faixa-dado {
+    margin: 0;
+    border-top: 1px solid var(--cinza-300);
+    border-bottom: 1px solid var(--cinza-300);
+    padding: 1.1rem 2rem;
+    text-align: center;
+    color: var(--cinza-700);
+    font-size: 0.95rem;
+  }
+  .faixa-dado strong {
+    color: var(--azul);
+    font-family: var(--fonte-serif);
+    font-size: 1.15rem;
+    font-weight: 400;
+  }
+
+  .secao {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: 3rem;
+    padding: 4.5rem 2rem;
+    max-width: 72rem;
+    margin: 0 auto;
+  }
+  .secao-cabeca h2 {
+    font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+    line-height: 1.15;
+  }
+  .texto-guia {
+    font-size: 1.05rem;
+    color: var(--cinza-700);
+    max-width: 38rem;
+    margin: 0 0 2.5rem;
+  }
+
+  .passos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem 3rem;
+  }
+  .passo-numero {
+    font-family: var(--fonte-mono);
+    color: var(--vermelho);
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+  }
+  .passos h3 {
+    font-size: 1.3rem;
+    margin: 0.4rem 0 0.5rem;
+  }
+  .passos p {
+    margin: 0;
+    color: var(--cinza-700);
+    font-size: 0.97rem;
+  }
+
+  .secao-navy {
+    max-width: none;
+    background: var(--azul);
+  }
+  .secao-navy > * {
+    /* mantém o miolo alinhado à grade central */
+  }
+  .secao-navy {
+    padding-left: max(2rem, calc((100vw - 72rem) / 2 + 2rem));
+    padding-right: max(2rem, calc((100vw - 72rem) / 2 + 2rem));
+  }
+  .secao-navy .rotulo {
+    color: var(--cinza-300);
+  }
+  .secao-navy h2 {
+    color: var(--branco);
+    border-top-color: var(--branco);
+  }
+  .secao-navy .texto-guia {
+    color: var(--cinza-300);
+  }
+
+  .indice {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .indice li {
+    display: grid;
+    grid-template-columns: 3rem 8rem 1fr auto;
+    gap: 1.5rem;
+    align-items: center;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  }
+  .indice-numero {
+    font-family: var(--fonte-mono);
+    color: var(--cinza-300);
+    font-size: 0.85rem;
+  }
+  .indice-nome {
+    font-family: var(--fonte-serif);
+    color: var(--branco);
+    font-size: 1.35rem;
+  }
+  .indice-fato {
+    color: var(--cinza-300);
+    font-size: 0.95rem;
+  }
+  .indice li.ativo .indice-numero {
+    color: var(--vermelho);
+  }
+  .link-claro {
+    color: var(--branco);
+  }
+
+  .comparativo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--cinza-300);
+    border: 1px solid var(--cinza-300);
+  }
+  .coluna {
+    background: var(--branco);
+    padding: 1.75rem;
+  }
+  .coluna h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .coluna ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.6rem;
+    color: var(--cinza-700);
+  }
+  .coluna-mi6 {
+    background: var(--cinza-100);
+  }
+  .coluna-mi6 h3::after {
+    content: ' · MI6';
+    font-family: var(--fonte-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: var(--vermelho);
+    vertical-align: middle;
+  }
+  .nota {
+    color: var(--cinza-500);
+    font-size: 0.9rem;
+    margin: 1.25rem 0 0;
+  }
+
+  .manifesto {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: compromisso;
+  }
+  .manifesto li {
+    counter-increment: compromisso;
+    border-bottom: 1px solid var(--cinza-300);
+    padding: 1.5rem 0 1.5rem 3.5rem;
+    position: relative;
+  }
+  .manifesto li::before {
+    content: counter(compromisso, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 1.7rem;
+    font-family: var(--fonte-mono);
+    font-size: 0.85rem;
+    color: var(--vermelho);
+  }
+  .manifesto h3 {
+    font-size: 1.35rem;
+    margin: 0 0 0.35rem;
+  }
+  .manifesto p {
+    margin: 0;
+    color: var(--cinza-700);
+  }
+  .documentos {
+    margin: 1.75rem 0 0;
+    color: var(--cinza-700);
+  }
+
+  details {
+    border-bottom: 1px solid var(--cinza-300);
+    padding: 1rem 0;
+  }
+  summary {
+    font-family: var(--fonte-serif);
+    font-size: 1.15rem;
+    color: var(--azul);
+    cursor: pointer;
+  }
+  details p {
+    color: var(--cinza-700);
+    margin: 0.75rem 0 0;
+    max-width: 42rem;
+  }
+
+  .chamada {
+    background: var(--azul);
+    color: var(--branco);
+    text-align: left;
+    padding: 4.5rem max(2rem, calc((100vw - 72rem) / 2 + 2rem));
+    border-top: 4px solid var(--vermelho);
+  }
+  .chamada h2 {
+    color: var(--branco);
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 0.75rem;
+  }
+  .chamada p {
+    color: var(--cinza-300);
+    max-width: 38rem;
+    margin: 0 0 2rem;
+  }
+  .chamada-nota {
+    font-family: var(--fonte-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    color: var(--cinza-300);
+    border: 1px dashed rgba(255, 255, 255, 0.4);
+    padding: 0.9rem 1.1rem;
+    max-width: 38rem;
+    margin-top: 2.5rem;
+  }
+
+  .rodape {
+    padding: 3.5rem 2rem 2rem;
+    border-top: 1px solid var(--cinza-300);
+    max-width: 76rem;
+    margin: 0 auto;
+  }
+  .rodape-grade {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.2fr 1.2fr;
+    gap: 2rem;
+  }
+  .rodape img {
+    height: 2.1rem;
+    width: auto;
+  }
+  .rodape-marca p {
+    color: var(--cinza-700);
+    max-width: 16rem;
+    font-family: var(--fonte-serif);
+  }
+  .rodape h3 {
+    font-family: var(--fonte-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cinza-500);
+    margin: 0 0 0.9rem;
+  }
+  .rodape nav a,
+  .rodape div a {
+    display: block;
+    color: var(--cinza-700);
+    text-decoration: none;
+    margin-bottom: 0.5rem;
+    font-size: 0.92rem;
+  }
+  .rodape nav a:hover,
+  .rodape div a:hover {
+    color: var(--azul);
+    text-decoration: underline;
+  }
+  .rodape p {
+    margin: 0 0 0.5rem;
+    font-size: 0.92rem;
+    color: var(--cinza-700);
+  }
+  .rodape-legal {
+    border-top: 1px solid var(--cinza-300);
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+    font-size: 0.8rem !important;
+    color: var(--cinza-500) !important;
+    max-width: 60rem;
+  }
+
+  .play-nav {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background: var(--cinza-950);
+    color: var(--branco);
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    opacity: 0.85;
+  }
+  .play-nav a {
+    color: var(--branco);
+    text-decoration: none;
+  }
+  .play-nav a[aria-current='page'] {
+    color: var(--vermelho);
+    font-weight: 700;
+  }
+
+  @media (max-width: 60rem) {
+    .faixa-topo {
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+    .cabecalho {
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .cabecalho nav {
+      flex-wrap: wrap;
+      gap: 0.9rem;
+    }
+    .hero,
+    .secao {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding-top: 3rem;
+      padding-bottom: 3rem;
+    }
+    .passos {
+      grid-template-columns: 1fr;
+    }
+    .indice li {
+      grid-template-columns: 2.2rem 1fr;
+      grid-template-rows: auto auto auto;
+      gap: 0.4rem 1rem;
+    }
+    .indice-fato,
+    .indice li a {
+      grid-column: 2;
+    }
+    .comparativo {
+      grid-template-columns: 1fr;
+    }
+    .rodape-grade {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

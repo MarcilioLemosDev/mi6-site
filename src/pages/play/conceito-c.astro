@@ -1,0 +1,821 @@
+---
+import '../../styles/tokens.css';
+
+// CONCEITO C, CONVERSÃO
+// Tese: cada dobra empurra para um único destino, o formulário de lead
+// pré-segmentado. Hierarquia de fintech, números à frente de adjetivos,
+// duas rotas em toda seção (formulário e canal humano). Sans dominante,
+// serif apenas nos números; navy estrutural, vermelho só no CTA.
+
+const segmentos = [
+  { id: 'motos', nome: 'Motos', fato: 'Grupos ativos · parcelas a partir de R$ 200,00' },
+  { id: 'carros', nome: 'Carros', fato: 'Grupos em preparação · interesse aberto' },
+  { id: 'pesados', nome: 'Pesados', fato: 'Grupos em preparação · interesse aberto' },
+  { id: 'imoveis', nome: 'Imóveis', fato: 'Grupos em preparação · interesse aberto' },
+  { id: 'servicos', nome: 'Serviços', fato: 'Grupos em preparação · interesse aberto' },
+  { id: 'eletro', nome: 'Eletro', fato: 'Grupos em preparação · interesse aberto' },
+];
+
+const faixas = ['Até R$ 300', 'R$ 300 a R$ 800', 'R$ 800 a R$ 2.000', 'Acima de R$ 2.000'];
+
+const passos = [
+  ['Escolha o plano', 'Crédito e parcela ajustados ao seu objetivo.'],
+  ['Entre no grupo', 'Parcelas mensais formam o fundo comum.'],
+  ['Seja contemplado', 'Sorteio pela Loteria Federal ou lance.'],
+  ['Use o crédito', 'Compra à vista do bem do seu segmento.'],
+];
+
+const faq = [
+  {
+    p: 'Quanto custa? Tem juros?',
+    r: 'Não há juros nem entrada. A parcela reúne o fundo comum, o fundo de reserva, a taxa de administração e, se contratado, o seguro prestamista. Tudo apresentado antes da assinatura.',
+  },
+  {
+    p: 'Quando recebo meu crédito?',
+    r: 'Na contemplação, que acontece todo mês por sorteio vinculado à Loteria Federal ou por oferta de lance; o lance permite antecipar.',
+  },
+  {
+    p: 'O que acontece depois que eu envio o formulário?',
+    r: 'Um consultor da MI6 entra em contato com as condições do segmento escolhido, sem compromisso.',
+  },
+];
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Conceito C, Conversão | Play MI6</title>
+    <meta
+      name="description"
+      content="Protótipo da FASE 2: homepage da MI6 orientada a geração de lead qualificado."
+    />
+  </head>
+  <body>
+    <header class="cabecalho">
+      <a href="/play/conceito-c/">
+        <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="60" />
+      </a>
+      <nav aria-label="Navegação principal">
+        <a href="#segmentos">Segmentos</a>
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#perguntas">Perguntas</a>
+        <a href="https://mi6.evertecinc.com.br/autoatendimento" class="discreto">Área do Cliente</a>
+      </nav>
+      <a href="#formulario" class="botao botao-header">Pedir proposta</a>
+    </header>
+
+    <main>
+      <section class="hero">
+        <span class="seis" aria-hidden="true">6</span>
+        <div class="hero-texto">
+          <h1>
+            Consórcio sem juros.<br />
+            Proposta em <em>2 minutos</em>.
+          </h1>
+          <ul class="fatos">
+            <li>Administradora autorizada pelo Banco Central desde dezembro de 2024</li>
+            <li>Seis segmentos: motos, carros, pesados, imóveis, serviços e eletro</li>
+            <li>Sem entrada; taxa de administração apresentada antes da assinatura</li>
+          </ul>
+          <p class="hero-rota">
+            Prefere conversar?
+            <a href="https://wa.me/5511981406486">WhatsApp (11) 98140-6486</a>
+            ou SAC 0800 000 5228.
+          </p>
+        </div>
+
+        <form class="modulo" aria-label="Monte sua proposta" action="#formulario" method="get">
+          <p class="modulo-titulo">Monte sua proposta</p>
+          <fieldset>
+            <legend>1. O que você quer conquistar?</legend>
+            <div class="chips" id="chips-segmento">
+              {
+                segmentos.map((s, i) => (
+                  <button type="button" data-segmento={s.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+                    {s.nome}
+                  </button>
+                ))
+              }
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>2. Qual parcela cabe no seu mês?</legend>
+            <div class="chips" id="chips-faixa">
+              {
+                faixas.map((f, i) => (
+                  <button type="button" data-faixa={f} aria-pressed={i === 0 ? 'true' : 'false'}>
+                    {f}
+                  </button>
+                ))
+              }
+            </div>
+          </fieldset>
+          <a href="#formulario" class="botao botao-cheio" id="cta-proposta">Pedir minha proposta</a>
+          <p class="modulo-nota" id="resumo-proposta">Proposta para motos, parcela até R$ 300.</p>
+          <p class="modulo-micro">Sem compromisso. Seus dados servem só para o consultor responder.</p>
+        </form>
+      </section>
+
+      <ul class="confianca" aria-label="Sinais de confiança">
+        <li>Autorizada e fiscalizada pelo <strong>Banco Central do Brasil</strong></li>
+        <li>Regida pela <strong>Lei nº 11.795/2008</strong></li>
+        <li><strong>1,27 milhão</strong> de contemplações no setor em 2024 (fonte: ABAC)</li>
+        <li>SAC <strong>0800 000 5228</strong> · Ouvidoria <strong>0800 000 5267</strong></li>
+      </ul>
+
+      <section class="bloco" id="segmentos">
+        <h2>Escolha seu segmento</h2>
+        <p class="bloco-apoio">
+          Os seis caminhos da MI6, com o estado real de cada um. Nos segmentos
+          em preparação, quem registra interesse entra no início do grupo.
+        </p>
+        <ol class="lista-segmentos">
+          {
+            segmentos.map((s, i) => (
+              <li>
+                <span class="seg-numero">{String(i + 1).padStart(2, '0')}</span>
+                <div>
+                  <h3>{s.nome}</h3>
+                  <p>{s.fato}</p>
+                </div>
+                <a href={`#formulario`} data-segmento={s.id} class="seg-acao">
+                  Quero este
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section class="bloco bloco-navy" id="como-funciona">
+        <h2>Como funciona, em quatro passos</h2>
+        <ol class="passos">
+          {
+            passos.map(([titulo, texto], i) => (
+              <li>
+                <span>{String(i + 1).padStart(2, '0')}</span>
+                <h3>{titulo}</h3>
+                <p>{texto}</p>
+              </li>
+            ))
+          }
+        </ol>
+        <p class="bloco-rota">
+          <a href="#formulario" class="botao">Começar pelo passo 1</a>
+        </p>
+      </section>
+
+      <section class="bloco" id="comparativo">
+        <h2>Por que não um financiamento?</h2>
+        <div class="tabela" role="table" aria-label="Comparação entre consórcio e financiamento">
+          <div role="row" class="linha cabeca">
+            <span role="columnheader">No financiamento</span>
+            <span role="columnheader">No consórcio MI6</span>
+          </div>
+          <div role="row" class="linha"><span role="cell">Entrada obrigatória</span><span role="cell">Sem entrada</span></div>
+          <div role="row" class="linha"><span role="cell">Juros sobre o saldo</span><span role="cell">Sem juros; taxa de administração em contrato</span></div>
+          <div role="row" class="linha"><span role="cell">Custo total maior</span><span role="cell">Economia no custo total</span></div>
+          <div role="row" class="linha"><span role="cell">Burocracia de crédito</span><span role="cell">Adesão simples, regra pública de contemplação</span></div>
+        </div>
+      </section>
+
+      <section class="bloco" id="perguntas">
+        <h2>Antes de decidir, pergunte</h2>
+        {
+          faq.map((item) => (
+            <details>
+              <summary>{item.p}</summary>
+              <p>{item.r}</p>
+            </details>
+          ))
+        }
+        <p class="documentos">
+          Documentos públicos: <a href="/docs/regulamento.pdf">Regulamento (PDF)</a> e
+          <a href="/docs/contrato-adesao.pdf">Contrato de adesão (PDF)</a>.
+        </p>
+      </section>
+
+      <section class="bloco bloco-form" id="formulario">
+        <div class="form-coluna">
+          <h2>Peça sua proposta</h2>
+          <p>
+            Um consultor responde com as condições do seu segmento. Sem
+            compromisso e sem spam.
+          </p>
+          <div class="forms-placeholder">
+            <p>
+              Aqui entra o Microsoft Forms incorporado (iframe), já aberto com
+              o segmento e a faixa de parcela escolhidos acima.
+            </p>
+            <p>Campos previstos: nome, telefone, segmento, faixa de parcela.</p>
+          </div>
+        </div>
+        <aside class="form-humano">
+          <h3>Prefere gente?</h3>
+          <p><a href="https://wa.me/5511981406486">WhatsApp (11) 98140-6486</a></p>
+          <p>SAC 0800 000 5228</p>
+          <p>contato@mi6consorcio.com.br</p>
+          <p class="form-humano-nota">
+            Já é cliente? Boletos e contratos ficam na
+            <a href="https://mi6.evertecinc.com.br/autoatendimento">Área do Cliente</a>.
+          </p>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="rodape">
+      <div class="rodape-linha">
+        <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="60" />
+        <nav aria-label="Links do rodapé">
+          <a href="#segmentos">Segmentos</a>
+          <a href="#como-funciona">Como funciona</a>
+          <a href="https://mi6.evertecinc.com.br/autoatendimento">Área do Cliente</a>
+          <a
+            href="https://mi6.evertecinc.com.br/newcon.web/frmCorCCCnsLogin.aspx?applicationKey=3M9zL0+WaLYAeBQwijSQEkhjyy42CGuQj8DXZNFUeAoW7bdn/JfcNmUNbNUgQJqaufUv7kqAamOQCRrx6B2F7w=="
+            >Canal do parceiro</a
+          >
+          <a href="https://www.instagram.com/mi6.consorcio/">Instagram</a>
+          <a href="https://www.facebook.com/61584214719614/">Facebook</a>
+          <a href="#">Política de privacidade</a>
+        </nav>
+      </div>
+      <p>
+        MI6 Consórcio Nacional. Administradora de consórcios autorizada e
+        fiscalizada pelo Banco Central do Brasil, regida pela Lei nº
+        11.795/2008. Sede em Porto Alegre, RS. A MI6 não comercializa cotas
+        contempladas.
+      </p>
+    </footer>
+
+    <nav class="play-nav" aria-label="Navegação entre protótipos">
+      <a href="/play/">Play</a>
+      <a href="/play/conceito-a/">A</a>
+      <a href="/play/conceito-b/">B</a>
+      <a href="/play/conceito-c/" aria-current="page">C</a>
+    </nav>
+
+    <script>
+      // Protótipo: chips atualizam o resumo da proposta e o destino do CTA.
+      const estado = { segmento: 'motos', faixa: 'Até R$ 300' };
+      const nomes: Record<string, string> = {
+        motos: 'motos',
+        carros: 'carros',
+        pesados: 'pesados',
+        imoveis: 'imóveis',
+        servicos: 'serviços',
+        eletro: 'eletro',
+      };
+
+      function atualizar() {
+        const resumo = document.getElementById('resumo-proposta');
+        const cta = document.getElementById('cta-proposta') as HTMLAnchorElement | null;
+        if (resumo) {
+          resumo.textContent = `Proposta para ${nomes[estado.segmento]}, parcela ${estado.faixa.toLowerCase()}.`;
+        }
+        if (cta) {
+          cta.href = `#formulario`;
+          cta.dataset.segmento = estado.segmento;
+          cta.dataset.faixa = estado.faixa;
+        }
+      }
+
+      function ligarChips(idGrupo: string, aoEscolher: (botao: HTMLButtonElement) => void) {
+        const grupo = document.getElementById(idGrupo);
+        if (!grupo) return;
+        grupo.addEventListener('click', (e) => {
+          const botao = (e.target as HTMLElement).closest('button');
+          if (!botao) return;
+          grupo.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+          botao.setAttribute('aria-pressed', 'true');
+          aoEscolher(botao as HTMLButtonElement);
+          atualizar();
+        });
+      }
+
+      ligarChips('chips-segmento', (b) => {
+        estado.segmento = b.dataset.segmento ?? 'motos';
+      });
+      ligarChips('chips-faixa', (b) => {
+        estado.faixa = b.dataset.faixa ?? 'Até R$ 300';
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    background: var(--branco);
+    color: var(--cinza-950);
+    font-family: var(--fonte-sans);
+    line-height: 1.55;
+  }
+  h1,
+  h2 {
+    color: var(--azul);
+    letter-spacing: -0.015em;
+  }
+
+  .cabecalho {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--branco);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 0.9rem 2rem;
+    border-bottom: 3px solid var(--azul);
+  }
+  .cabecalho img {
+    height: 2.2rem;
+    width: auto;
+    display: block;
+  }
+  .cabecalho nav {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.95rem;
+  }
+  .cabecalho nav a {
+    color: var(--cinza-700);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .cabecalho nav a:hover {
+    color: var(--azul);
+  }
+  .discreto {
+    text-decoration: underline !important;
+    color: var(--azul) !important;
+  }
+
+  .botao {
+    display: inline-block;
+    background: var(--vermelho);
+    color: var(--branco);
+    text-decoration: none;
+    font-weight: 700;
+    padding: 0.8rem 1.5rem;
+    font-size: 0.95rem;
+  }
+  .botao:hover {
+    background: #a50d26;
+  }
+  .botao-header {
+    padding: 0.6rem 1.2rem;
+  }
+
+  .hero {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 3.5rem;
+    align-items: center;
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 4.5rem 2rem;
+  }
+  .seis {
+    position: absolute;
+    right: -2rem;
+    top: -6rem;
+    font-family: var(--fonte-serif);
+    font-size: 34rem;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--cinza-300);
+    pointer-events: none;
+    user-select: none;
+  }
+  .hero-texto {
+    position: relative;
+  }
+  h1 {
+    font-size: clamp(2.3rem, 5vw, 3.5rem);
+    line-height: 1.08;
+    font-weight: 800;
+    margin: 0 0 1.75rem;
+  }
+  h1 em {
+    font-style: normal;
+    color: var(--vermelho);
+  }
+  .fatos {
+    list-style: none;
+    margin: 0 0 1.75rem;
+    padding: 0;
+    display: grid;
+    gap: 0.7rem;
+    color: var(--cinza-700);
+    font-size: 1.02rem;
+  }
+  .fatos li {
+    padding-left: 1.4rem;
+    position: relative;
+  }
+  .fatos li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.45em;
+    width: 0.55rem;
+    height: 0.55rem;
+    background: var(--azul);
+  }
+  .hero-rota {
+    color: var(--cinza-500);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+  .hero-rota a {
+    color: var(--azul);
+    font-weight: 600;
+  }
+
+  .modulo {
+    position: relative;
+    background: var(--branco);
+    border: 1px solid var(--cinza-300);
+    border-top: 4px solid var(--vermelho);
+    box-shadow: 0 1px 0 var(--cinza-300);
+    padding: 1.75rem;
+    margin: 0;
+  }
+  .modulo-titulo {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--azul);
+    margin: 0 0 1.25rem;
+  }
+  fieldset {
+    border: 0;
+    margin: 0 0 1.25rem;
+    padding: 0;
+  }
+  legend {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--cinza-700);
+    margin-bottom: 0.6rem;
+    padding: 0;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .chips button {
+    font: inherit;
+    font-size: 0.88rem;
+    padding: 0.45rem 0.9rem;
+    background: var(--branco);
+    border: 1px solid var(--cinza-300);
+    color: var(--cinza-700);
+    cursor: pointer;
+  }
+  .chips button:hover {
+    border-color: var(--azul);
+    color: var(--azul);
+  }
+  .chips button[aria-pressed='true'] {
+    background: var(--azul);
+    border-color: var(--azul);
+    color: var(--branco);
+  }
+  .botao-cheio {
+    display: block;
+    text-align: center;
+    width: 100%;
+  }
+  .modulo-nota {
+    margin: 0.9rem 0 0.25rem;
+    font-size: 0.9rem;
+    color: var(--azul);
+    font-weight: 600;
+  }
+  .modulo-micro {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--cinza-500);
+  }
+
+  .confianca {
+    list-style: none;
+    margin: 0;
+    padding: 1rem 2rem;
+    background: var(--cinza-100);
+    border-top: 1px solid var(--cinza-300);
+    border-bottom: 1px solid var(--cinza-300);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 2.5rem;
+    font-size: 0.88rem;
+    color: var(--cinza-700);
+  }
+  .confianca strong {
+    color: var(--azul);
+  }
+
+  .bloco {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+  .bloco h2 {
+    font-size: clamp(1.7rem, 3.4vw, 2.3rem);
+    font-weight: 800;
+    margin: 0 0 0.75rem;
+  }
+  .bloco-apoio {
+    color: var(--cinza-700);
+    max-width: 40rem;
+    margin: 0 0 2rem;
+  }
+
+  .lista-segmentos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--cinza-300);
+    border: 1px solid var(--cinza-300);
+  }
+  .lista-segmentos li {
+    background: var(--branco);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.25rem 1.5rem;
+  }
+  .seg-numero {
+    font-family: var(--fonte-serif);
+    color: var(--cinza-300);
+    font-size: 1.6rem;
+  }
+  .lista-segmentos h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--azul);
+  }
+  .lista-segmentos p {
+    margin: 0.15rem 0 0;
+    font-size: 0.85rem;
+    color: var(--cinza-500);
+  }
+  .seg-acao {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--vermelho);
+    text-decoration: none;
+    border: 1px solid var(--vermelho);
+    padding: 0.4rem 0.85rem;
+    white-space: nowrap;
+  }
+  .seg-acao:hover {
+    background: var(--vermelho);
+    color: var(--branco);
+  }
+
+  .bloco-navy {
+    max-width: none;
+    background: var(--azul);
+    padding-left: max(2rem, calc((100vw - 72rem) / 2 + 2rem));
+    padding-right: max(2rem, calc((100vw - 72rem) / 2 + 2rem));
+  }
+  .bloco-navy h2 {
+    color: var(--branco);
+  }
+  .passos {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+  .passos span {
+    font-family: var(--fonte-serif);
+    font-size: 2.2rem;
+    color: var(--vermelho);
+    display: block;
+    line-height: 1;
+  }
+  .passos h3 {
+    color: var(--branco);
+    font-size: 1.05rem;
+    margin: 0.6rem 0 0.35rem;
+  }
+  .passos p {
+    color: var(--cinza-300);
+    font-size: 0.92rem;
+    margin: 0;
+  }
+  .bloco-rota {
+    margin: 2.5rem 0 0;
+  }
+
+  .tabela {
+    border: 1px solid var(--cinza-300);
+  }
+  .linha {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .linha span {
+    padding: 0.9rem 1.25rem;
+    font-size: 0.95rem;
+    color: var(--cinza-700);
+    border-bottom: 1px solid var(--cinza-300);
+  }
+  .linha span + span {
+    border-left: 3px solid var(--azul);
+    color: var(--cinza-950);
+    font-weight: 500;
+    background: var(--cinza-100);
+  }
+  .linha:last-child span {
+    border-bottom: 0;
+  }
+  .cabeca span {
+    font-weight: 700;
+    color: var(--azul);
+    background: var(--branco) !important;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  details {
+    border-bottom: 1px solid var(--cinza-300);
+    padding: 1rem 0;
+  }
+  summary {
+    font-weight: 600;
+    color: var(--azul);
+    cursor: pointer;
+    font-size: 1.05rem;
+  }
+  details p {
+    color: var(--cinza-700);
+    margin: 0.6rem 0 0;
+    max-width: 42rem;
+  }
+  .documentos {
+    margin-top: 1.5rem;
+    color: var(--cinza-700);
+    font-size: 0.95rem;
+  }
+  .documentos a {
+    color: var(--azul);
+  }
+
+  .bloco-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 3rem;
+    border-top: 3px solid var(--azul);
+  }
+  .bloco-form p {
+    color: var(--cinza-700);
+  }
+  .forms-placeholder {
+    border: 1px dashed var(--cinza-500);
+    padding: 1.5rem;
+    font-family: var(--fonte-mono);
+    font-size: 0.82rem;
+    color: var(--cinza-500);
+    min-height: 14rem;
+    display: grid;
+    align-content: center;
+    gap: 0.5rem;
+  }
+  .forms-placeholder p {
+    margin: 0;
+    color: var(--cinza-500);
+  }
+  .form-humano {
+    background: var(--cinza-100);
+    padding: 1.75rem;
+    align-self: start;
+  }
+  .form-humano h3 {
+    margin: 0 0 0.9rem;
+    color: var(--azul);
+  }
+  .form-humano p {
+    margin: 0 0 0.6rem;
+    font-size: 0.95rem;
+  }
+  .form-humano a {
+    color: var(--azul);
+    font-weight: 600;
+  }
+  .form-humano-nota {
+    border-top: 1px solid var(--cinza-300);
+    padding-top: 0.9rem;
+    margin-top: 1rem !important;
+    font-size: 0.85rem !important;
+    color: var(--cinza-500);
+  }
+
+  .rodape {
+    border-top: 1px solid var(--cinza-300);
+    padding: 2.5rem 2rem 4.5rem;
+    max-width: 72rem;
+    margin: 0 auto;
+  }
+  .rodape-linha {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  .rodape img {
+    height: 2rem;
+    width: auto;
+  }
+  .rodape nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    font-size: 0.9rem;
+  }
+  .rodape nav a {
+    color: var(--cinza-700);
+    text-decoration: none;
+  }
+  .rodape nav a:hover {
+    color: var(--azul);
+    text-decoration: underline;
+  }
+  .rodape > p {
+    font-size: 0.8rem;
+    color: var(--cinza-500);
+    max-width: 56rem;
+    margin: 0;
+  }
+
+  .play-nav {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background: var(--cinza-950);
+    color: var(--branco);
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    opacity: 0.85;
+    z-index: 6;
+  }
+  .play-nav a {
+    color: var(--branco);
+    text-decoration: none;
+  }
+  .play-nav a[aria-current='page'] {
+    color: var(--vermelho);
+    font-weight: 700;
+  }
+
+  @media (max-width: 60rem) {
+    .cabecalho nav {
+      display: none;
+    }
+    .hero {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      padding-top: 3rem;
+      padding-bottom: 3rem;
+    }
+    .seis {
+      font-size: 22rem;
+      right: -4rem;
+      top: -4rem;
+    }
+    .lista-segmentos {
+      grid-template-columns: 1fr;
+    }
+    .passos {
+      grid-template-columns: 1fr 1fr;
+    }
+    .bloco-form {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
