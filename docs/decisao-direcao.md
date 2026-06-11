@@ -4,6 +4,24 @@ Data: 11/06/2026. Comparação dos conceitos de homepage em `/play`,
 com pontos fortes, riscos, esforço de produção e recomendação.
 A escolha final é de Marcílio.
 
+## Decisão tomada
+
+Na avaliação da rodada 3 (11/06/2026), Marcílio escolheu o **Conceito A,
+Dossiê, como direção da homepage**, e abriu um ciclo de refino fino sobre
+ele ("refinar até ficar belo", com mais algumas rodadas previstas). O B
+permanece como linguagem candidata para as páginas narrativas.
+
+### Rodada 4 (refino contínuo do A, em andamento)
+
+- Logo: criada a versão branca para fundos navy
+  (`public/imgs/logo-mi6-branco.png`, recolorida do original preservando o
+  vermelho); some a caixa branca do header e do rodapé que Marcílio apontou.
+  No B, o header alterna entre as duas versões conforme o fundo.
+- Favicon institucional provisório (`public/favicon.svg`).
+- Régua dupla navy/vermelho de volta aos títulos de seção, como assinatura.
+- FAQ com abertura animada (CSS `interpolate-size`, melhora progressiva).
+- Decodificação do kicker com conjunto de caracteres limpo.
+
 ## Registro do processo
 
 ### Rodada 3 (refino A + B)

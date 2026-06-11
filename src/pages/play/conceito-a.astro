@@ -134,6 +134,7 @@ const faq = [
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Conceito A, Dossiê | Play MI6</title>
     <meta name="description" content="Protótipo da FASE 2: inteligência britânica cinematográfica com pulso humano." />
   </head>
@@ -142,7 +143,7 @@ const faq = [
 
     <header class="topo">
       <a class="topo-marca" href="/play/conceito-a/">
-        <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="60" />
+        <img src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
       </a>
       <nav aria-label="Navegação principal">
         <a class="sub" href="#solucoes">Consórcio</a>
@@ -361,7 +362,7 @@ const faq = [
 
     <footer class="rodape">
       <div class="rodape-topo">
-        <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="60" />
+        <img src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
         <p class="rodape-frase">O melhor investimento, 6 soluções para tirar seu sonho do papel.</p>
       </div>
       <div class="rodape-colunas">
@@ -448,7 +449,7 @@ const faq = [
         tl.from('.topo', { yPercent: -100, duration: 0.8, ease: 'power2.out' })
           .to('#scramble', {
             duration: 1.4,
-            scrambleText: { text: 'O Melhor Investimento:', chars: '▮▯·/01MI6', speed: 0.4 },
+            scrambleText: { text: 'O Melhor Investimento:', chars: 'MI6·01/', speed: 0.4 },
           }, 0.15)
           .from(split.lines, { yPercent: 115, duration: 1.1, stagger: 0.14 }, 0.4)
           .from('[data-intro]', { y: 28, autoAlpha: 0, duration: 0.9, stagger: 0.14 }, '-=0.55')
@@ -538,6 +539,7 @@ const faq = [
   :global(html) {
     scroll-behavior: auto;
     scroll-padding-top: 6rem;
+    interpolate-size: allow-keywords;
   }
   * {
     box-sizing: border-box;
@@ -594,6 +596,27 @@ const faq = [
     font-size: clamp(2.2rem, 4.5vw, 3.6rem);
     line-height: 1.05;
     margin-bottom: 2rem;
+  }
+
+  /* Régua dupla, abstração da Union Jack: navy contínuo, vermelho no arranque */
+  .claro h2,
+  .galeria h2 {
+    position: relative;
+    border-top: 2px solid var(--navy);
+    padding-top: 1.1rem;
+  }
+  .claro h2::before,
+  .galeria h2::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 0;
+    width: 4rem;
+    height: 2px;
+    background: var(--vermelho);
+  }
+  .galeria h2 {
+    border-top-color: rgba(255, 255, 255, 0.55);
   }
 
   .indice {
@@ -656,11 +679,9 @@ const faq = [
     box-shadow: 0 1px 0 var(--linha);
   }
   .topo-marca img {
-    height: 2.2rem;
+    height: 1.9rem;
     width: auto;
     display: block;
-    background: var(--branco);
-    padding: 0.28rem 0.5rem;
   }
   .topo nav {
     display: flex;
@@ -1227,6 +1248,16 @@ const faq = [
     color: var(--tinta-suave);
     max-width: 52rem;
   }
+  @supports (interpolate-size: allow-keywords) {
+    .faq-lista details::details-content {
+      height: 0;
+      overflow: clip;
+      transition: height 0.4s ease, content-visibility 0.4s allow-discrete;
+    }
+    .faq-lista details[open]::details-content {
+      height: auto;
+    }
+  }
 
   /* Contato */
   .contato {
@@ -1287,10 +1318,8 @@ const faq = [
     margin: 0 auto 3rem;
   }
   .rodape-topo img {
-    height: 2.2rem;
+    height: 2rem;
     width: auto;
-    background: var(--branco);
-    padding: 0.28rem 0.5rem;
   }
   .rodape-frase {
     font-family: 'Instrument Serif', Georgia, serif;

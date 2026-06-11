@@ -84,6 +84,7 @@ const faq = [
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Conceito B, Travessia | Play MI6</title>
     <meta name="description" content="Protótipo da FASE 2: editorial cinematográfico do projeto de vida." />
   </head>
@@ -92,7 +93,8 @@ const faq = [
 
     <header class="topo">
       <a class="topo-marca" href="/play/conceito-b/">
-        <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="60" />
+        <img class="logo-claro" src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
+        <img class="logo-escuro" src="/imgs/logo-mi6.png" alt="" aria-hidden="true" width="219" height="47" />
       </a>
       <nav aria-label="Navegação principal">
         <a href="#oque">O que é consórcio</a>
@@ -247,7 +249,7 @@ const faq = [
     <footer class="rodape">
       <p class="rodape-frase">O melhor investimento, 6 soluções para tirar seu sonho do papel.</p>
       <div class="rodape-info">
-        <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="60" />
+        <img src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
         <div>
           <p>
             <a href="https://mi6.evertecinc.com.br/autoatendimento">Área do cliente</a> ·
@@ -540,12 +542,26 @@ const faq = [
   .topo.rolou nav a:hover {
     color: var(--vermelho);
   }
+  .topo-marca {
+    position: relative;
+    display: block;
+  }
   .topo-marca img {
-    height: 2.1rem;
+    height: 1.9rem;
     width: auto;
     display: block;
-    background: #fff;
-    padding: 0.28rem 0.5rem;
+  }
+  .logo-escuro {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .topo.rolou .logo-claro {
+    opacity: 0;
+  }
+  .topo.rolou .logo-escuro {
+    opacity: 1;
   }
   .topo nav {
     display: flex;
@@ -1009,10 +1025,8 @@ const faq = [
     padding-top: 2rem;
   }
   .rodape-info img {
-    height: 2.1rem;
+    height: 2rem;
     width: auto;
-    background: #fff;
-    padding: 0.28rem 0.5rem;
   }
   .rodape-info p {
     margin: 0 0 0.5rem;
