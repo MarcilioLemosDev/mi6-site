@@ -1,15 +1,32 @@
-# Decisão de direção, FASE 2 (Play), rodada 2
+# Decisão de direção, FASE 2 (Play), rodada 3
 
-Data: 11/06/2026. Comparação dos três conceitos de homepage em `/play`,
+Data: 11/06/2026. Comparação dos conceitos de homepage em `/play`,
 com pontos fortes, riscos, esforço de produção e recomendação.
 A escolha final é de Marcílio.
 
 ## Registro do processo
 
+### Rodada 3 (refino A + B)
+
+Avaliação de Marcílio sobre a rodada 2: A e B aprovados para refino, com a
+observação de que a modernidade do A e a humanização do B chamam atenção ao
+mesmo tempo; C fora da disputa (mantido em `/play` como registro). O refino
+fez os dois finalistas trocarem qualidades:
+
+- O Conceito A ganhou humanização: foto humana em duotone dentro de uma
+  lente circular no hero (rostos, não objetos), ritmo claro/escuro entre as
+  seções (papel entre os blocos navy), fotos da galeria que ganham cor ao
+  passar o cursor, header que se solidifica no scroll.
+- O Conceito B ganhou precisão moderna: rótulos e microdados em IBM Plex
+  Mono, régua de dados no pé do hero, sublinhado vermelho desenhado no
+  "perto", índices numerados nos spreads, passos que acendem ao entrar.
+
+### Rodada 2 (reconstrução)
+
 A rodada 1 (três protótipos estáticos, texto reescrito) foi descartada por
 decisão de Marcílio em 11/06/2026: faltava inovação visual e craft de UX/UI,
-e o texto havia sido reescrito além do desejado. A rodada 2 foi refeita sob
-duas regras novas:
+e o texto havia sido reescrito além do desejado. A rodada 2 reconstruiu os
+três conceitos sob duas regras novas:
 
 1. O texto do site atual é a base, com ajuste fino apenas (correções da
    FASE 1: tempos verbais, CTA morto, atribuição de fonte). Headlines e
@@ -97,7 +114,12 @@ capítulo fixa (sticky) no passo a passo.
 
 **Esforço para virar produção: alto** (por causa do material fotográfico).
 
-## Conceito C, Painel
+## Conceito C, Painel (fora da disputa)
+
+Eliminado por decisão de Marcílio na avaliação da rodada 2; permanece em
+`/play/conceito-c/` como registro. O módulo de proposta pré-segmentada com
+slider de parcela continua sendo a melhor mecânica de conversão observada e
+deve ser importado pela direção vencedora.
 
 Tese: conversão como produto, com craft. Grade suíça em branco, Source
 Serif 4 nos títulos, Archivo (inclusive expandida) nos números, vermelho só
@@ -139,24 +161,26 @@ cursor; passo a passo sobre navy; comparativo com o cartão MI6 em navy.
 | Performance (custo do brilho) | médio | médio-alto | baixo |
 | Esforço de produção | médio-alto | alto | baixo-médio |
 
-## Recomendação
+## Recomendação (atualizada na rodada 3)
 
-**Conceito A, Dossiê, como direção dominante**, pelos mesmos fundamentos da
-rodada 1 que continuam valendo (identidade inconfundível em um setor de
-sites intercambiáveis, regulação como protagonista), agora com a execução
-visual à altura. Dois empréstimos:
+Com a humanização incorporada, **o Conceito A refinado é a recomendação
+para base da homepage**: ele agora entrega as duas qualidades que Marcílio
+apontou (a modernidade do A e o calor humano do B) em uma página só, e
+continua sendo a identidade que nenhum concorrente poderia assinar.
 
-1. Do C: o módulo de proposta (chips + parcela) entra na primeira dobra ou
-   logo após o hero do A, na linguagem visual do dossiê.
-2. Do B: o tratamento fotográfico navy e o capítulo explicativo viram a
-   página "Como funciona", linkada com destaque na home.
+Papéis sugeridos para o que sobra:
 
-Se a prioridade do lançamento for volume de lead com mídia paga desde o
-primeiro dia, o C é o plano B defensável; nesse caso, importar do A o hero
-navy como abertura para não perder a assinatura.
+1. Do B: vira a linguagem das páginas narrativas do site (Sobre, "Como
+   funciona o consórcio", páginas de segmento), onde a fotografia em tela
+   cheia e os capítulos rendem mais que na home. A e B refinados já
+   compartilham família de detalhes (mono, sublinhados, numerais vazados),
+   então a costura é natural.
+2. Do C: o módulo de proposta (chips de segmento + parcela) entra na home
+   do A, na linguagem visual do dossiê, como evolução do ticket de motos.
 
 ## Próximo passo
 
-Marcílio escolhe a direção (ou pede uma rodada de ajuste). Na FASE 3:
-tokens definitivos, componentes, páginas internas, orçamento de performance
-para o movimento (LCP e CLS com meta verde) e fotografia.
+Marcílio bate o martelo entre: (a) A como home e B como sistema das páginas
+internas, que é a recomendação; (b) B como home. Na FASE 3: tokens
+definitivos, componentes, páginas internas, orçamento de performance para o
+movimento (LCP e CLS com meta verde) e plano de fotografia própria.

@@ -1,6 +1,7 @@
 ---
 import '@fontsource-variable/fraunces';
 import '@fontsource-variable/public-sans';
+import '@fontsource/ibm-plex-mono';
 
 // CONCEITO B, TRAVESSIA (v2)
 // Tese: editorial cinematográfico. A homepage como uma revista de uma
@@ -110,7 +111,7 @@ const faq = [
         <div class="hero-veu" aria-hidden="true"></div>
         <div class="hero-conteudo">
           <p class="hero-kicker" data-intro>O Melhor Investimento</p>
-          <h1 id="titulo">Você está <em>perto</em> de realizar o seu projeto de vida</h1>
+          <h1 id="titulo">Você está <em id="perto">perto</em> de realizar o seu projeto de vida</h1>
           <p class="hero-apoio" data-intro>
             6 caminhos para transformar sonhos em conquistas, sem juros e com
             o acompanhamento de uma administradora autorizada pelo Banco
@@ -121,7 +122,11 @@ const faq = [
             <a class="cta-fantasma" href="#oque">O que é consórcio?</a>
           </div>
         </div>
-        <p class="hero-baixo" aria-hidden="true">Capítulo 01 · O plano</p>
+        <div class="hero-dados" aria-hidden="true">
+          <span>O Melhor Investimento</span>
+          <span>Autorizada pelo Banco Central · dez 2024</span>
+          <span>30°02′S 51°13′W · Porto Alegre</span>
+        </div>
       </section>
 
       <section class="oque" id="oque">
@@ -164,6 +169,7 @@ const faq = [
                 <img src={c.img} alt={c.alt} loading="lazy" data-parallax />
               </figure>
               <div class="spread-info">
+                <span class="spread-indice" aria-hidden="true">{c.n} / 06</span>
                 <span class="spread-num" aria-hidden="true">{c.n}</span>
                 <h3>{c.nome}</h3>
                 <p>{c.status}</p>
@@ -289,6 +295,13 @@ const faq = [
         });
       }
 
+      // Topo ganha fundo de papel depois da primeira rolagem.
+      ScrollTrigger.create({
+        start: 60,
+        end: 'max',
+        toggleClass: { className: 'rolou', targets: '.topo' },
+      });
+
       const mm = gsap.matchMedia();
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
@@ -306,7 +319,8 @@ const faq = [
           .from(split.words, { yPercent: 120, duration: 1, stagger: 0.05 }, 0.3)
           .from('[data-intro]', { y: 24, autoAlpha: 0, duration: 0.8, stagger: 0.12 }, '-=0.5')
           .from('.topo', { yPercent: -100, duration: 0.7 }, 0.2)
-          .from('.hero-baixo', { autoAlpha: 0, duration: 0.8 }, '-=0.4');
+          .to('#perto', { '--risco': 1, duration: 0.7, ease: 'power2.out' }, '-=0.3')
+          .from('.hero-dados', { autoAlpha: 0, duration: 0.8 }, '-=0.4');
 
         // A foto do hero continua se afastando conforme o scroll.
         gsap.to('.hero-foto img', {
@@ -371,6 +385,12 @@ const faq = [
             ease: 'power3.out',
             scrollTrigger: { trigger: el, start: 'top 80%' },
           });
+          ScrollTrigger.create({
+            trigger: el,
+            start: 'top 64%',
+            once: true,
+            toggleClass: { targets: el, className: 'aceso' },
+          });
         });
 
         // Contador ABAC.
@@ -400,8 +420,15 @@ const faq = [
 </html>
 
 <style>
+  :global(html) {
+    scroll-padding-top: 5.5rem;
+  }
   * {
     box-sizing: border-box;
+  }
+  :focus-visible {
+    outline: 2px solid #c8102e;
+    outline-offset: 3px;
   }
   body {
     margin: 0;
@@ -451,7 +478,8 @@ const faq = [
   }
 
   .capitulo {
-    font-size: 0.74rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
     letter-spacing: 0.24em;
     text-transform: uppercase;
     color: var(--cinza);
@@ -497,6 +525,20 @@ const faq = [
     gap: 2rem;
     padding: 1rem 2.5rem;
     background: linear-gradient(to bottom, rgba(6, 10, 26, 0.66), transparent);
+    transition: background 0.35s ease, padding 0.35s ease, box-shadow 0.35s ease;
+  }
+  .topo.rolou {
+    background: rgba(247, 244, 238, 0.95);
+    backdrop-filter: blur(10px);
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    box-shadow: 0 1px 0 var(--linha);
+  }
+  .topo.rolou nav a {
+    color: var(--tinta);
+  }
+  .topo.rolou nav a:hover {
+    color: var(--vermelho);
   }
   .topo-marca img {
     height: 2.1rem;
@@ -575,6 +617,27 @@ const faq = [
     color: #fff;
     font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
   }
+  #perto {
+    --risco: 0;
+    position: relative;
+    white-space: nowrap;
+  }
+  #perto::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0.04em;
+    bottom: 0.02em;
+    height: 0.07em;
+    background: var(--vermelho);
+    transform: scaleX(var(--risco)) rotate(-0.6deg);
+    transform-origin: left center;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #perto {
+      --risco: 1;
+    }
+  }
   .hero-apoio {
     color: rgba(255, 255, 255, 0.85);
     max-width: 34rem;
@@ -587,15 +650,21 @@ const faq = [
     gap: 1.75rem;
     flex-wrap: wrap;
   }
-  .hero-baixo {
+  .hero-dados {
     position: absolute;
+    left: 2.5rem;
     right: 2.5rem;
-    bottom: 2rem;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.72rem;
-    letter-spacing: 0.24em;
+    bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 0.9rem 0 1.1rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    margin: 0;
+    color: rgba(255, 255, 255, 0.6);
   }
 
   /* O que é */
@@ -685,6 +754,15 @@ const faq = [
     padding: 2.5rem clamp(1.5rem, 4vw, 4.5rem);
     position: relative;
   }
+  .spread-indice {
+    position: absolute;
+    top: 1.5rem;
+    right: clamp(1.5rem, 4vw, 4.5rem);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.2em;
+    color: var(--cinza);
+  }
   .spread-num {
     font-family: 'Fraunces Variable', Georgia, serif;
     font-variation-settings: 'opsz' 144;
@@ -702,9 +780,10 @@ const faq = [
   .spread-info p {
     margin: 0 0 1.25rem;
     color: var(--cinza);
-    font-size: 0.92rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
   }
   .spread-ativo .spread-info p {
     color: var(--vermelho);
@@ -718,8 +797,16 @@ const faq = [
     padding-bottom: 3px;
     transition: color 0.25s ease;
   }
+  .spread-acao::after {
+    content: ' \2192';
+    display: inline-block;
+    transition: transform 0.3s ease;
+  }
   .spread:hover .spread-acao {
     color: var(--vermelho);
+  }
+  .spread:hover .spread-acao::after {
+    transform: translateX(5px);
   }
 
   /* Passos */
@@ -778,6 +865,11 @@ const faq = [
     place-items: center;
     font-weight: 700;
     font-size: 0.9rem;
+    transition: background 0.45s ease, transform 0.45s ease;
+  }
+  .passos-lista li.aceso .passos-num {
+    background: var(--vermelho);
+    transform: scale(1.12);
   }
   .passos-lista h3 {
     font-size: 1.6rem;
@@ -965,7 +1057,7 @@ const faq = [
     .hero {
       padding: 6rem 1.25rem 4.5rem;
     }
-    .hero-baixo {
+    .hero-dados {
       display: none;
     }
     .oque,
