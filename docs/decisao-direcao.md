@@ -11,6 +11,54 @@ Dossiê, como direção da homepage**, e abriu um ciclo de refino fino sobre
 ele ("refinar até ficar belo", com mais algumas rodadas previstas). O B
 permanece como linguagem candidata para as páginas narrativas.
 
+### Rodada 8 (simulador real, credenciais oficiais e autocrítica)
+
+Pedidos de Marcílio: "Em breve" fora de qualquer destaque (o estado do
+segmento só aparece se o cliente clicar nele); o destino do clique vira um
+simulador pequeno e rico baseado na planilha oficial da empresa; faixa com
+o logo da ABAC (filiação confirmada) e citação do BACEN logo após o hero;
+linhas do fundo com movimento de fato perceptível. E uma rodada de
+autorreflexão estruturada (design thinking) corrigindo o que ele apontaria.
+
+O que entrou:
+
+- Política do "Em breve": eliminado da vitrine de segmentos e de todos os
+  destaques. A galeria mostra os seis caminhos em pé de igualdade, com uma
+  única ação ("Simule agora"); o estado "grupos em formação" só aparece
+  dentro do simulador, após a escolha do segmento, como convite de posição
+  antecipada.
+- Simulador com a conta aberta, fiel à planilha oficial: prazo 98 meses,
+  taxa de administração 20%, fundo de reserva 4%, seguro prestamista 0,08%
+  sobre o total. Validado contra os exemplos da planilha: crédito de
+  R$ 15.000 dá parcela de R$ 189,80 (R$ 204,68 com seguro); R$ 30.000 dá
+  R$ 379,59 (R$ 409,35). Slider de crédito com números subindo ao vivo,
+  decomposição linha a linha (fundo comum, taxa, reserva) e nota de que a
+  proposta final vem do consultor. O envio abrirá o Microsoft Forms
+  preenchido.
+- Credenciais oficiais: faixa pós-hero com o logo oficial da ABAC (vetor do
+  site da associação; uso autorizado pela filiação) e a citação textual
+  "Autorizada pelo Banco Central do Brasil, Ofício nº 33.288/2024
+  BCB/Deorf/GTCUR", sem logo do BACEN; ofício também no rodapé. O marquee
+  ficou só com Lei, SAC e Ouvidoria para não duplicar.
+- Linhas vivas recalibradas: a versão anterior era imperceptível (ciclos de
+  16s com pouca amplitude). Agora os ciclos são de 9s com amplitude maior e
+  pulsos de luz viajam pelos traçados (dasharray animado), no hero e no
+  bloco final.
+
+Autocrítica registrada (design thinking aplicado: empatia com o visitante
+que decide, definição do problema "a página termina num bloco que pede fé",
+ideação, protótipo e julgamento pelo teste do logo):
+
+- O fechamento era o ponto mais fraco: bloco vermelho retórico pedindo
+  contato. Virou a peça mais útil da página (a conta inteira), o que também
+  resolve a maior lacuna do benchmark.
+- A vitrine carregava rótulos de estado que criavam seis hierarquias; com
+  ação única, a leitura ficou mais limpa e o teste do logo segue passando.
+- A lente do hero era estática demais de perto: ganhou deriva sutil ao
+  cursor (desktop), reforçando a metáfora de instrumento vivo.
+- Dívidas assumidas para as próximas rodadas: menu mobile completo,
+  transição menos seca entre claro e escuro, e fotografia própria.
+
 ### Rodada 7 (movimento como diferencial e entrega navegável)
 
 Feedback de Marcílio: as animações não aparecem em screenshot; pediu linhas

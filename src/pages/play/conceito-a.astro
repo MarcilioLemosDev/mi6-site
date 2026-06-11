@@ -14,57 +14,45 @@ import '@fontsource/ibm-plex-mono/500.css';
 const segmentos = [
   {
     n: '01',
+    id: 'carros',
     nome: 'Consórcio de carros',
     img: '/play-assets/carros.png',
     alt: 'Casal observa um carro em uma concessionária',
-    status: 'Em breve',
-    acao: 'Tenho interesse',
-    ativo: false,
   },
   {
     n: '02',
+    id: 'pesados',
     nome: 'Consórcio de pesados',
     img: '/play-assets/pesados.png',
     alt: 'Motorista conversa na cabine de um caminhão',
-    status: 'Em breve',
-    acao: 'Tenho interesse',
-    ativo: false,
   },
   {
     n: '03',
+    id: 'motos',
     nome: 'Consórcio de motos',
     img: '/play-assets/moto.png',
     alt: 'Homem de jaqueta ajusta uma moto em uma garagem',
-    status: 'Grupos ativos',
-    acao: 'Simule agora',
-    ativo: true,
   },
   {
     n: '04',
+    id: 'imoveis',
     nome: 'Consórcio de imóveis',
     img: '/play-assets/imoveis.png',
     alt: 'Pessoas conversam em um apartamento vazio de janelas amplas',
-    status: 'Em breve',
-    acao: 'Tenho interesse',
-    ativo: false,
   },
   {
     n: '05',
+    id: 'servicos',
     nome: 'Consórcio de serviços',
     img: '/play-assets/servicos.png',
     alt: 'Profissional em ambiente de serviços',
-    status: 'Em breve',
-    acao: 'Tenho interesse',
-    ativo: false,
   },
   {
     n: '06',
+    id: 'eletro',
     nome: 'Consórcio de eletro',
     img: '/play-assets/eletro.png',
     alt: 'Casal no sofá da sala olhando um tablet',
-    status: 'Em breve',
-    acao: 'Tenho interesse',
-    ativo: false,
   },
 ];
 
@@ -179,6 +167,12 @@ const faq = [
             <line x1="60" y1="0" x2="1500" y2="900"></line>
             <line x1="1380" y1="0" x2="-60" y2="900"></line>
           </g>
+          <g class="geo-viaja" fill="none" stroke-linecap="round" stroke-width="1.4">
+            <line x1="0" y1="0" x2="1440" y2="900" pathLength="100" stroke="rgba(200,16,46,0.7)"></line>
+            <line x1="1440" y1="0" x2="0" y2="900" pathLength="100" stroke="rgba(200,16,46,0.7)"></line>
+            <line x1="-80" y1="450" x2="1520" y2="450" pathLength="100" stroke="rgba(255,255,255,0.55)"></line>
+            <line x1="60" y1="0" x2="1500" y2="900" pathLength="100" stroke="rgba(255,255,255,0.5)"></line>
+          </g>
         </svg>
 
         <p class="hero-coord" aria-hidden="true">30°02′S 51°13′W · PORTO ALEGRE · BRASIL</p>
@@ -221,9 +215,21 @@ const faq = [
         <p class="hero-scroll" aria-hidden="true">role</p>
       </section>
 
+      <section class="credibilidade" aria-label="Credenciais institucionais">
+        <div class="cred-abac">
+          <img src="/imgs/abac.svg" alt="ABAC" width="127" height="41" />
+          <p>Filiada à ABAC, Associação Brasileira de Administradoras de Consórcios</p>
+        </div>
+        <span class="cred-divisa" aria-hidden="true"></span>
+        <div class="cred-bacen">
+          <p class="cred-frase">Autorizada pelo Banco Central do Brasil</p>
+          <p class="cred-oficio">Ofício nº 33.288/2024 · BCB/Deorf/GTCUR</p>
+        </div>
+      </section>
+
       <div class="marquee" aria-hidden="true">
         <div class="marquee-faixa">
-          <span>Administradora autorizada e fiscalizada pelo Banco Central do Brasil · Lei nº 11.795/2008 · SAC 0800 000 5228 · Ouvidoria 0800 000 5267 · </span><span>Administradora autorizada e fiscalizada pelo Banco Central do Brasil · Lei nº 11.795/2008 · SAC 0800 000 5228 · Ouvidoria 0800 000 5267 · </span>
+          <span>Lei nº 11.795/2008 · SAC 0800 000 5228 · Ouvidoria 0800 000 5267 · Atendimento em todo o Brasil · </span><span>Lei nº 11.795/2008 · SAC 0800 000 5228 · Ouvidoria 0800 000 5267 · Atendimento em todo o Brasil · </span>
         </div>
       </div>
 
@@ -267,14 +273,13 @@ const faq = [
           <div class="galeria-track">
             {
               segmentos.map((s) => (
-                <article class={`painel ${s.ativo ? 'painel-ativo' : ''}`}>
+                <article class="painel">
                   <div class="painel-foto">
                     <img src={s.img} alt={s.alt} loading="lazy" />
                   </div>
                   <p class="painel-num" aria-hidden="true">{s.n}</p>
                   <h3>{s.nome}</h3>
-                  <p class="painel-status">{s.status}</p>
-                  <a class="sub" href="#contato">{s.acao}</a>
+                  <a class="sub" href="#contato" data-segmento={s.id}>Simule agora</a>
                 </article>
               ))
             }
@@ -377,23 +382,72 @@ const faq = [
             <line x1="1360" y1="0" x2="-80" y2="600"></line>
           </g>
         </svg>
-        <h2 data-reveal><em>Em breve,</em> simule o consórcio ideal para você</h2>
-        <p data-reveal>
-          Enquanto a simulação completa não chega, fale com um consultor e
-          receba as condições do seu segmento, sem compromisso.
-        </p>
-        <div class="contato-acoes" data-reveal>
-          <a class="cta cta-inverso" href="https://wa.me/5511981406486">Falar no WhatsApp</a>
-          <span class="contato-alt">ou SAC 0800 000 5228</span>
+        <div class="sim-grade">
+          <div class="sim-texto">
+            <h2 data-reveal>Simule o consórcio <em>ideal</em> para você</h2>
+            <p data-reveal>
+              Escolha o segmento, ajuste o crédito e veja a conta inteira,
+              parcela por parcela, sem letra miúda. Um consultor confirma as
+              condições com você.
+            </p>
+            <ul class="contato-garantias" data-reveal>
+              <li>Sem compromisso</li>
+              <li>Menos de 2 minutos</li>
+              <li>Resposta de gente</li>
+            </ul>
+            <div class="contato-acoes" data-reveal>
+              <a class="cta cta-inverso" href="https://wa.me/5511981406486">Prefiro o WhatsApp</a>
+              <span class="contato-alt">ou SAC 0800 000 5228</span>
+            </div>
+            <p class="contato-nota" data-reveal>
+              [ o envio abre o Microsoft Forms incorporado, já preenchido com
+              segmento e valores da simulação ]
+            </p>
+          </div>
+
+          <form class="sim-card" data-reveal aria-label="Simulador de parcela">
+            <p class="sim-passo">01 · O que você quer conquistar?</p>
+            <div class="chips" id="sim-chips">
+              {
+                segmentos.map((s) => (
+                  <button type="button" data-segmento={s.id} aria-pressed={s.id === 'motos' ? 'true' : 'false'}>
+                    {s.nome.replace('Consórcio de ', '')}
+                  </button>
+                ))
+              }
+            </div>
+
+            <div class="sim-vivo" id="sim-vivo">
+              <p class="sim-passo">02 · Qual crédito você precisa?</p>
+              <p class="sim-credito">
+                <span class="sim-moeda">R$</span><output id="sim-valor" for="sim-credito">15.000</output>
+              </p>
+              <input type="range" id="sim-credito" min="8000" max="40000" step="500" value="15000" aria-label="Valor de crédito desejado" />
+              <div class="sim-extremos" aria-hidden="true"><span>R$ 8.000</span><span>R$ 40.000</span></div>
+              <dl class="sim-conta">
+                <div><dt>Fundo comum</dt><dd id="sim-fc">R$ 153,06</dd></div>
+                <div><dt>Taxa de administração · 20%</dt><dd id="sim-tx">R$ 30,61</dd></div>
+                <div><dt>Fundo de reserva · 4%</dt><dd id="sim-fr">R$ 6,12</dd></div>
+                <div class="sim-parcela"><dt>Parcela em 98 meses</dt><dd id="sim-parcela">R$ 189,80</dd></div>
+                <div><dt>Com seguro prestamista · 0,08%</dt><dd id="sim-seguro">R$ 204,68</dd></div>
+              </dl>
+              <button type="button" class="cta sim-cta" id="sim-enviar">Quero esta proposta</button>
+              <p class="sim-nota">
+                Simulação do plano de motos em vigor. Valores aproximados, sem
+                valor contratual; a proposta final vem do consultor.
+              </p>
+            </div>
+
+            <div class="sim-aguarde" id="sim-aguarde" hidden>
+              <p class="sim-aguarde-titulo">Grupos de <strong id="sim-seg-nome">carros</strong> em formação.</p>
+              <p>
+                Deixe seu contato e receba as condições de abertura em primeira
+                mão, com posição no início do grupo.
+              </p>
+              <button type="button" class="cta sim-cta" id="sim-avisar">Quero ser avisado da abertura</button>
+            </div>
+          </form>
         </div>
-        <ul class="contato-garantias" data-reveal>
-          <li>Sem compromisso</li>
-          <li>Menos de 2 minutos</li>
-          <li>Resposta de gente</li>
-        </ul>
-        <p class="contato-nota" data-reveal>
-          [ aqui entra o Microsoft Forms incorporado, com segmento pré-selecionado ]
-        </p>
       </section>
     </main>
 
@@ -435,7 +489,8 @@ const faq = [
       </div>
       <p class="rodape-legal">
         © Todos os direitos reservados. Administradora de consórcios autorizada
-        e fiscalizada pelo Banco Central do Brasil, Lei nº 11.795/2008.
+        e fiscalizada pelo Banco Central do Brasil, Ofício nº 33.288/2024
+        BCB/Deorf/GTCUR, Lei nº 11.795/2008. Filiada à ABAC.
       </p>
     </footer>
 
@@ -488,6 +543,85 @@ const faq = [
         endTrigger: '.contato',
         end: 'top 75%',
         toggleClass: { className: 'mostra', targets: '.cta-bolso' },
+      });
+
+      // Simulador: a conta inteira do plano de motos, ao vivo.
+      // Parâmetros do plano vigente: prazo 98 meses, taxa de administração
+      // 20%, fundo de reserva 4%, seguro prestamista 0,08% sobre o total.
+      const PRAZO = 98;
+      const TX_ADM = 0.2;
+      const F_RES = 0.04;
+      const SEGURO = 0.0008;
+      const brl = (v: number) =>
+        'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const exib = { c: 15000 };
+      function pintarSim() {
+        const c = exib.c;
+        const base = c * (1 + TX_ADM + F_RES);
+        const por = (id: string, v: string) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = v;
+        };
+        por('sim-valor', Math.round(c).toLocaleString('pt-BR'));
+        por('sim-fc', brl(c / PRAZO));
+        por('sim-tx', brl((c * TX_ADM) / PRAZO));
+        por('sim-fr', brl((c * F_RES) / PRAZO));
+        por('sim-parcela', brl(base / PRAZO));
+        por('sim-seguro', brl(base / PRAZO + base * SEGURO));
+      }
+      const credito = document.getElementById('sim-credito') as HTMLInputElement | null;
+      credito?.addEventListener('input', () => {
+        const alvo = parseInt(credito.value, 10);
+        if (motionOk) {
+          gsap.to(exib, { c: alvo, duration: 0.3, ease: 'power2.out', overwrite: true, onUpdate: pintarSim });
+        } else {
+          exib.c = alvo;
+          pintarSim();
+        }
+      });
+
+      const nomesSeg: Record<string, string> = {
+        carros: 'carros',
+        pesados: 'pesados',
+        motos: 'motos',
+        imoveis: 'imóveis',
+        servicos: 'serviços',
+        eletro: 'eletro',
+      };
+      function escolherSegmento(id: string) {
+        document.querySelectorAll('#sim-chips button').forEach((b) => {
+          b.setAttribute('aria-pressed', (b as HTMLElement).dataset.segmento === id ? 'true' : 'false');
+        });
+        const vivo = document.getElementById('sim-vivo');
+        const aguarde = document.getElementById('sim-aguarde');
+        const nome = document.getElementById('sim-seg-nome');
+        if (id === 'motos') {
+          vivo?.removeAttribute('hidden');
+          aguarde?.setAttribute('hidden', '');
+        } else {
+          vivo?.setAttribute('hidden', '');
+          aguarde?.removeAttribute('hidden');
+          if (nome) nome.textContent = nomesSeg[id] ?? id;
+        }
+      }
+      document.getElementById('sim-chips')?.addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest('button');
+        if (b?.dataset.segmento) escolherSegmento(b.dataset.segmento);
+      });
+      document.querySelectorAll<HTMLAnchorElement>('a[data-segmento]').forEach((a) => {
+        a.addEventListener('click', () => escolherSegmento(a.dataset.segmento ?? 'motos'));
+      });
+      ['sim-enviar', 'sim-avisar'].forEach((id) => {
+        const b = document.getElementById(id);
+        b?.addEventListener('click', () => {
+          const original = b.textContent;
+          b.textContent = 'Aqui abre o Microsoft Forms preenchido';
+          b.setAttribute('disabled', '');
+          setTimeout(() => {
+            b.textContent = original;
+            b.removeAttribute('disabled');
+          }, 1800);
+        });
       });
 
       const mm = gsap.matchMedia();
@@ -598,6 +732,19 @@ const faq = [
       });
 
       mm.add('(min-width: 960px) and (prefers-reduced-motion: no-preference)', () => {
+        // A foto da lente deriva alguns pixels seguindo o cursor.
+        const heroEl = document.querySelector<HTMLElement>('.hero');
+        const lenteImg = document.querySelector('.lente img');
+        if (heroEl && lenteImg) {
+          const lx = gsap.quickTo(lenteImg, 'x', { duration: 0.9, ease: 'power3' });
+          const ly = gsap.quickTo(lenteImg, 'y', { duration: 0.9, ease: 'power3' });
+          heroEl.addEventListener('mousemove', (e) => {
+            const r = heroEl.getBoundingClientRect();
+            lx(((e.clientX - r.left) / r.width - 0.5) * 16);
+            ly(((e.clientY - r.top) / r.height - 0.5) * 12);
+          });
+        }
+
         const track = document.querySelector<HTMLElement>('.galeria-track');
         if (!track) return;
         const distancia = () => track.scrollWidth - window.innerWidth + 96;
@@ -684,55 +831,79 @@ const faq = [
     clip-path: inset(0 100% 0 0);
   }
 
-  /* Linhas vivas: a geometria respira entre as cores da marca */
+  /* Linhas vivas: a geometria respira entre as cores da marca
+     e pulsos de luz viajam pelos traçados */
   @keyframes pulsoClaro {
-    0%, 100% { stroke: rgba(255, 255, 255, 0.09); }
-    50% { stroke: rgba(200, 16, 46, 0.26); }
+    0%, 100% { stroke: rgba(255, 255, 255, 0.10); }
+    50% { stroke: rgba(200, 16, 46, 0.45); }
   }
   @keyframes pulsoRubro {
-    0%, 100% { stroke: rgba(200, 16, 46, 0.32); }
-    50% { stroke: rgba(255, 255, 255, 0.13); }
+    0%, 100% { stroke: rgba(200, 16, 46, 0.38); }
+    50% { stroke: rgba(255, 255, 255, 0.22); }
   }
   @keyframes pulsoFimClaro {
-    0%, 100% { stroke: rgba(255, 255, 255, 0.14); }
-    50% { stroke: rgba(1, 33, 105, 0.34); }
+    0%, 100% { stroke: rgba(255, 255, 255, 0.16); }
+    50% { stroke: rgba(1, 33, 105, 0.5); }
   }
   @keyframes pulsoFimNavy {
-    0%, 100% { stroke: rgba(1, 33, 105, 0.28); }
-    50% { stroke: rgba(255, 255, 255, 0.16); }
+    0%, 100% { stroke: rgba(1, 33, 105, 0.3); }
+    50% { stroke: rgba(255, 255, 255, 0.28); }
+  }
+  @keyframes viajar {
+    from { stroke-dashoffset: 100; }
+    to { stroke-dashoffset: -100; }
   }
   .geo-claras line {
-    animation: pulsoClaro 16s ease-in-out infinite;
+    animation: pulsoClaro 9s ease-in-out infinite;
   }
   .geo-rubras line {
-    animation: pulsoRubro 16s ease-in-out infinite;
+    animation: pulsoRubro 9s ease-in-out infinite;
   }
   .geo-fim-claras line {
-    animation: pulsoFimClaro 16s ease-in-out infinite;
+    animation: pulsoFimClaro 9s ease-in-out infinite;
   }
   .geo-fim-navy line {
-    animation: pulsoFimNavy 16s ease-in-out infinite;
+    animation: pulsoFimNavy 9s ease-in-out infinite;
+  }
+  .geo-viaja line {
+    stroke-dasharray: 13 87;
+    animation: viajar 8s linear infinite;
+  }
+  .geo-viaja line:nth-child(2) {
+    animation-delay: -2.6s;
+  }
+  .geo-viaja line:nth-child(3) {
+    animation-delay: -4.8s;
+    animation-duration: 10s;
+  }
+  .geo-viaja line:nth-child(4) {
+    animation-delay: -6.4s;
+    animation-duration: 11s;
   }
   .geo-claras line:nth-child(2),
   .geo-fim-claras line:nth-child(2) {
-    animation-delay: -5s;
+    animation-delay: -3s;
   }
   .geo-claras line:nth-child(3) {
-    animation-delay: -10s;
+    animation-delay: -6s;
   }
   .geo-rubras line:nth-child(2),
   .geo-fim-navy line:nth-child(2) {
-    animation-delay: -8s;
+    animation-delay: -4.5s;
   }
   .geo-rubras line:nth-child(1) {
-    animation-delay: -3s;
+    animation-delay: -1.5s;
   }
   @media (prefers-reduced-motion: reduce) {
     .geo-claras line,
     .geo-rubras line,
     .geo-fim-claras line,
-    .geo-fim-navy line {
+    .geo-fim-navy line,
+    .geo-viaja line {
       animation: none;
+    }
+    .geo-viaja {
+      display: none;
     }
     .veu {
       display: none;
@@ -1044,12 +1215,15 @@ const faq = [
     width: clamp(16rem, 26vw, 23rem);
     aspect-ratio: 1;
     margin: 0;
+    border-radius: 50%;
+    overflow: hidden;
   }
   .lente img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
+    transform: scale(1.08);
     filter: grayscale(1) brightness(0.92) contrast(1.05);
   }
   .lente::after {
@@ -1143,6 +1317,55 @@ const faq = [
       opacity: 0.35;
       transform: translateY(4px);
     }
+  }
+
+  /* Credibilidade: ABAC (filiada) e BACEN em texto, logo após o hero */
+  .credibilidade {
+    background: var(--papel);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.25rem 2.5rem;
+    padding: 1.5rem 2.5rem;
+  }
+  .cred-abac {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+  }
+  .cred-abac img {
+    height: 2.3rem;
+    width: auto;
+    flex: none;
+  }
+  .cred-abac p {
+    margin: 0;
+    color: var(--tinta-suave);
+    font-size: 0.85rem;
+    max-width: 19rem;
+    line-height: 1.4;
+  }
+  .cred-divisa {
+    width: 1px;
+    height: 2.4rem;
+    background: rgba(1, 33, 105, 0.22);
+  }
+  .cred-bacen p {
+    margin: 0;
+  }
+  .cred-frase {
+    color: var(--navy);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .cred-oficio {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--tinta-suave);
+    margin-top: 0.25rem !important;
   }
 
   /* Marquee */
@@ -1334,22 +1557,7 @@ const faq = [
   }
   .painel h3 {
     font-size: 1.55rem;
-    margin: 0 0 0.4rem;
-  }
-  .painel-status {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.66rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gelo);
     margin: 0 0 1rem;
-  }
-  .painel-ativo {
-    border-top: 3px solid var(--vermelho);
-  }
-  .painel-ativo .painel-status {
-    color: #ff8095;
-    font-weight: 500;
   }
   .painel a {
     color: var(--branco);
@@ -1567,7 +1775,6 @@ const faq = [
     background: var(--vermelho);
     color: var(--branco);
     padding: 6rem 2.5rem;
-    text-align: center;
   }
   .contato-geo {
     position: absolute;
@@ -1578,15 +1785,178 @@ const faq = [
   .contato > :not(.contato-geo) {
     position: relative;
   }
-  .contato h2 {
-    font-size: clamp(2.2rem, 5vw, 4rem);
-    max-width: 56rem;
-    margin: 0 auto 1.25rem;
+  .sim-grade {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    gap: 3.5rem;
+    max-width: 72rem;
+    margin: 0 auto;
+    align-items: start;
   }
-  .contato p {
-    max-width: 36rem;
-    margin: 0 auto 2rem;
-    color: rgba(255, 255, 255, 0.85);
+  .contato h2 {
+    font-size: clamp(2rem, 4.2vw, 3.4rem);
+    margin: 0 0 1.25rem;
+  }
+  .sim-texto > p {
+    max-width: 30rem;
+    margin: 0 0 1.75rem;
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  /* Cartão do simulador: a conta inteira, em papel sobre o vermelho */
+  .sim-card {
+    background: var(--papel);
+    color: var(--tinta);
+    border-top: 4px solid var(--navy);
+    padding: 1.9rem;
+    margin: 0;
+    box-shadow: 0 34px 64px -32px rgba(1, 19, 58, 0.6);
+  }
+  .sim-passo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--tinta-suave);
+    margin: 0 0 0.8rem;
+  }
+  .sim-card .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .sim-card .chips button {
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(1, 33, 105, 0.32);
+    background: var(--branco);
+    color: var(--navy);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .sim-card .chips button:hover {
+    border-color: var(--navy);
+  }
+  .sim-card .chips button[aria-pressed='true'] {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: var(--branco);
+  }
+  .sim-credito {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    margin: 0.25rem 0 0.4rem;
+    color: var(--navy);
+  }
+  .sim-moeda {
+    font-weight: 600;
+    color: var(--tinta-suave);
+  }
+  .sim-credito output {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(2.6rem, 4vw, 3.4rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .sim-card input[type='range'] {
+    width: 100%;
+    appearance: none;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(1, 33, 105, 0.18);
+    outline-offset: 4px;
+    margin: 0.5rem 0 0.3rem;
+  }
+  .sim-card input[type='range']::-webkit-slider-thumb {
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--vermelho);
+    border: 3px solid var(--papel);
+    box-shadow: 0 0 0 1px var(--vermelho);
+    cursor: grab;
+  }
+  .sim-card input[type='range']::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--vermelho);
+    border: 3px solid var(--papel);
+    box-shadow: 0 0 0 1px var(--vermelho);
+    cursor: grab;
+  }
+  .sim-extremos {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: var(--tinta-suave);
+    margin-bottom: 1.4rem;
+  }
+  .sim-conta {
+    margin: 0 0 1.5rem;
+  }
+  .sim-conta div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px dotted rgba(1, 33, 105, 0.28);
+  }
+  .sim-conta dt {
+    color: var(--tinta-suave);
+    font-size: 0.88rem;
+  }
+  .sim-conta dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+  .sim-parcela dt {
+    color: var(--navy);
+    font-weight: 700;
+  }
+  .sim-parcela dd {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 1.55rem;
+    font-weight: 400;
+    color: var(--navy);
+  }
+  .sim-cta {
+    display: block;
+    width: 100%;
+    border: 0;
+    cursor: pointer;
+    text-align: center;
+    font: inherit;
+    font-weight: 600;
+  }
+  .sim-cta[disabled] {
+    opacity: 0.85;
+    cursor: default;
+  }
+  .sim-nota {
+    font-size: 0.75rem;
+    color: var(--tinta-suave);
+    margin: 0.9rem 0 0;
+    line-height: 1.5;
+  }
+  .sim-aguarde p {
+    color: var(--tinta-suave);
+    margin: 0 0 1.25rem;
+  }
+  .sim-aguarde-titulo {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 1.6rem;
+    color: var(--navy) !important;
+    margin: 0.25rem 0 0.6rem !important;
   }
   .cta-inverso {
     background: var(--branco);
@@ -1599,7 +1969,6 @@ const faq = [
   .contato-acoes {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 1.25rem;
     flex-wrap: wrap;
   }
@@ -1608,10 +1977,9 @@ const faq = [
   }
   .contato-garantias {
     list-style: none;
-    margin: 1.5rem 0 0;
+    margin: 0 0 1.75rem;
     padding: 0;
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
     gap: 0.4rem 1.1rem;
     font-family: 'IBM Plex Mono', monospace;
@@ -1844,6 +2212,23 @@ const faq = [
     }
     .seis-marca {
       font-size: 13rem;
+    }
+    .sim-grade {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+    .cred-divisa {
+      display: none;
+    }
+    .credibilidade {
+      flex-direction: column;
+      text-align: center;
+      gap: 1rem;
+    }
+    .cred-abac {
+      flex-direction: column;
+      text-align: center;
+      gap: 0.6rem;
     }
     .numeros {
       grid-template-columns: 1fr;

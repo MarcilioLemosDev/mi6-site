@@ -34,10 +34,11 @@ jornada começada.
 
 ### 4. Efeito Von Restorff (isolamento)
 
-Onde: o painel de motos, único com filete vermelho superior na galeria.
-Por quê: em uma série homogênea, o item distinto é o lembrado; motos é o
-único segmento com grupos ativos e merece a distinção, sem quebrar o
-equilíbrio editorial decidido na Fase 1.
+Revisado na rodada 8: o filete vermelho do painel de motos foi removido por
+decisão de Marcílio (nenhum estado de segmento em evidência na vitrine; a
+diferença só aparece após o clique, dentro do simulador). O isolamento
+permanece em um único lugar: o ticket de motos no hero, que destaca o
+grupo ativo de forma positiva.
 
 ### 5. Vantagem real de antecipação (aversão à perda, honesta)
 
