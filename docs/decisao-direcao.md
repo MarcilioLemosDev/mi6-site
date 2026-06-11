@@ -11,6 +11,27 @@ Dossiê, como direção da homepage**, e abriu um ciclo de refino fino sobre
 ele ("refinar até ficar belo", com mais algumas rodadas previstas). O B
 permanece como linguagem candidata para as páginas narrativas.
 
+### Rodada 7 (movimento como diferencial e entrega navegável)
+
+Feedback de Marcílio: as animações não aparecem em screenshot; pediu linhas
+trocando de cor nas cores da marca e uma entrada de logo com suspense, com
+véu sendo retirado.
+
+- Véu de abertura no conceito A: linha vermelha desenha no navy escuro, o
+  logo branco é revelado por ela, a cortina sobe e o hero entra em
+  sequência. Roda uma vez por sessão, não roda com movimento reduzido e não
+  bloqueia a página se o JavaScript falhar.
+- Linhas vivas: a geometria do hero e do bloco final pulsa lentamente entre
+  as cores da marca (ciclos de 16 segundos, defasados por linha).
+- Entrega passa a incluir vídeo navegado (gravado com Playwright) além de
+  screenshot; o caminho definitivo é o preview da Vercel, a cargo de
+  Marcílio importar o repositório.
+
+### Rodada 6 (densidade oculta)
+
+Psicologia aplicada em doze detalhes honestos, catalogados em
+`densidade-oculta.md`.
+
 ### Rodada 5 (marca oficial no topo e microdetalhes)
 
 Feedback de Marcílio: a logo oficial primária não deve ser recolorida na

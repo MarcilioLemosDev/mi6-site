@@ -139,6 +139,10 @@ const faq = [
     <meta name="description" content="Protótipo da FASE 2: inteligência britânica cinematográfica com pulso humano." />
   </head>
   <body>
+    <div class="veu" aria-hidden="true">
+      <span class="veu-linha"></span>
+      <img class="veu-logo" src="/imgs/logo-mi6-branco.png" alt="" width="219" height="47" />
+    </div>
     <div class="grao" aria-hidden="true"></div>
 
     <header class="topo">
@@ -166,12 +170,12 @@ const faq = [
     <main>
       <section class="hero" id="inicio">
         <svg class="hero-geo" aria-hidden="true" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
-          <g stroke="rgba(255,255,255,0.09)" stroke-width="1">
+          <g class="geo-claras" stroke="rgba(255,255,255,0.09)" stroke-width="1">
             <line x1="0" y1="0" x2="1440" y2="900"></line>
             <line x1="1440" y1="0" x2="0" y2="900"></line>
             <line x1="-80" y1="450" x2="1520" y2="450"></line>
           </g>
-          <g stroke="rgba(200,16,46,0.32)" stroke-width="1">
+          <g class="geo-rubras" stroke="rgba(200,16,46,0.32)" stroke-width="1">
             <line x1="60" y1="0" x2="1500" y2="900"></line>
             <line x1="1380" y1="0" x2="-60" y2="900"></line>
           </g>
@@ -364,11 +368,11 @@ const faq = [
 
       <section class="contato" id="contato">
         <svg class="contato-geo" aria-hidden="true" viewBox="0 0 1440 600" preserveAspectRatio="xMidYMid slice">
-          <g stroke="rgba(255,255,255,0.14)" stroke-width="1">
+          <g class="geo-fim-claras" stroke="rgba(255,255,255,0.14)" stroke-width="1">
             <line x1="0" y1="0" x2="1440" y2="600"></line>
             <line x1="1440" y1="0" x2="0" y2="600"></line>
           </g>
-          <g stroke="rgba(1,33,105,0.28)" stroke-width="1">
+          <g class="geo-fim-navy" stroke="rgba(1,33,105,0.28)" stroke-width="1">
             <line x1="80" y1="0" x2="1520" y2="600"></line>
             <line x1="1360" y1="0" x2="-80" y2="600"></line>
           </g>
@@ -454,6 +458,7 @@ const faq = [
       gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin);
 
       const motionOk = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+      if (!motionOk) document.querySelector('.veu')?.remove();
 
       if (motionOk) {
         const lenis = new Lenis({ autoRaf: true, lerp: 0.12 });
@@ -489,7 +494,7 @@ const faq = [
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
         const split = new SplitText('#titulo .linha', { type: 'lines', mask: 'lines' });
-        const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+        const tl = gsap.timeline({ paused: true, defaults: { ease: 'power4.out' } });
         tl.from('.topo', { yPercent: -100, duration: 0.8, ease: 'power2.out' })
           .to('#scramble', {
             duration: 1.4,
@@ -499,6 +504,30 @@ const faq = [
           .from('[data-intro]', { y: 28, autoAlpha: 0, duration: 0.9, stagger: 0.14 }, '-=0.55')
           .from('.hero-geo', { scale: 1.12, autoAlpha: 0, duration: 1.6, ease: 'power2.out' }, 0.2)
           .from('.hero-coord, .hero-scroll', { autoAlpha: 0, duration: 0.8 }, '-=0.8');
+
+        // Véu de abertura: a linha vermelha desenha, o logo é revelado,
+        // a cortina sobe e só então o hero entra. Uma vez por sessão.
+        const veu = document.querySelector<HTMLElement>('.veu');
+        if (veu && !sessionStorage.getItem('mi6-veu')) {
+          sessionStorage.setItem('mi6-veu', '1');
+          veu.style.visibility = 'visible';
+          document.documentElement.style.overflow = 'hidden';
+          gsap.timeline({
+            onComplete: () => {
+              document.documentElement.style.overflow = '';
+              veu.remove();
+            },
+          })
+            .to('.veu-linha', { scaleX: 1, duration: 0.55, ease: 'power2.inOut' })
+            .to('.veu-logo', { clipPath: 'inset(0 0% 0 0)', duration: 0.85, ease: 'power3.inOut' }, '-=0.15')
+            .to('.veu-linha', { scaleX: 0, transformOrigin: 'right center', duration: 0.45, ease: 'power2.in' }, '-=0.25')
+            .to({}, { duration: 0.3 })
+            .to('.veu', { yPercent: -100, duration: 0.75, ease: 'power3.inOut' })
+            .add(() => tl.play(), '-=0.4');
+        } else {
+          veu?.remove();
+          tl.play();
+        }
 
         // A lente gira devagar e respira com o scroll.
         gsap.to('.lente-anel-dash', { rotation: 360, duration: 110, repeat: -1, ease: 'none' });
@@ -626,6 +655,88 @@ const faq = [
   :focus-visible {
     outline: 2px solid var(--vermelho);
     outline-offset: 3px;
+  }
+
+  /* Véu de abertura: o logo é revelado por uma linha vermelha e a cortina sobe.
+     Invisível por padrão; só o JavaScript (com movimento permitido) o exibe. */
+  .veu {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: var(--navy-escuro);
+    display: grid;
+    place-items: center;
+    visibility: hidden;
+  }
+  .veu-linha {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(34rem, 76vw);
+    height: 1px;
+    background: var(--vermelho);
+    transform: translate(-50%, -50%) scaleX(0);
+    transform-origin: left center;
+  }
+  .veu-logo {
+    height: 2.7rem;
+    width: auto;
+    clip-path: inset(0 100% 0 0);
+  }
+
+  /* Linhas vivas: a geometria respira entre as cores da marca */
+  @keyframes pulsoClaro {
+    0%, 100% { stroke: rgba(255, 255, 255, 0.09); }
+    50% { stroke: rgba(200, 16, 46, 0.26); }
+  }
+  @keyframes pulsoRubro {
+    0%, 100% { stroke: rgba(200, 16, 46, 0.32); }
+    50% { stroke: rgba(255, 255, 255, 0.13); }
+  }
+  @keyframes pulsoFimClaro {
+    0%, 100% { stroke: rgba(255, 255, 255, 0.14); }
+    50% { stroke: rgba(1, 33, 105, 0.34); }
+  }
+  @keyframes pulsoFimNavy {
+    0%, 100% { stroke: rgba(1, 33, 105, 0.28); }
+    50% { stroke: rgba(255, 255, 255, 0.16); }
+  }
+  .geo-claras line {
+    animation: pulsoClaro 16s ease-in-out infinite;
+  }
+  .geo-rubras line {
+    animation: pulsoRubro 16s ease-in-out infinite;
+  }
+  .geo-fim-claras line {
+    animation: pulsoFimClaro 16s ease-in-out infinite;
+  }
+  .geo-fim-navy line {
+    animation: pulsoFimNavy 16s ease-in-out infinite;
+  }
+  .geo-claras line:nth-child(2),
+  .geo-fim-claras line:nth-child(2) {
+    animation-delay: -5s;
+  }
+  .geo-claras line:nth-child(3) {
+    animation-delay: -10s;
+  }
+  .geo-rubras line:nth-child(2),
+  .geo-fim-navy line:nth-child(2) {
+    animation-delay: -8s;
+  }
+  .geo-rubras line:nth-child(1) {
+    animation-delay: -3s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .geo-claras line,
+    .geo-rubras line,
+    .geo-fim-claras line,
+    .geo-fim-navy line {
+      animation: none;
+    }
+    .veu {
+      display: none;
+    }
   }
 
   .grao {
