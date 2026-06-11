@@ -192,6 +192,10 @@ const faq = [
               <a class="cta" href="#solucoes">Conheça as soluções MI6</a>
               <a class="link-claro sub" href="#oque">O que é consórcio?</a>
             </div>
+            <p class="hero-prova" data-intro>
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.4l6 2.2v4.5c0 4.2-2.6 7-6 8.4-3.4-1.4-6-4.2-6-8.4V4.6z"/><path d="M7.2 10.1l2 2 3.6-3.8"/></svg>
+              Administradora autorizada e fiscalizada pelo Banco Central do Brasil
+            </p>
           </div>
 
           <div class="hero-visual">
@@ -204,6 +208,7 @@ const faq = [
             <aside class="ticket" data-intro aria-label="Plano de motos em destaque">
               <p class="ticket-rotulo">Motos · grupos ativos</p>
               <p class="ticket-valor">Parcelas a partir de <strong>R$ 200,00</strong></p>
+              <p class="ticket-dia">menos de R$ 7 por dia</p>
               <a class="sub" href="#contato">Simule agora</a>
             </aside>
           </div>
@@ -252,6 +257,7 @@ const faq = [
             <p class="galeria-apoio">
               Trabalhamos com soluções em seis segmentos do mercado, com planos
               flexíveis, atendimento consultivo e foco total em custo-benefício.
+              Quem registra interesse entra no início do grupo.
             </p>
           </header>
           <div class="galeria-track">
@@ -281,6 +287,7 @@ const faq = [
             Veja como realizar seus objetivos com segurança, liberdade e sem juros.
           </p>
           <ol class="metodo-lista">
+            <span class="metodo-fio" aria-hidden="true"><i></i></span>
             {
               passos.map((p, i) => (
                 <li data-reveal>
@@ -290,10 +297,14 @@ const faq = [
               ))
             }
           </ol>
+          <p class="metodo-convite" data-reveal>
+            Pronto para o passo 1? <a class="sub" href="#contato">Comece agora</a>
+          </p>
         </div>
       </section>
 
       <section class="numeros">
+        <span class="seis-marca" aria-hidden="true">6</span>
         <div class="numeros-grande">
           <p class="numeros-valor">
             +<span id="contador" data-alvo="1.27">1,27</span> mi
@@ -371,6 +382,11 @@ const faq = [
           <a class="cta cta-inverso" href="https://wa.me/5511981406486">Falar no WhatsApp</a>
           <span class="contato-alt">ou SAC 0800 000 5228</span>
         </div>
+        <ul class="contato-garantias" data-reveal>
+          <li>Sem compromisso</li>
+          <li>Menos de 2 minutos</li>
+          <li>Resposta de gente</li>
+        </ul>
         <p class="contato-nota" data-reveal>
           [ aqui entra o Microsoft Forms incorporado, com segmento pré-selecionado ]
         </p>
@@ -419,6 +435,8 @@ const faq = [
       </p>
     </footer>
 
+    <a class="cta-bolso" href="#contato">Simular agora</a>
+
     <nav class="play-nav" aria-label="Navegação entre protótipos">
       <a href="/play/">Play</a>
       <a href="/play/conceito-a/" aria-current="page">A</a>
@@ -456,6 +474,15 @@ const faq = [
         start: 60,
         end: 'max',
         toggleClass: { className: 'rolou', targets: '.topo' },
+      });
+
+      // CTA de bolso (mobile): visível entre o fim do hero e o bloco final.
+      ScrollTrigger.create({
+        trigger: '.marquee',
+        start: 'top 60%',
+        endTrigger: '.contato',
+        end: 'top 75%',
+        toggleClass: { className: 'mostra', targets: '.cta-bolso' },
       });
 
       const mm = gsap.matchMedia();
@@ -507,6 +534,18 @@ const faq = [
             scrollTrigger: { trigger: guia, start: 'top 82%' },
           });
         }
+
+        // Fio do método se preenche com a leitura (gradiente de meta).
+        gsap.from('.metodo-fio i', {
+          scaleY: 0,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.metodo-lista',
+            start: 'top 78%',
+            end: 'bottom 55%',
+            scrub: true,
+          },
+        });
 
         const contador = document.getElementById('contador');
         if (contador) {
@@ -852,6 +891,35 @@ const faq = [
     font-weight: 600;
     font-size: 0.95rem;
   }
+  .hero-acoes .cta::after {
+    content: ' \2193';
+    display: inline-block;
+    transition: transform 0.3s ease;
+  }
+  .hero-acoes .cta:hover::after {
+    transform: translateY(3px);
+  }
+  .hero-prova {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1.2rem 0 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+  }
+  .hero-prova svg {
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+    fill: none;
+    stroke: var(--vermelho);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
 
   /* Lente: a foto humana dentro da geometria */
   .hero-visual {
@@ -932,6 +1000,14 @@ const faq = [
     font-family: 'Instrument Serif', Georgia, serif;
     font-weight: 400;
     font-size: 1.35rem;
+  }
+  .ticket-dia {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    margin: -0.35rem 0 0.65rem;
   }
   .ticket a {
     color: var(--branco);
@@ -1157,6 +1233,9 @@ const faq = [
     color: var(--gelo);
     margin: 0 0 1rem;
   }
+  .painel-ativo {
+    border-top: 3px solid var(--vermelho);
+  }
   .painel-ativo .painel-status {
     color: #ff8095;
     font-weight: 500;
@@ -1172,6 +1251,31 @@ const faq = [
     list-style: none;
     margin: 0;
     padding: 0;
+    position: relative;
+  }
+  .metodo-fio {
+    position: absolute;
+    left: -1.5rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 2px;
+    background: rgba(1, 33, 105, 0.14);
+  }
+  .metodo-fio i {
+    position: absolute;
+    inset: 0;
+    background: var(--vermelho);
+    transform-origin: top center;
+    display: block;
+  }
+  .metodo-convite {
+    margin: 2.25rem 0 0;
+    font-size: 1.05rem;
+    color: var(--tinta-suave);
+  }
+  .metodo-convite a {
+    color: var(--navy);
+    font-weight: 700;
   }
   .metodo-lista li {
     display: grid;
@@ -1201,6 +1305,21 @@ const faq = [
     border-top: 1px solid var(--linha);
     border-bottom: 1px solid var(--linha);
     background: var(--navy-fundo);
+    position: relative;
+    overflow: hidden;
+  }
+  .seis-marca {
+    position: absolute;
+    right: -1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 22rem;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.09);
+    pointer-events: none;
+    user-select: none;
   }
   .numeros-grande {
     padding: 4.5rem 2.5rem;
@@ -1376,6 +1495,25 @@ const faq = [
   .contato-alt {
     font-size: 0.95rem;
   }
+  .contato-garantias {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.1rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .contato-garantias li + li::before {
+    content: '· ';
+    margin-right: 1.1rem;
+    opacity: 0.6;
+  }
   .contato-nota {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.72rem !important;
@@ -1443,6 +1581,29 @@ const faq = [
     font-size: 0.78rem !important;
     color: rgba(255, 255, 255, 0.5) !important;
     width: auto !important;
+  }
+
+  /* CTA de bolso: zona do polegar no mobile, aparece após o hero */
+  .cta-bolso {
+    display: none;
+    position: fixed;
+    left: 50%;
+    bottom: 1rem;
+    z-index: 55;
+    transform: translate(-50%, 160%);
+    background: var(--vermelho);
+    color: var(--branco);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 0.85rem 1.9rem;
+    border-radius: 999px;
+    box-shadow: 0 16px 32px -12px rgba(1, 19, 58, 0.65);
+    transition: transform 0.35s ease;
+    white-space: nowrap;
+  }
+  .cta-bolso.mostra {
+    transform: translate(-50%, 0);
   }
 
   .play-nav {
@@ -1563,6 +1724,15 @@ const faq = [
     .metodo-lista li {
       grid-template-columns: 1fr;
       gap: 0.5rem;
+    }
+    .metodo-fio {
+      display: none;
+    }
+    .cta-bolso {
+      display: block;
+    }
+    .seis-marca {
+      font-size: 13rem;
     }
     .numeros {
       grid-template-columns: 1fr;
