@@ -1,105 +1,128 @@
 ---
-import '../../styles/tokens.css';
+import '@fontsource/instrument-serif';
+import '@fontsource/instrument-serif/400-italic.css';
+import '@fontsource-variable/public-sans';
+import '@fontsource/ibm-plex-mono';
+import '@fontsource/ibm-plex-mono/500.css';
 
-// CONCEITO A, DOSSIÊ
-// Tese: inteligência britânica. Ar editorial de dossiê institucional,
-// navy dominante, vermelho cirúrgico apenas em ação, serif de autoridade,
-// rótulos em mono, informação tratada como ficha técnica.
+// CONCEITO A, DOSSIÊ (v2)
+// Tese: inteligência britânica como experiência, não como metáfora literal.
+// Navy dominante, serif de display, rótulos mono, geometria fina da Union
+// Jack, vermelho cirúrgico. Texto: o do site atual, com ajuste fino.
 
 const segmentos = [
   {
     n: '01',
-    nome: 'Motos',
-    fato: 'Grupos ativos. Parcelas a partir de R$ 200,00.',
-    acao: 'Simular agora',
-    destino: '#conversa',
-    ativo: true,
+    nome: 'Consórcio de carros',
+    img: '/play-assets/carros.png',
+    alt: 'Casal observa um carro em uma concessionária',
+    status: 'Em breve',
+    acao: 'Tenho interesse',
+    ativo: false,
   },
   {
     n: '02',
-    nome: 'Carros',
-    fato: 'Grupos em preparação. Receba as condições na abertura.',
-    acao: 'Registrar interesse',
-    destino: '#conversa',
+    nome: 'Consórcio de pesados',
+    img: '/play-assets/pesados.png',
+    alt: 'Motorista conversa na cabine de um caminhão',
+    status: 'Em breve',
+    acao: 'Tenho interesse',
     ativo: false,
   },
   {
     n: '03',
-    nome: 'Pesados',
-    fato: 'Caminhões e frota. Grupos em preparação.',
-    acao: 'Registrar interesse',
-    destino: '#conversa',
-    ativo: false,
+    nome: 'Consórcio de motos',
+    img: '/play-assets/moto.png',
+    alt: 'Homem de jaqueta ajusta uma moto em uma garagem',
+    status: 'Grupos ativos',
+    acao: 'Simule agora',
+    ativo: true,
   },
   {
     n: '04',
-    nome: 'Imóveis',
-    fato: 'Casa, apartamento ou terreno. Grupos em preparação.',
-    acao: 'Registrar interesse',
-    destino: '#conversa',
+    nome: 'Consórcio de imóveis',
+    img: '/play-assets/imoveis.png',
+    alt: 'Pessoas conversam em um apartamento vazio de janelas amplas',
+    status: 'Em breve',
+    acao: 'Tenho interesse',
     ativo: false,
   },
   {
     n: '05',
-    nome: 'Serviços',
-    fato: 'Do intercâmbio à reforma. Grupos em preparação.',
-    acao: 'Registrar interesse',
-    destino: '#conversa',
+    nome: 'Consórcio de serviços',
+    img: '/play-assets/servicos.png',
+    alt: 'Profissional em ambiente de serviços',
+    status: 'Em breve',
+    acao: 'Tenho interesse',
     ativo: false,
   },
   {
     n: '06',
-    nome: 'Eletro',
-    fato: 'Eletrodomésticos e tecnologia. Grupos em preparação.',
-    acao: 'Registrar interesse',
-    destino: '#conversa',
+    nome: 'Consórcio de eletro',
+    img: '/play-assets/eletro.png',
+    alt: 'Casal no sofá da sala olhando um tablet',
+    status: 'Em breve',
+    acao: 'Tenho interesse',
     ativo: false,
   },
 ];
 
 const passos = [
+  'Escolha o plano ideal voltado para seu objetivo e com o valor de crédito compatível.',
+  'Você passa a integrar um grupo de consórcio e contribui com parcelas mensais.',
+  'A cada mês, os participantes devem aguardar serem contemplados por sorteio ou oferta de lance.',
+  'Após a contemplação, utilize o crédito para adquirir o bem conforme o segmento contratado.',
+];
+
+const vantagens = [
   {
-    n: '01',
-    titulo: 'Escolha o plano',
+    titulo: 'Sem entrada e juros',
     texto:
-      'Defina o valor de crédito e a parcela compatível com o seu objetivo, com apoio de um consultor.',
+      'Comece a poupar e invista no seu objetivo sem pagar juros bancários ou dar entrada no início do plano.',
   },
   {
-    n: '02',
-    titulo: 'Entre para um grupo',
+    titulo: 'Planejamento acessível',
     texto:
-      'Você passa a integrar um grupo de consórcio e contribui com parcelas mensais para o fundo comum.',
+      'Parcelas que cabem no bolso e ajudam você a conquistar seus bens com mais tranquilidade.',
   },
   {
-    n: '03',
-    titulo: 'Seja contemplado',
+    titulo: 'Liberdade de escolha',
     texto:
-      'Todo mês há contemplações por sorteio pela Loteria Federal e por oferta de lance.',
+      'Escolha como e quando usar seu crédito, de acordo com seus objetivos e necessidades nos principais segmentos.',
+  },
+];
+
+const diferenciais = [
+  {
+    titulo: 'Consultoria personalizada',
+    texto: 'Conte com o apoio de especialistas para escolher o melhor plano e aproveitar as melhores condições.',
   },
   {
-    n: '04',
-    titulo: 'Use o crédito',
-    texto:
-      'Após a contemplação, a carta de crédito paga o bem ou serviço do segmento contratado.',
+    titulo: 'Boas chances de contemplação',
+    texto: 'Participe com lances livres, embutidos ou fixos, além dos sorteios mensais pela Loteria Federal.',
+  },
+  {
+    titulo: 'Segurança e transparência',
+    texto: 'Clareza em todas as etapas. Sem inconsistências no contrato ou taxas abusivas.',
   },
 ];
 
 const faq = [
+  {
+    p: 'Como funciona o consórcio?',
+    r: 'O consórcio é uma forma de compra planejada em que um grupo de pessoas contribui mensalmente para formar um fundo comum. Todo mês, um ou mais participantes são contemplados por sorteio ou lance e recebem uma carta de crédito para adquirir o bem desejado, sem juros, apenas com taxa de administração.',
+  },
   {
     p: 'O que compõe o valor da minha parcela?',
     r: 'A parcela mensal corresponde à soma dos percentuais referentes ao Fundo Comum, ao Fundo de Reserva, à Taxa de Administração e ao Prêmio de Seguro Prestamista, se contratado.',
   },
   {
     p: 'Consórcio ou financiamento: qual escolher?',
-    r: 'O consórcio é ideal para quem quer planejar a compra sem pressa, pois não tem juros, apenas taxa de administração. O financiamento libera o bem de imediato, mas inclui juros e pode custar mais ao longo do tempo.',
-  },
-  {
-    p: 'Como funciona a contemplação?',
-    r: 'Todo mês, um ou mais participantes do grupo são contemplados por sorteio ou lance e recebem a carta de crédito para adquirir o bem desejado.',
+    r: 'O consórcio é ideal para quem quer planejar a compra sem pressa, pois não tem juros, apenas taxa de administração. Já o financiamento libera o bem de imediato, mas inclui juros e pode ter um custo maior ao longo do tempo.',
   },
   {
     p: 'Consórcio vale a pena?',
-    r: 'Sim, principalmente para quem deseja planejar a compra sem pagar juros, com parcelas acessíveis e flexibilidade para ofertar lances e antecipar a contemplação.',
+    r: 'Sim, principalmente para quem deseja planejar a compra sem pagar juros. No Consórcio Nacional MI6, você pode adquirir imóveis, veículos, equipamentos ou eletroeletrônicos com parcelas acessíveis e flexibilidade para ofertar lances e antecipar a contemplação.',
   },
 ];
 ---
@@ -111,192 +134,193 @@ const faq = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
     <title>Conceito A, Dossiê | Play MI6</title>
-    <meta
-      name="description"
-      content="Protótipo da FASE 2: homepage da MI6 na tese de inteligência britânica, editorial de dossiê."
-    />
+    <meta name="description" content="Protótipo da FASE 2: tese de inteligência britânica, dossiê cinematográfico." />
   </head>
   <body>
-    <p class="faixa-topo">
-      <span>Administradora de consórcios autorizada e fiscalizada pelo Banco Central do Brasil</span>
-      <span>SAC 0800 000 5228</span>
-    </p>
+    <div class="grao" aria-hidden="true"></div>
 
-    <header class="cabecalho">
-      <a href="/play/conceito-a/" class="marca">
+    <header class="topo">
+      <a class="topo-marca" href="/play/conceito-a/">
         <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="60" />
       </a>
       <nav aria-label="Navegação principal">
-        <a href="#segmentos">Consórcios</a>
-        <a href="#metodo">Como funciona</a>
-        <a href="#compromissos">Compromissos</a>
-        <a href="https://mi6.evertecinc.com.br/autoatendimento" class="discreto">Área do Cliente</a>
-        <a href="#conversa" class="cta">Fale com um consultor</a>
+        <a href="#solucoes">Consórcio</a>
+        <a href="#metodo">Passo a passo</a>
+        <a href="#faq">Dúvidas</a>
       </nav>
+      <div class="topo-acessos">
+        <a class="topo-cliente" href="https://mi6.evertecinc.com.br/autoatendimento">Área do cliente</a>
+        <a class="topo-cta" href="#contato">Simule agora</a>
+      </div>
     </header>
 
     <main>
-      <section class="hero">
-        <div class="hero-texto">
-          <p class="rotulo">Consórcio Nacional · Porto Alegre · Atuação em todo o Brasil</p>
-          <h1>Seis caminhos.<br />Um método.<br />Nenhum juro.</h1>
-          <p class="hero-apoio">
-            A MI6 administra consórcios para carros, motos, pesados, imóveis,
-            serviços e eletro. Compra planejada, com regra clara do primeiro
-            boleto à contemplação, sob fiscalização do Banco Central.
-          </p>
-          <div class="hero-acoes">
-            <a href="#conversa" class="botao">Quero começar meu plano</a>
-            <a href="https://mi6.evertecinc.com.br/autoatendimento" class="link-seta">Já sou cliente</a>
+      <section class="hero" id="inicio">
+        <svg class="hero-geo" aria-hidden="true" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+          <g stroke="rgba(255,255,255,0.10)" stroke-width="1">
+            <line x1="0" y1="0" x2="1440" y2="900"></line>
+            <line x1="1440" y1="0" x2="0" y2="900"></line>
+            <line x1="720" y1="-80" x2="720" y2="980"></line>
+            <line x1="-80" y1="450" x2="1520" y2="450"></line>
+          </g>
+          <g stroke="rgba(200,16,46,0.35)" stroke-width="1">
+            <line x1="60" y1="0" x2="1500" y2="900"></line>
+            <line x1="1380" y1="0" x2="-60" y2="900"></line>
+          </g>
+          <circle cx="720" cy="450" r="320" fill="none" stroke="rgba(255,255,255,0.08)"></circle>
+          <circle cx="720" cy="450" r="160" fill="none" stroke="rgba(255,255,255,0.06)"></circle>
+        </svg>
+
+        <p class="hero-coord" aria-hidden="true">30°02′S 51°13′W · PORTO ALEGRE · BRASIL</p>
+
+        <div class="hero-conteudo">
+          <p class="hero-kicker"><span id="scramble">O Melhor Investimento:</span></p>
+          <h1 id="titulo">
+            <span class="linha">6 caminhos para</span>
+            <span class="linha">transformar <em>sonhos</em></span>
+            <span class="linha">em conquistas</span>
+          </h1>
+          <div class="hero-pe" data-intro>
+            <a class="cta" href="#solucoes">Conheça as soluções MI6</a>
+            <p class="hero-frase">Você está perto de realizar o seu projeto de vida</p>
           </div>
         </div>
-        <aside class="ficha" aria-label="Ficha institucional da MI6">
-          <p class="ficha-titulo">Ficha institucional</p>
-          <dl>
-            <div><dt>Autorização</dt><dd>Banco Central do Brasil</dd></div>
-            <div><dt>Em operação desde</dt><dd>dezembro de 2024</dd></div>
-            <div><dt>Sede</dt><dd>Porto Alegre, RS</dd></div>
-            <div><dt>Atuação</dt><dd>nacional</dd></div>
-            <div><dt>Segmentos</dt><dd>seis</dd></div>
-            <div><dt>Lei de regência</dt><dd>nº 11.795/2008</dd></div>
-            <div><dt>SAC</dt><dd>0800 000 5228</dd></div>
-            <div><dt>Ouvidoria</dt><dd>0800 000 5267</dd></div>
-          </dl>
+
+        <aside class="hero-ticket" data-intro aria-label="Plano de motos em destaque">
+          <p class="ticket-rotulo">Motos · grupos ativos</p>
+          <p class="ticket-valor">Parcelas a partir de <strong>R$ 200,00</strong></p>
+          <a href="#contato">Simule agora</a>
         </aside>
+
+        <p class="hero-scroll" aria-hidden="true">role</p>
       </section>
 
-      <p class="faixa-dado">
-        <strong>1,27 milhão de contemplações</strong> no setor de consórcios em
-        2024. Dado do mercado brasileiro, fonte ABAC, Associação Brasileira de
-        Administradoras de Consórcios.
-      </p>
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-faixa">
+          <span>Administradora autorizada e fiscalizada pelo Banco Central do Brasil · Lei nº 11.795/2008 · SAC 0800 000 5228 · Ouvidoria 0800 000 5267 · </span><span>Administradora autorizada e fiscalizada pelo Banco Central do Brasil · Lei nº 11.795/2008 · SAC 0800 000 5228 · Ouvidoria 0800 000 5267 · </span>
+        </div>
+      </div>
 
-      <section class="secao" id="metodo">
-        <div class="secao-cabeca">
-          <p class="rotulo">Seção 01 · Método</p>
-          <h2>Como o consórcio funciona</h2>
-        </div>
-        <div class="secao-corpo">
-          <p class="texto-guia">
-            Um modelo de compra inteligente e planejada: um grupo de pessoas
-            contribui todo mês para um fundo comum, e o fundo compra, mês a
-            mês, o bem de cada contemplado. Sem juros; o que existe é uma taxa
-            de administração informada antes da assinatura.
-          </p>
-          <ol class="passos">
-            {
-              passos.map((p) => (
-                <li>
-                  <span class="passo-numero">{p.n}</span>
-                  <h3>{p.titulo}</h3>
-                  <p>{p.texto}</p>
-                </li>
-              ))
-            }
-          </ol>
-        </div>
+      <section class="oque" id="oque">
+        <p class="indice" data-reveal>SEÇÃO 01 / O BÁSICO</p>
+        <h2 data-reveal>O que é consórcio?</h2>
+        <p class="oque-texto" data-linhas>
+          Um modelo de compra inteligente e planejada que permite a aquisição
+          de bens e serviços com parcelas que cabem no seu bolso, <em>sem juros</em>.
+        </p>
       </section>
 
-      <section class="secao secao-navy" id="segmentos">
-        <div class="secao-cabeca">
-          <p class="rotulo">Seção 02 · Segmentos</p>
-          <h2>Os seis caminhos</h2>
-        </div>
-        <div class="secao-corpo">
-          <p class="texto-guia">
-            Planos em seis segmentos, com atendimento consultivo e captação de
-            interesse aberta para os grupos em preparação.
-          </p>
-          <ul class="indice">
+      <section class="vantagens">
+        <p class="indice" data-reveal>SEÇÃO 02 / VANTAGENS</p>
+        <h2 data-reveal>Vantagens do consórcio</h2>
+        <ol class="vantagens-lista">
+          {
+            vantagens.map((v, i) => (
+              <li data-reveal style={`--desloca:${i}`}>
+                <span class="num">{String(i + 1).padStart(2, '0')}</span>
+                <h3>{v.titulo}</h3>
+                <p>{v.texto}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section class="galeria" id="solucoes">
+        <div class="galeria-pin">
+          <header class="galeria-cabeca">
+            <p class="indice">SEÇÃO 03 / SEIS CAMINHOS</p>
+            <h2>O consórcio ideal para você</h2>
+            <p class="galeria-apoio">
+              Trabalhamos com soluções em seis segmentos do mercado, com planos
+              flexíveis, atendimento consultivo e foco total em custo-benefício.
+            </p>
+          </header>
+          <div class="galeria-track">
             {
               segmentos.map((s) => (
-                <li class={s.ativo ? 'ativo' : ''}>
-                  <span class="indice-numero">{s.n}</span>
-                  <span class="indice-nome">{s.nome}</span>
-                  <span class="indice-fato">{s.fato}</span>
-                  <a href={s.destino} class={s.ativo ? 'botao botao-mini' : 'link-seta link-claro'}>
-                    {s.acao}
-                  </a>
-                </li>
+                <article class={`painel ${s.ativo ? 'painel-ativo' : ''}`}>
+                  <div class="painel-foto">
+                    <img src={s.img} alt={s.alt} loading="lazy" />
+                  </div>
+                  <p class="painel-num" aria-hidden="true">{s.n}</p>
+                  <h3>{s.nome}</h3>
+                  <p class="painel-status">{s.status}</p>
+                  <a href="#contato">{s.acao}</a>
+                </article>
               ))
             }
-          </ul>
-        </div>
-      </section>
-
-      <section class="secao" id="conta">
-        <div class="secao-cabeca">
-          <p class="rotulo">Seção 03 · A conta</p>
-          <h2>Consórcio ou financiamento?</h2>
-        </div>
-        <div class="secao-corpo">
-          <div class="comparativo">
-            <div class="coluna">
-              <h3>Financiamento</h3>
-              <ul>
-                <li>Entrada obrigatória</li>
-                <li>Juros elevados</li>
-                <li>Custo total maior</li>
-                <li>Burocracia no crédito</li>
-                <li>Pressão para comprar</li>
-              </ul>
-            </div>
-            <div class="coluna coluna-mi6">
-              <h3>Consórcio</h3>
-              <ul>
-                <li>Sem entrada</li>
-                <li>Sem juros</li>
-                <li>Economia no custo total</li>
-                <li>Processo transparente</li>
-                <li>Liberdade para comprar</li>
-              </ul>
-            </div>
           </div>
-          <p class="nota">
-            No consórcio não há juros; há taxa de administração, diluída nas
-            parcelas e apresentada antes da assinatura do contrato.
+        </div>
+      </section>
+
+      <section class="metodo" id="metodo">
+        <p class="indice" data-reveal>SEÇÃO 04 / MÉTODO</p>
+        <h2 data-reveal>Passo a passo do Consórcio Nacional MI6</h2>
+        <p class="metodo-apoio" data-reveal>
+          Veja como realizar seus objetivos com segurança, liberdade e sem juros.
+        </p>
+        <ol class="metodo-lista">
+          {
+            passos.map((p, i) => (
+              <li data-reveal>
+                <span class="metodo-num">{String(i + 1).padStart(2, '0')}</span>
+                <p>{p}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section class="numeros">
+        <div class="numeros-grande">
+          <p class="numeros-valor">
+            +<span id="contador" data-alvo="1.27">1,27</span> mi
+          </p>
+          <p class="numeros-legenda" data-reveal>
+            de contemplados em 2024*<br />
+            <small>*Fonte: ABAC, Associação Brasileira de Administradoras de Consórcios. Dado do setor.</small>
+          </p>
+        </div>
+        <div class="numeros-grande">
+          <p class="numeros-valor"><span data-reveal>0</span><span class="numeros-sufixo">juros</span></p>
+          <p class="numeros-legenda" data-reveal>
+            no consórcio você paga taxa de administração definida em contrato,
+            não juros bancários
           </p>
         </div>
       </section>
 
-      <section class="secao" id="compromissos">
-        <div class="secao-cabeca">
-          <p class="rotulo">Seção 04 · Compromissos</p>
-          <h2>O que assinamos embaixo</h2>
-        </div>
-        <div class="secao-corpo">
-          <ol class="manifesto">
-            <li>
-              <h3>Consultoria antes da venda.</h3>
-              <p>Especialistas ajudam a escolher o plano certo, não o plano mais caro.</p>
-            </li>
-            <li>
-              <h3>Contemplação com regra pública.</h3>
-              <p>Sorteios mensais pela Loteria Federal e lances livres, fixos ou embutidos.</p>
-            </li>
-            <li>
-              <h3>Contrato sem letra miúda.</h3>
-              <p>Taxas e regras apresentadas antes da assinatura, com documentos públicos.</p>
-            </li>
-          </ol>
-          <p class="documentos">
-            Leia antes de decidir:
-            <a href="/docs/regulamento.pdf">Regulamento (PDF)</a> e
-            <a href="/docs/contrato-adesao.pdf">Contrato de adesão (PDF)</a>.
-          </p>
-        </div>
+      <section class="diferenciais">
+        <p class="indice" data-reveal>SEÇÃO 05 / DIFERENCIAIS</p>
+        <h2 data-reveal>Diferenciais pensados para você</h2>
+        <ul class="diferenciais-lista">
+          {
+            diferenciais.map((d) => (
+              <li data-reveal>
+                <h3>{d.titulo}</h3>
+                <p>{d.texto}</p>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="documentos" data-reveal>
+          Documentos públicos: <a href="/docs/regulamento.pdf">Regulamento</a> e
+          <a href="/docs/contrato-adesao.pdf">Contrato de adesão</a>.
+        </p>
       </section>
 
-      <section class="secao" id="faq">
-        <div class="secao-cabeca">
-          <p class="rotulo">Seção 05 · Perguntas</p>
-          <h2>Perguntas frequentes</h2>
-        </div>
-        <div class="secao-corpo">
+      <section class="faq" id="faq">
+        <p class="indice" data-reveal>SEÇÃO 06 / PERGUNTAS</p>
+        <h2 data-reveal>Perguntas frequentes</h2>
+        <div class="faq-lista">
           {
             faq.map((item) => (
-              <details>
-                <summary>{item.p}</summary>
+              <details data-reveal>
+                <summary>
+                  {item.p}
+                  <span class="faq-sinal" aria-hidden="true" />
+                </summary>
                 <p>{item.r}</p>
               </details>
             ))
@@ -304,44 +328,42 @@ const faq = [
         </div>
       </section>
 
-      <section class="chamada" id="conversa">
-        <h2>Comece com uma conversa.</h2>
-        <p>
-          Conte seu objetivo e receba as condições do seu segmento, sem
-          compromisso. Quem responde é um consultor, não um robô.
+      <section class="contato" id="contato">
+        <h2 data-reveal><em>Em breve,</em> simule o consórcio ideal para você</h2>
+        <p data-reveal>
+          Enquanto a simulação completa não chega, fale com um consultor e
+          receba as condições do seu segmento, sem compromisso.
         </p>
-        <div class="hero-acoes">
-          <a href="#conversa" class="botao">Quero falar com um consultor</a>
-          <a href="https://wa.me/5511981406486" class="link-seta link-claro">WhatsApp (11) 98140-6486</a>
+        <div class="contato-acoes" data-reveal>
+          <a class="cta" href="https://wa.me/5511981406486">Falar no WhatsApp</a>
+          <span class="contato-alt">ou SAC 0800 000 5228</span>
         </div>
-        <p class="chamada-nota">
-          Aqui entra o formulário de lead (Microsoft Forms incorporado), com o
-          segmento pré-selecionado conforme o caminho de chegada.
+        <p class="contato-nota" data-reveal>
+          [ aqui entra o Microsoft Forms incorporado, com segmento pré-selecionado ]
         </p>
       </section>
     </main>
 
     <footer class="rodape">
-      <div class="rodape-grade">
-        <div class="rodape-marca">
-          <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="60" />
-          <p>Seis caminhos para transformar planejamento em conquista.</p>
-        </div>
-        <nav aria-label="Consórcios">
-          <h3>Consórcios</h3>
-          <a href="#segmentos">Motos</a>
-          <a href="#segmentos">Carros</a>
-          <a href="#segmentos">Pesados</a>
-          <a href="#segmentos">Imóveis</a>
-          <a href="#segmentos">Serviços</a>
-          <a href="#segmentos">Eletro</a>
-        </nav>
+      <div class="rodape-topo">
+        <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="60" />
+        <p class="rodape-frase">O melhor investimento, 6 soluções para tirar seu sonho do papel.</p>
+      </div>
+      <div class="rodape-colunas">
         <nav aria-label="Institucional">
           <h3>Institucional</h3>
-          <a href="#metodo">Como funciona</a>
-          <a href="#compromissos">Compromissos</a>
-          <a href="#faq">Perguntas frequentes</a>
+          <a href="#oque">Quem somos</a>
+          <a href="#contato">Contato</a>
           <a href="#">Política de privacidade</a>
+        </nav>
+        <nav aria-label="Consórcios">
+          <h3>Consórcios</h3>
+          <a href="#solucoes">Carros</a>
+          <a href="#solucoes">Motos</a>
+          <a href="#solucoes">Pesados</a>
+          <a href="#solucoes">Imóveis</a>
+          <a href="#solucoes">Serviços</a>
+          <a href="#solucoes">Eletro</a>
         </nav>
         <div>
           <h3>Atendimento</h3>
@@ -352,20 +374,15 @@ const faq = [
         </div>
         <div>
           <h3>Acesso</h3>
-          <a href="https://mi6.evertecinc.com.br/autoatendimento">Área do Cliente</a>
-          <a
-            href="https://mi6.evertecinc.com.br/newcon.web/frmCorCCCnsLogin.aspx?applicationKey=3M9zL0+WaLYAeBQwijSQEkhjyy42CGuQj8DXZNFUeAoW7bdn/JfcNmUNbNUgQJqaufUv7kqAamOQCRrx6B2F7w=="
-            >Canal do parceiro</a
-          >
+          <a href="https://mi6.evertecinc.com.br/autoatendimento">Área do cliente</a>
+          <a href="https://mi6.evertecinc.com.br/newcon.web/frmCorCCCnsLogin.aspx?applicationKey=3M9zL0+WaLYAeBQwijSQEkhjyy42CGuQj8DXZNFUeAoW7bdn/JfcNmUNbNUgQJqaufUv7kqAamOQCRrx6B2F7w==">Canal do parceiro</a>
           <a href="https://www.instagram.com/mi6.consorcio/">Instagram</a>
           <a href="https://www.facebook.com/61584214719614/">Facebook</a>
         </div>
       </div>
       <p class="rodape-legal">
-        MI6 Consórcio Nacional. Administradora de consórcios autorizada e
-        fiscalizada pelo Banco Central do Brasil, regida pela Lei nº
-        11.795/2008. A MI6 não comercializa cotas contempladas; desconfie de
-        ofertas em nome da empresa fora dos canais oficiais.
+        © Todos os direitos reservados. Administradora de consórcios autorizada
+        e fiscalizada pelo Banco Central do Brasil, Lei nº 11.795/2008.
       </p>
     </footer>
 
@@ -375,511 +392,859 @@ const faq = [
       <a href="/play/conceito-b/">B</a>
       <a href="/play/conceito-c/">C</a>
     </nav>
+
+    <script>
+      import gsap from 'gsap';
+      import { ScrollTrigger } from 'gsap/ScrollTrigger';
+      import { SplitText } from 'gsap/SplitText';
+      import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
+      import Lenis from 'lenis';
+
+      gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin);
+
+      const motionOk = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+
+      if (motionOk) {
+        const lenis = new Lenis({ autoRaf: true, lerp: 0.12 });
+        lenis.on('scroll', ScrollTrigger.update);
+        document.querySelectorAll('a[href^="#"]').forEach((a) => {
+          a.addEventListener('click', (e) => {
+            const alvo = a.getAttribute('href');
+            if (alvo && alvo.length > 1) {
+              e.preventDefault();
+              lenis.scrollTo(alvo, { offset: -10 });
+            }
+          });
+        });
+      }
+
+      const mm = gsap.matchMedia();
+
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        // Abertura: kicker decodifica, título sobe por máscara de linhas.
+        const split = new SplitText('#titulo .linha', { type: 'lines', mask: 'lines' });
+        const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+        tl.from('.topo', { yPercent: -100, duration: 0.8, ease: 'power2.out' })
+          .to('#scramble', {
+            duration: 1.4,
+            scrambleText: { text: 'O Melhor Investimento:', chars: '▮▯·/01MI6', speed: 0.4 },
+          }, 0.15)
+          .from(split.lines, { yPercent: 115, duration: 1.1, stagger: 0.14 }, 0.4)
+          .from('[data-intro]', { y: 28, autoAlpha: 0, duration: 0.9, stagger: 0.15 }, '-=0.5')
+          .from('.hero-geo', { scale: 1.12, autoAlpha: 0, duration: 1.6, ease: 'power2.out' }, 0.2)
+          .from('.hero-coord, .hero-scroll', { autoAlpha: 0, duration: 0.8 }, '-=0.8');
+
+        gsap.to('.hero-geo', {
+          yPercent: 12,
+          ease: 'none',
+          scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
+        });
+
+        // Revelações de rolagem.
+        gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((el) => {
+          gsap.from(el, {
+            y: 36,
+            autoAlpha: 0,
+            duration: 0.9,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 86%' },
+          });
+        });
+
+        // Parágrafo guia revela linha a linha.
+        const guia = document.querySelector('[data-linhas]');
+        if (guia) {
+          const linhas = new SplitText(guia, { type: 'lines', mask: 'lines' });
+          gsap.from(linhas.lines, {
+            yPercent: 110,
+            duration: 0.9,
+            stagger: 0.08,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: guia, start: 'top 82%' },
+          });
+        }
+
+        // Contador do dado ABAC.
+        const contador = document.getElementById('contador');
+        if (contador) {
+          const alvo = parseFloat(contador.dataset.alvo ?? '0');
+          const obj = { v: 0 };
+          contador.textContent = '0,00';
+          gsap.to(obj, {
+            v: alvo,
+            duration: 2,
+            ease: 'power2.out',
+            scrollTrigger: { trigger: '.numeros', start: 'top 75%' },
+            onUpdate: () => {
+              contador.textContent = obj.v.toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              });
+            },
+          });
+        }
+        return () => split.revert();
+      });
+
+      // Galeria horizontal pinada, apenas em telas largas e com movimento.
+      mm.add('(min-width: 960px) and (prefers-reduced-motion: no-preference)', () => {
+        const track = document.querySelector<HTMLElement>('.galeria-track');
+        if (!track) return;
+        const distancia = () => track.scrollWidth - window.innerWidth + 96;
+        const anim = gsap.to(track, {
+          x: () => -distancia(),
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.galeria',
+            start: 'top top',
+            end: () => '+=' + distancia(),
+            scrub: 1,
+            pin: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
+        });
+        return () => anim.scrollTrigger?.kill();
+      });
+    </script>
   </body>
 </html>
 
 <style>
+  :global(html) {
+    scroll-behavior: auto;
+  }
   * {
     box-sizing: border-box;
   }
   body {
     margin: 0;
-    background: var(--branco);
-    color: var(--cinza-950);
-    font-family: var(--fonte-sans);
+    --navy: #012169;
+    --navy-fundo: #021a4f;
+    --navy-escuro: #01133a;
+    --vermelho: #c8102e;
+    --branco: #ffffff;
+    --gelo: rgba(255, 255, 255, 0.72);
+    --linha: rgba(255, 255, 255, 0.16);
+    background: var(--navy-fundo);
+    color: var(--branco);
+    font-family: 'Public Sans Variable', 'Helvetica Neue', Arial, sans-serif;
     line-height: 1.55;
+    overflow-x: hidden;
   }
+  ::selection {
+    background: var(--vermelho);
+    color: var(--branco);
+  }
+
+  .grao {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0.5;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E");
+  }
+
   h1,
   h2,
   h3 {
-    font-family: var(--fonte-serif);
+    font-family: 'Instrument Serif', Georgia, serif;
     font-weight: 400;
-    color: var(--azul);
     margin: 0;
   }
-  a {
-    color: var(--azul);
-  }
-
-  /* Assinatura do conceito: régua dupla, abstração da Union Jack */
-  .secao-cabeca h2 {
-    border-top: 3px solid var(--azul);
-    position: relative;
-    padding-top: 1rem;
-  }
-  .secao-cabeca h2::before {
-    content: '';
-    position: absolute;
-    top: 5px;
-    left: 0;
-    width: 4rem;
-    border-top: 1px solid var(--vermelho);
-  }
-
-  .rotulo {
-    font-family: var(--fonte-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--cinza-500);
-    margin: 0 0 0.75rem;
-  }
-
-  .faixa-topo {
-    margin: 0;
-    background: var(--azul);
-    color: var(--branco);
-    font-family: var(--fonte-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.5rem 2rem;
-  }
-
-  .cabecalho {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-    padding: 1.1rem 2rem;
-    border-bottom: 1px solid var(--cinza-300);
-  }
-  .cabecalho img {
-    height: 2.4rem;
-    width: auto;
-    display: block;
-  }
-  .cabecalho nav {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    font-size: 0.95rem;
-  }
-  .cabecalho nav a {
-    text-decoration: none;
-    color: var(--cinza-700);
-  }
-  .cabecalho nav a:hover {
-    color: var(--azul);
-  }
-  .cabecalho .discreto {
-    color: var(--azul);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-
-  .botao {
-    display: inline-block;
-    background: var(--vermelho);
-    color: var(--branco) !important;
-    text-decoration: none;
-    font-weight: 600;
-    padding: 0.8rem 1.6rem;
-    font-size: 0.95rem;
-  }
-  .botao:hover {
-    background: #a50d26;
-  }
-  .botao-mini {
-    padding: 0.5rem 1rem;
-    font-size: 0.85rem;
-  }
-  .cabecalho .cta {
-    background: var(--vermelho);
-    color: var(--branco);
-    padding: 0.6rem 1.2rem;
-    font-weight: 600;
-  }
-  .cabecalho .cta:hover {
-    background: #a50d26;
-    color: var(--branco);
-  }
-
-  .link-seta {
-    color: var(--azul);
-    font-weight: 600;
-    text-decoration: none;
-  }
-  .link-seta::after {
-    content: ' \2192';
-  }
-  .link-seta:hover {
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-
-  .hero {
-    display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
-    gap: 4rem;
-    padding: 5rem 2rem 4.5rem;
-    max-width: 72rem;
-    margin: 0 auto;
-  }
-  .hero h1 {
-    font-size: clamp(2.6rem, 6vw, 4.4rem);
-    line-height: 1.04;
-    letter-spacing: -0.01em;
-    margin: 0 0 1.5rem;
-  }
-  .hero-apoio {
-    font-size: 1.1rem;
-    color: var(--cinza-700);
-    max-width: 34rem;
-    margin: 0 0 2rem;
-  }
-  .hero-acoes {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-  }
-
-  .ficha {
-    background: var(--azul);
-    color: var(--branco);
-    padding: 2rem;
-    align-self: start;
-    border-top: 4px solid var(--vermelho);
-  }
-  .ficha-titulo {
-    font-family: var(--fonte-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--cinza-300);
-    margin: 0 0 1.25rem;
-  }
-  .ficha dl {
-    margin: 0;
-    display: grid;
-    gap: 0.7rem;
-  }
-  .ficha dl div {
-    display: grid;
-    grid-template-columns: 1fr 1.2fr;
-    gap: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-    padding-bottom: 0.7rem;
-  }
-  .ficha dt {
-    font-family: var(--fonte-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--cinza-300);
-  }
-  .ficha dd {
-    margin: 0;
-    font-size: 0.95rem;
-  }
-
-  .faixa-dado {
-    margin: 0;
-    border-top: 1px solid var(--cinza-300);
-    border-bottom: 1px solid var(--cinza-300);
-    padding: 1.1rem 2rem;
-    text-align: center;
-    color: var(--cinza-700);
-    font-size: 0.95rem;
-  }
-  .faixa-dado strong {
-    color: var(--azul);
-    font-family: var(--fonte-serif);
-    font-size: 1.15rem;
-    font-weight: 400;
-  }
-
-  .secao {
-    display: grid;
-    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
-    gap: 3rem;
-    padding: 4.5rem 2rem;
-    max-width: 72rem;
-    margin: 0 auto;
-  }
-  .secao-cabeca h2 {
-    font-size: clamp(1.8rem, 3.2vw, 2.5rem);
-    line-height: 1.15;
-  }
-  .texto-guia {
-    font-size: 1.05rem;
-    color: var(--cinza-700);
-    max-width: 38rem;
-    margin: 0 0 2.5rem;
-  }
-
-  .passos {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2.5rem 3rem;
-  }
-  .passo-numero {
-    font-family: var(--fonte-mono);
-    color: var(--vermelho);
-    font-size: 0.85rem;
-    letter-spacing: 0.12em;
-  }
-  .passos h3 {
-    font-size: 1.3rem;
-    margin: 0.4rem 0 0.5rem;
-  }
-  .passos p {
-    margin: 0;
-    color: var(--cinza-700);
-    font-size: 0.97rem;
-  }
-
-  .secao-navy {
-    max-width: none;
-    background: var(--azul);
-  }
-  .secao-navy > * {
-    /* mantém o miolo alinhado à grade central */
-  }
-  .secao-navy {
-    padding-left: max(2rem, calc((100vw - 72rem) / 2 + 2rem));
-    padding-right: max(2rem, calc((100vw - 72rem) / 2 + 2rem));
-  }
-  .secao-navy .rotulo {
-    color: var(--cinza-300);
-  }
-  .secao-navy h2 {
-    color: var(--branco);
-    border-top-color: var(--branco);
-  }
-  .secao-navy .texto-guia {
-    color: var(--cinza-300);
+  em {
+    font-style: italic;
   }
 
   .indice {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    color: var(--gelo);
+    margin: 0 0 1rem;
   }
-  .indice li {
-    display: grid;
-    grid-template-columns: 3rem 8rem 1fr auto;
-    gap: 1.5rem;
-    align-items: center;
-    padding: 1.1rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-  }
-  .indice-numero {
-    font-family: var(--fonte-mono);
-    color: var(--cinza-300);
-    font-size: 0.85rem;
-  }
-  .indice-nome {
-    font-family: var(--fonte-serif);
+
+  .cta {
+    display: inline-block;
+    background: var(--vermelho);
     color: var(--branco);
-    font-size: 1.35rem;
-  }
-  .indice-fato {
-    color: var(--cinza-300);
+    text-decoration: none;
+    font-weight: 600;
     font-size: 0.95rem;
-  }
-  .indice li.ativo .indice-numero {
-    color: var(--vermelho);
-  }
-  .link-claro {
-    color: var(--branco);
-  }
-
-  .comparativo {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
-    background: var(--cinza-300);
-    border: 1px solid var(--cinza-300);
-  }
-  .coluna {
-    background: var(--branco);
-    padding: 1.75rem;
-  }
-  .coluna h3 {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-  }
-  .coluna ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    display: grid;
-    gap: 0.6rem;
-    color: var(--cinza-700);
-  }
-  .coluna-mi6 {
-    background: var(--cinza-100);
-  }
-  .coluna-mi6 h3::after {
-    content: ' · MI6';
-    font-family: var(--fonte-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
-    color: var(--vermelho);
-    vertical-align: middle;
-  }
-  .nota {
-    color: var(--cinza-500);
-    font-size: 0.9rem;
-    margin: 1.25rem 0 0;
-  }
-
-  .manifesto {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    counter-reset: compromisso;
-  }
-  .manifesto li {
-    counter-increment: compromisso;
-    border-bottom: 1px solid var(--cinza-300);
-    padding: 1.5rem 0 1.5rem 3.5rem;
+    padding: 0.9rem 1.8rem;
     position: relative;
+    overflow: hidden;
+    transition: background 0.25s ease;
   }
-  .manifesto li::before {
-    content: counter(compromisso, decimal-leading-zero);
-    position: absolute;
+  .cta:hover {
+    background: #e21236;
+  }
+
+  /* Topo */
+  .topo {
+    position: fixed;
+    top: 0;
     left: 0;
-    top: 1.7rem;
-    font-family: var(--fonte-mono);
-    font-size: 0.85rem;
-    color: var(--vermelho);
+    right: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 1rem 2.5rem;
+    background: linear-gradient(to bottom, rgba(1, 19, 58, 0.85), rgba(1, 19, 58, 0));
   }
-  .manifesto h3 {
-    font-size: 1.35rem;
-    margin: 0 0 0.35rem;
+  .topo-marca img {
+    height: 2.2rem;
+    width: auto;
+    display: block;
+    background: var(--branco);
+    padding: 0.3rem 0.5rem;
   }
-  .manifesto p {
-    margin: 0;
-    color: var(--cinza-700);
-  }
-  .documentos {
-    margin: 1.75rem 0 0;
-    color: var(--cinza-700);
-  }
-
-  details {
-    border-bottom: 1px solid var(--cinza-300);
-    padding: 1rem 0;
-  }
-  summary {
-    font-family: var(--fonte-serif);
-    font-size: 1.15rem;
-    color: var(--azul);
-    cursor: pointer;
-  }
-  details p {
-    color: var(--cinza-700);
-    margin: 0.75rem 0 0;
-    max-width: 42rem;
-  }
-
-  .chamada {
-    background: var(--azul);
-    color: var(--branco);
-    text-align: left;
-    padding: 4.5rem max(2rem, calc((100vw - 72rem) / 2 + 2rem));
-    border-top: 4px solid var(--vermelho);
-  }
-  .chamada h2 {
-    color: var(--branco);
-    font-size: clamp(2rem, 4vw, 3rem);
-    margin-bottom: 0.75rem;
-  }
-  .chamada p {
-    color: var(--cinza-300);
-    max-width: 38rem;
-    margin: 0 0 2rem;
-  }
-  .chamada-nota {
-    font-family: var(--fonte-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.06em;
-    color: var(--cinza-300);
-    border: 1px dashed rgba(255, 255, 255, 0.4);
-    padding: 0.9rem 1.1rem;
-    max-width: 38rem;
-    margin-top: 2.5rem;
-  }
-
-  .rodape {
-    padding: 3.5rem 2rem 2rem;
-    border-top: 1px solid var(--cinza-300);
-    max-width: 76rem;
-    margin: 0 auto;
-  }
-  .rodape-grade {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1.2fr 1.2fr;
+  .topo nav {
+    display: flex;
     gap: 2rem;
   }
-  .rodape img {
-    height: 2.1rem;
-    width: auto;
+  .topo nav a,
+  .topo-cliente {
+    color: var(--gelo);
+    text-decoration: none;
+    font-size: 0.88rem;
+    letter-spacing: 0.02em;
   }
-  .rodape-marca p {
-    color: var(--cinza-700);
-    max-width: 16rem;
-    font-family: var(--fonte-serif);
+  .topo nav a:hover,
+  .topo-cliente:hover {
+    color: var(--branco);
+  }
+  .topo-acessos {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .topo-cta {
+    background: var(--vermelho);
+    color: var(--branco);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 0.55rem 1.2rem;
+  }
+  .topo-cta:hover {
+    background: #e21236;
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding: 7rem 2.5rem 5rem;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 90% at 50% 0%, rgba(2, 33, 105, 0.9), rgba(1, 19, 58, 1) 70%);
+  }
+  .hero-geo {
+    position: absolute;
+    inset: -10% -5%;
+    width: 110%;
+    height: 120%;
+  }
+  .hero-coord {
+    position: absolute;
+    top: 6.5rem;
+    right: 2.5rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    color: rgba(255, 255, 255, 0.45);
+    writing-mode: vertical-rl;
+    margin: 0;
+  }
+  .hero-conteudo {
+    position: relative;
+    text-align: center;
+    max-width: 64rem;
+  }
+  .hero-kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gelo);
+    margin: 0 0 1.75rem;
+    min-height: 1.2em;
+  }
+  .hero h1 {
+    font-size: clamp(3rem, 9.5vw, 7.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.015em;
+  }
+  .hero h1 .linha {
+    display: block;
+  }
+  .hero h1 em {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--branco);
+  }
+  .hero-pe {
+    margin-top: 2.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.1rem;
+  }
+  .hero-frase {
+    color: var(--gelo);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  .hero-ticket {
+    position: absolute;
+    right: 2.5rem;
+    bottom: 2.5rem;
+    border: 1px solid var(--linha);
+    border-left: 3px solid var(--vermelho);
+    background: rgba(1, 19, 58, 0.65);
+    backdrop-filter: blur(4px);
+    padding: 1rem 1.25rem;
+    max-width: 17rem;
+  }
+  .ticket-rotulo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gelo);
+    margin: 0 0 0.4rem;
+  }
+  .ticket-valor {
+    margin: 0 0 0.6rem;
+    font-size: 0.95rem;
+    color: var(--branco);
+  }
+  .ticket-valor strong {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    font-size: 1.35rem;
+  }
+  .hero-ticket a {
+    color: var(--branco);
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid var(--vermelho);
+    padding-bottom: 2px;
+  }
+  .hero-ticket a:hover {
+    color: var(--vermelho);
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 2.5rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+    margin: 0;
+    animation: pulsar 2.4s ease-in-out infinite;
+  }
+  @keyframes pulsar {
+    50% {
+      opacity: 0.35;
+      transform: translateY(4px);
+    }
+  }
+
+  /* Marquee */
+  .marquee {
+    overflow: hidden;
+    border-top: 1px solid var(--linha);
+    border-bottom: 1px solid var(--linha);
+    background: var(--navy-escuro);
+    padding: 0.7rem 0;
+  }
+  .marquee-faixa {
+    display: flex;
+    white-space: nowrap;
+    width: max-content;
+    animation: rolar 36s linear infinite;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gelo);
+  }
+  @keyframes rolar {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-faixa {
+      animation: none;
+    }
+    .hero-scroll {
+      animation: none;
+    }
+  }
+
+  /* O que é */
+  .oque {
+    padding: 9rem 2.5rem;
+    max-width: 70rem;
+    margin: 0 auto;
+  }
+  .oque h2,
+  .vantagens h2,
+  .metodo h2,
+  .diferenciais h2,
+  .faq h2 {
+    font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+    margin-bottom: 2.5rem;
+  }
+  .oque-texto {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(1.7rem, 3.6vw, 3rem);
+    line-height: 1.25;
+    max-width: 56rem;
+    margin: 0;
+    color: var(--branco);
+  }
+  .oque-texto em {
+    color: var(--vermelho);
+    font-style: italic;
+  }
+
+  /* Vantagens */
+  .vantagens {
+    padding: 4rem 2.5rem 8rem;
+    max-width: 70rem;
+    margin: 0 auto;
+  }
+  .vantagens-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem 2.5rem;
+  }
+  .vantagens-lista li {
+    border-top: 1px solid var(--linha);
+    padding-top: 1.5rem;
+    transform: translateY(calc(var(--desloca) * 1.75rem));
+  }
+  .vantagens-lista .num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    color: var(--vermelho);
+  }
+  .vantagens-lista h3 {
+    font-size: 1.7rem;
+    margin: 0.7rem 0 0.6rem;
+  }
+  .vantagens-lista p {
+    margin: 0;
+    color: var(--gelo);
+    font-size: 0.97rem;
+  }
+
+  /* Galeria horizontal */
+  .galeria {
+    background: var(--navy-escuro);
+    border-top: 1px solid var(--linha);
+  }
+  .galeria-pin {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    padding: 5rem 0 4rem;
+  }
+  .galeria-cabeca {
+    padding: 0 2.5rem;
+    max-width: 70rem;
+    margin: 0 auto 3rem;
+    width: 100%;
+  }
+  .galeria-cabeca h2 {
+    font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+    margin-bottom: 1rem;
+  }
+  .galeria-apoio {
+    color: var(--gelo);
+    max-width: 38rem;
+    margin: 0;
+  }
+  .galeria-track {
+    display: flex;
+    gap: 2rem;
+    padding: 0 2.5rem;
+    width: max-content;
+  }
+  .painel {
+    width: clamp(17rem, 26vw, 24rem);
+    border: 1px solid var(--linha);
+    padding: 1.25rem 1.25rem 1.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    position: relative;
+    transition: border-color 0.3s ease, transform 0.3s ease;
+  }
+  .painel:hover {
+    border-color: rgba(255, 255, 255, 0.45);
+    transform: translateY(-6px);
+  }
+  .painel-foto {
+    overflow: hidden;
+    background: var(--navy);
+    aspect-ratio: 4 / 3;
+    margin-bottom: 1.1rem;
+  }
+  .painel-foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    mix-blend-mode: luminosity;
+    opacity: 0.8;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+  }
+  .painel:hover .painel-foto img {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+  .painel-num {
+    position: absolute;
+    top: 0.4rem;
+    right: 0.9rem;
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 3.2rem;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.35);
+    margin: 0;
+    pointer-events: none;
+  }
+  .painel h3 {
+    font-size: 1.55rem;
+    margin: 0 0 0.4rem;
+  }
+  .painel-status {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gelo);
+    margin: 0 0 1rem;
+  }
+  .painel-ativo .painel-status {
+    color: var(--vermelho);
+    font-weight: 500;
+  }
+  .painel a {
+    color: var(--branco);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid var(--vermelho);
+    padding-bottom: 2px;
+  }
+  .painel a:hover {
+    color: var(--vermelho);
+  }
+
+  /* Método */
+  .metodo {
+    padding: 8rem 2.5rem 6rem;
+    max-width: 70rem;
+    margin: 0 auto;
+  }
+  .metodo-apoio {
+    color: var(--gelo);
+    margin: -1.5rem 0 3rem;
+    max-width: 36rem;
+  }
+  .metodo-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .metodo-lista li {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 2rem;
+    padding: 1.75rem 0;
+    border-top: 1px solid var(--linha);
+    align-items: baseline;
+  }
+  .metodo-num {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 2.6rem;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
+  }
+  .metodo-lista p {
+    margin: 0;
+    font-size: 1.15rem;
+    max-width: 44rem;
+  }
+
+  /* Números */
+  .numeros {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--linha);
+    border-bottom: 1px solid var(--linha);
+  }
+  .numeros-grande {
+    padding: 4.5rem 2.5rem;
+    text-align: center;
+  }
+  .numeros-grande + .numeros-grande {
+    border-left: 1px solid var(--linha);
+  }
+  .numeros-valor {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(3.4rem, 8vw, 6.5rem);
+    line-height: 1;
+    margin: 0 0 1rem;
+  }
+  .numeros-sufixo {
+    display: inline-block;
+    font-size: 0.35em;
+    margin-left: 0.35em;
+    color: var(--vermelho);
+  }
+  .numeros-legenda {
+    color: var(--gelo);
+    margin: 0 auto;
+    max-width: 24rem;
+    font-size: 0.95rem;
+  }
+  .numeros-legenda small {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Diferenciais */
+  .diferenciais {
+    padding: 8rem 2.5rem 6rem;
+    max-width: 70rem;
+    margin: 0 auto;
+  }
+  .diferenciais-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+  }
+  .diferenciais-lista li {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr);
+    gap: 2rem;
+    border-top: 1px solid var(--linha);
+    padding: 1.6rem 0;
+  }
+  .diferenciais-lista h3 {
+    font-size: 1.6rem;
+  }
+  .diferenciais-lista p {
+    margin: 0;
+    color: var(--gelo);
+  }
+  .documentos {
+    margin: 2.5rem 0 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    color: var(--gelo);
+  }
+  .documentos a {
+    color: var(--branco);
+  }
+
+  /* FAQ */
+  .faq {
+    padding: 4rem 2.5rem 8rem;
+    max-width: 70rem;
+    margin: 0 auto;
+  }
+  .faq-lista details {
+    border-top: 1px solid var(--linha);
+  }
+  .faq-lista details:last-child {
+    border-bottom: 1px solid var(--linha);
+  }
+  .faq-lista summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 1.4rem 0;
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 1.45rem;
+  }
+  .faq-lista summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-sinal {
+    flex: none;
+    width: 0.9rem;
+    height: 0.9rem;
+    position: relative;
+  }
+  .faq-sinal::before,
+  .faq-sinal::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0 auto;
+    height: 1px;
+    background: var(--vermelho);
+    transition: transform 0.3s ease;
+  }
+  .faq-sinal::after {
+    transform: rotate(90deg);
+  }
+  details[open] .faq-sinal::after {
+    transform: rotate(0deg);
+  }
+  .faq-lista details p {
+    margin: 0;
+    padding: 0 0 1.6rem;
+    color: var(--gelo);
+    max-width: 52rem;
+  }
+
+  /* Contato */
+  .contato {
+    background: var(--vermelho);
+    color: var(--branco);
+    padding: 6rem 2.5rem;
+    text-align: center;
+  }
+  .contato h2 {
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    max-width: 56rem;
+    margin: 0 auto 1.25rem;
+  }
+  .contato p {
+    max-width: 36rem;
+    margin: 0 auto 2rem;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .contato .cta {
+    background: var(--branco);
+    color: var(--vermelho);
+  }
+  .contato .cta:hover {
+    background: var(--navy-escuro);
+    color: var(--branco);
+  }
+  .contato-acoes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .contato-alt {
+    font-size: 0.95rem;
+  }
+  .contato-nota {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem !important;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.7) !important;
+    margin-top: 2.5rem !important;
+  }
+
+  /* Rodapé */
+  .rodape {
+    background: var(--navy-escuro);
+    padding: 4rem 2.5rem 2rem;
+    border-top: 1px solid var(--linha);
+  }
+  .rodape-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    max-width: 70rem;
+    margin: 0 auto 3rem;
+  }
+  .rodape-topo img {
+    height: 2.2rem;
+    width: auto;
+    background: var(--branco);
+    padding: 0.3rem 0.5rem;
+  }
+  .rodape-frase {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 1.3rem;
+    margin: 0;
+    color: var(--gelo);
+  }
+  .rodape-colunas {
+    max-width: 70rem;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
   }
   .rodape h3 {
-    font-family: var(--fonte-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.14em;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--cinza-500);
-    margin: 0 0 0.9rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0 0 1rem;
   }
-  .rodape nav a,
-  .rodape div a {
-    display: block;
-    color: var(--cinza-700);
-    text-decoration: none;
-    margin-bottom: 0.5rem;
-    font-size: 0.92rem;
-  }
-  .rodape nav a:hover,
-  .rodape div a:hover {
-    color: var(--azul);
-    text-decoration: underline;
-  }
+  .rodape a,
   .rodape p {
-    margin: 0 0 0.5rem;
+    display: block;
+    color: var(--gelo);
+    text-decoration: none;
     font-size: 0.92rem;
-    color: var(--cinza-700);
+    margin: 0 0 0.55rem;
+  }
+  .rodape a:hover {
+    color: var(--branco);
   }
   .rodape-legal {
-    border-top: 1px solid var(--cinza-300);
-    margin-top: 2.5rem;
+    max-width: 70rem;
+    margin: 3rem auto 0 !important;
+    border-top: 1px solid var(--linha);
     padding-top: 1.25rem;
-    font-size: 0.8rem !important;
-    color: var(--cinza-500) !important;
-    max-width: 60rem;
+    font-size: 0.78rem !important;
+    color: rgba(255, 255, 255, 0.5) !important;
   }
 
   .play-nav {
     position: fixed;
     bottom: 1rem;
     right: 1rem;
-    background: var(--cinza-950);
-    color: var(--branco);
+    z-index: 60;
+    background: rgba(1, 19, 58, 0.85);
+    border: 1px solid var(--linha);
     display: flex;
     gap: 0.75rem;
     padding: 0.45rem 0.9rem;
     border-radius: 999px;
     font-size: 0.8rem;
-    opacity: 0.85;
   }
   .play-nav a {
-    color: var(--branco);
+    color: var(--gelo);
     text-decoration: none;
   }
   .play-nav a[aria-current='page'] {
@@ -887,42 +1252,90 @@ const faq = [
     font-weight: 700;
   }
 
+  @media (prefers-reduced-motion: reduce) and (min-width: 60rem) {
+    .galeria-pin {
+      min-height: auto;
+    }
+    .galeria-track {
+      width: auto;
+      overflow-x: auto;
+      padding-bottom: 1.5rem;
+    }
+    .painel {
+      flex: 0 0 clamp(17rem, 26vw, 24rem);
+    }
+  }
+
   @media (max-width: 60rem) {
-    .faixa-topo {
-      flex-direction: column;
-      gap: 0.15rem;
+    .topo {
+      padding: 0.9rem 1.25rem;
     }
-    .cabecalho {
-      flex-wrap: wrap;
-      gap: 1rem;
+    .topo nav {
+      display: none;
     }
-    .cabecalho nav {
-      flex-wrap: wrap;
-      gap: 0.9rem;
+    .hero {
+      padding: 7rem 1.25rem 9rem;
     }
-    .hero,
-    .secao {
+    .hero-coord {
+      display: none;
+    }
+    .hero-ticket {
+      right: 1.25rem;
+      left: 1.25rem;
+      bottom: 1.25rem;
+      max-width: none;
+    }
+    .hero-scroll {
+      display: none;
+    }
+    .oque,
+    .vantagens,
+    .metodo,
+    .diferenciais,
+    .faq {
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+    }
+    .vantagens-lista {
       grid-template-columns: 1fr;
       gap: 2rem;
-      padding-top: 3rem;
-      padding-bottom: 3rem;
     }
-    .passos {
+    .vantagens-lista li {
+      transform: none;
+    }
+    .galeria-pin {
+      min-height: auto;
+    }
+    .galeria-cabeca {
+      padding: 0 1.25rem;
+    }
+    .galeria-track {
+      width: auto;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 0 1.25rem 1.5rem;
+      -webkit-overflow-scrolling: touch;
+    }
+    .painel {
+      scroll-snap-align: start;
+      flex: 0 0 80vw;
+    }
+    .metodo-lista li {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .numeros {
       grid-template-columns: 1fr;
     }
-    .indice li {
-      grid-template-columns: 2.2rem 1fr;
-      grid-template-rows: auto auto auto;
-      gap: 0.4rem 1rem;
+    .numeros-grande + .numeros-grande {
+      border-left: 0;
+      border-top: 1px solid var(--linha);
     }
-    .indice-fato,
-    .indice li a {
-      grid-column: 2;
-    }
-    .comparativo {
+    .diferenciais-lista li {
       grid-template-columns: 1fr;
+      gap: 0.6rem;
     }
-    .rodape-grade {
+    .rodape-colunas {
       grid-template-columns: 1fr 1fr;
     }
   }

@@ -1,162 +1,162 @@
-# Decisão de direção, FASE 2 (Play)
+# Decisão de direção, FASE 2 (Play), rodada 2
 
-Data: 10/06/2026. Comparação dos três conceitos de homepage construídos em
-`/play`, com pontos fortes, riscos, esforço de produção e recomendação.
+Data: 11/06/2026. Comparação dos três conceitos de homepage em `/play`,
+com pontos fortes, riscos, esforço de produção e recomendação.
 A escolha final é de Marcílio.
 
-Os três usam o conteúdo real de `content/`, as decisões da FASE 1
-(`decisoes-fase-1.md`) e a paleta Union Jack do CLAUDE.md. Nenhum usa
-depoimento inventado, número próprio de operação ou CTA morto; segmentos sem
-grupo lançado aparecem como "grupos em preparação" com captação de interesse.
+## Registro do processo
+
+A rodada 1 (três protótipos estáticos, texto reescrito) foi descartada por
+decisão de Marcílio em 11/06/2026: faltava inovação visual e craft de UX/UI,
+e o texto havia sido reescrito além do desejado. A rodada 2 foi refeita sob
+duas regras novas:
+
+1. O texto do site atual é a base, com ajuste fino apenas (correções da
+   FASE 1: tempos verbais, CTA morto, atribuição de fonte). Headlines e
+   seções vêm de `content/` quase intactas.
+2. O esforço pesado vai para a interface: tipografia de display de verdade,
+   movimento coreografado (GSAP + ScrollTrigger + SplitText, Lenis para
+   scroll suave), microinterações e composição com assinatura. A skill
+   oficial `frontend-design` da Anthropic foi instalada em
+   `.claude/skills/` e norteia o trabalho visual.
+
+Todos os conceitos respeitam: paleta Union Jack do CLAUDE.md, vermelho
+apenas em ação, segmentos sem grupo tratados com honestidade ("Em breve"
+como estado, nunca como CTA morto), nenhum depoimento inventado, movimento
+desligado para quem prefere movimento reduzido.
 
 ## Como avaliar
 
-Rotas locais: `/play/conceito-a/`, `/play/conceito-b/`, `/play/conceito-c/`
-(hub em `/play/`). São protótipos para sentir direção: hierarquia, tom e
-identidade. Tipografia, fotos e microinterações são provisórias.
+Rotas: `/play/conceito-a/`, `/play/conceito-b/`, `/play/conceito-c/`
+(hub em `/play/`). Avaliar no navegador, com scroll; metade do desenho de
+cada conceito é movimento. São protótipos: pesos de imagem, SEO fino e
+variações de viewport extremas ficam para a fase final.
 
 ---
 
 ## Conceito A, Dossiê
 
-Tese: inteligência britânica. A página trata informação como ficha técnica:
-navy dominante, serif de autoridade (Georgia, herdada dos e-mails), rótulos
-em mono, numeração de seções, vermelho apenas em ação. A regulação é
-protagonista: ficha institucional na primeira dobra, com autorização,
-datas, lei e canais.
+Tese: inteligência britânica cinematográfica. Navy profundo dominante,
+Instrument Serif gigante, rótulos em IBM Plex Mono, geometria fina da Union
+Jack ao fundo, grão de filme, vermelho cirúrgico. O texto de abertura é o do
+site atual ("O Melhor Investimento: 6 caminhos para transformar sonhos em
+conquistas"), revelado com decodificação e máscara de linhas.
+
+**Assinaturas visuais**: kicker que se decodifica (ScrambleText); título por
+máscara de linhas; coordenadas de Porto Alegre na lateral; faixa marquee com
+a linha regulatória; galeria horizontal pinada dos seis caminhos; contador
+do dado ABAC; numerais vazados (stroke).
 
 **Pontos fortes**
 
-- É o único dos três com assinatura visual inconfundível; aplicado o teste do
-  logo, nenhum concorrente do benchmark poderia assinar esta página.
-- Converte a maior fraqueza da MI6 (ser nova) em postura: precisão, regra
-  pública e fiscalização federal no lugar de histórico que não existe.
-- Coerência total com o nome MI6 e com a identidade dos e-mails; a marca
-  inteira fecha.
-- Estrutura escala bem para o site todo: cada segmento vira um dossiê com
-  ficha própria (taxa, prazo, faixa de crédito), exatamente a lacuna de
-  transparência apontada no benchmark.
-- Pouca dependência de fotografia, que hoje é banco de imagem genérico.
+- A identidade mais inconfundível dos três; nenhum concorrente do benchmark
+  poderia assinar esta página. O conceito da marca (MI6, Union Jack) vira
+  experiência, não decoração.
+- O navy dominante com vermelho raro segue à risca a hierarquia de cor do
+  CLAUDE.md e dá à regulação (marquee, ficha de motos) papel de destaque.
+- Galeria horizontal resolve os seis segmentos sem grade de cards.
 
 **Riscos**
 
-- Tom sóbrio pode esfriar a conversa com o público de entrada (parcela de
-  R$ 200 em motos); mitigável com linguagem simples e rotas humanas
-  (WhatsApp, 0800) sempre visíveis.
-- Exige disciplina editorial permanente; sem ela, o conceito degrada para
-  pastiche de espionagem, que o CLAUDE.md veta.
-- Navy em grande área pede cuidado com contraste e respiro para não pesar.
+- Página escura como primeira impressão pode pesar para parte do público;
+  exige cuidado redobrado com contraste e legibilidade em telas ruins.
+- É o conceito mais dependente de execução: sem o movimento, perde mais que
+  os outros (há fallbacks, mas a experiência plena é a animada).
+- Pinagem horizontal precisa de teste fino em trackpads e telas baixas.
 
-**Esforço de produção: médio.** Componentes simples (listas, fichas, réguas),
-sem dependência de assets novos; o investimento é em tipografia e texto.
+**Esforço para virar produção: médio-alto.**
 
-## Conceito B, Aula
+## Conceito B, Travessia
 
-Tese: o site que melhor explica consórcio no Brasil. A homepage é um ensaio
-editorial: abre direto no texto, capítulos numerados, linha do tempo, número
-do setor como figura tipográfica, fotos tratadas em navy. Quem entende,
-confia; o lead vem no fim da leitura.
+Tese: editorial cinematográfico. A homepage como uma revista de uma pauta
+só, o projeto de vida. Fotografia em tela cheia lavada de navy, Fraunces
+variável como voz de display (com itálico expressivo), capítulos numerados,
+fio vermelho que se desenha no passo a passo, número ABAC como página
+inteira. Headline de abertura: "Você está perto de realizar o seu projeto
+de vida", que é frase do site atual.
+
+**Assinaturas visuais**: hero fotográfico com zoom lento e revelação por
+palavras; frase manifesto que acende palavra a palavra durante a leitura;
+spreads dos seis caminhos com parallax interno e numerais vazados; coluna de
+capítulo fixa (sticky) no passo a passo.
 
 **Pontos fortes**
 
-- Formato sem paralelo no setor; nenhum concorrente do benchmark educa de
-  verdade, e consórcio é um produto comprado com dúvida.
-- Melhor potencial de SEO e de mídia orgânica: conteúdo profundo, FAQ
-  integrada, estrutura de artigo que rende compartilhamento.
-- Constrói a confiança mais durável, a da compreensão; combina com a
-  honestidade editorial decidida na FASE 1.
-- A barra de progresso de leitura é uma microinteração assinatura barata e
-  discreta.
+- O mais emocional e humano dos três; vende o sonho antes do produto, com a
+  voz do próprio site atual.
+- Estrutura de capítulos escala naturalmente para as páginas de segmento
+  (cada segmento é um spread que vira página).
+- Fraunces dá personalidade tipográfica rara no setor sem perder sobriedade.
 
 **Riscos**
 
-- Conversão mais lenta: o CTA chega tarde e quem só quer simular precisa
-  rolar; como homepage única, pode custar lead.
-- O gargalo é produção de conteúdo: cada capítulo exige redação e, no ideal,
-  infografia própria; com as fotos de banco atuais, o formato editorial
-  perde força (pede fotografia própria na fase final).
-- Menos óbvio para tráfego pago, que espera página de oferta.
+- É refém da fotografia: com banco de imagem genérico o efeito cai pela
+  metade; pede fotografia própria ou curadoria muito boa na fase final.
+- Conversão menos agressiva; o caminho até o formulário é mais longo.
+- Páginas com muita imagem grande exigem disciplina de performance.
 
-**Esforço de produção: alto para fazer bem.** O esqueleto é simples, mas a
-qualidade depende de texto e material visual que ainda não existem.
+**Esforço para virar produção: alto** (por causa do material fotográfico).
 
-## Conceito C, Conversão
+## Conceito C, Painel
 
-Tese: cada dobra empurra para um único destino, o formulário pré-segmentado.
-Módulo "Monte sua proposta" na primeira dobra (segmento + faixa de parcela,
-espelhando a recomendação da FASE 1), faixa de confiança com BACEN, Lei
-11.795 e dado ABAC, duas rotas em toda seção (formulário e canal humano).
+Tese: conversão como produto, com craft. Grade suíça em branco, Source
+Serif 4 nos títulos, Archivo (inclusive expandida) nos números, vermelho só
+no CTA. A primeira dobra já começa a proposta: chips de segmento e slider de
+parcela com o valor subindo em tempo real; cada seção devolve ao mesmo
+destino.
+
+**Assinaturas visuais**: módulo de proposta com slider e número vivo; faixa
+de medidas com contador; tabela de segmentos com preview de foto que segue o
+cursor; passo a passo sobre navy; comparativo com o cartão MI6 em navy.
 
 **Pontos fortes**
 
-- Caminho mais curto para o lead qualificado; o módulo entrega ao consultor
-  segmento e faixa de parcela, sem fricção de simulador real.
-- Métrica de sucesso clara (envios de formulário) e estrutura natural para
-  testes de headline e mídia paga.
-- Mobile-first por construção; o módulo é a primeira coisa útil na tela.
-- Menor custo de manutenção e evolução.
+- O caminho mais curto para o lead qualificado; o módulo entrega segmento e
+  faixa de parcela ao consultor, exatamente a recomendação da FASE 1.
+- Leve, claro, mobile-first; o mais barato de manter e medir.
+- O preview que segue o cursor e os números em Archivo expandida dão o
+  toque memorável que faltava na rodada 1.
 
 **Riscos**
 
-- É o mais próximo de "qualquer empresa": a hierarquia é a convenção das
-  fintechs e o teste do logo passa com menos folga; a identidade fica
-  dependente da disciplina de paleta e dos detalhes (numerais serifados,
-  módulo de proposta).
-- Com um único segmento ativo, a página de oferta promete uma operação maior
-  do que a atual; precisa do contrapeso da honestidade nos rótulos.
-- A promessa implícita de resposta rápida vira dívida operacional: o
-  consultor precisa responder mesmo.
+- Ainda é o mais próximo da convenção fintech; a identidade depende da
+  disciplina de paleta e tipografia para não escorregar em template.
+- O slider sugere simulação; é preciso deixar claro que é o início de uma
+  conversa, não uma calculadora de crédito.
 
-**Esforço de produção: baixo a médio.**
+**Esforço para virar produção: baixo-médio.**
 
 ---
 
 ## Comparação direta
 
-| Critério | A, Dossiê | B, Aula | C, Conversão |
+| Critério | A, Dossiê | B, Travessia | C, Painel |
 | --- | --- | --- | --- |
-| Identidade (teste do logo) | forte | média/forte | média |
-| Confiança transmitida | forte | forte | média |
-| Conversão de lead | média | baixa/média | forte |
-| SEO e conteúdo | médio | forte | médio |
-| Esforço de produção | médio | alto | baixo/médio |
-| Risco principal | esfriar o tom | converter pouco | virar template |
+| Identidade (teste do logo) | forte | forte | média/forte |
+| Impacto visual imediato | forte | forte | médio |
+| Conversão de lead | média | média | forte |
+| Dependência de fotografia | baixa | alta | média |
+| Performance (custo do brilho) | médio | médio-alto | baixo |
+| Esforço de produção | médio-alto | alto | baixo-médio |
 
 ## Recomendação
 
-**Adotar o Conceito A, Dossiê, como direção dominante, absorvendo dos outros
-dois o que eles têm de melhor:**
+**Conceito A, Dossiê, como direção dominante**, pelos mesmos fundamentos da
+rodada 1 que continuam valendo (identidade inconfundível em um setor de
+sites intercambiáveis, regulação como protagonista), agora com a execução
+visual à altura. Dois empréstimos:
 
-1. Do C: o módulo de proposta pré-segmentada sobe para a primeira dobra da
-   home, redesenhado na linguagem de ficha do dossiê (a "ficha institucional"
-   e a "monte sua proposta" podem ser o mesmo objeto visual). A mecânica de
-   conversão é portátil; a identidade não é.
-2. Do B: o capítulo explicativo vira uma página própria ("Como funciona o
-   consórcio"), linkada com destaque na home e construída como o ensaio
-   editorial do conceito; é o ativo de SEO e de educação, sem atrasar a
-   conversão da homepage.
+1. Do C: o módulo de proposta (chips + parcela) entra na primeira dobra ou
+   logo após o hero do A, na linguagem visual do dossiê.
+2. Do B: o tratamento fotográfico navy e o capítulo explicativo viram a
+   página "Como funciona", linkada com destaque na home.
 
-Fundamentos: a pesquisa mostrou que todos os concorrentes são intercambiáveis
-e que confiança verificável é a lacuna do setor; A é o único conceito que
-ataca as duas coisas ao mesmo tempo e que só a MI6 poderia assinar. Os
-mecanismos de conversão do C e a profundidade do B não dependem da estética
-deles, podem viver dentro do A. O risco de tom frio se controla com texto
-simples e canais humanos visíveis, já demonstrados no protótipo.
-
-## Pendências que afetam a execução (herdadas da FASE 1)
-
-- CNPJ e razão social exata para o rodapé institucional.
-- Confirmação de filiação à ABAC e permissão de uso de marcas na faixa de
-  credibilidade (os protótipos usam apenas texto, sem logos de terceiros).
-- URL pública amigável do LinkedIn.
-- Definição dos pares tipográficos finais. Os protótipos usam Georgia e
-  fontes de sistema; para a fase final, proposta a validar com Marcílio:
-  títulos em Source Serif 4 ou Spectral (mantendo Georgia como fallback da
-  assinatura), corpo em Public Sans ou Source Sans 3, rótulos em IBM Plex
-  Mono. Nenhuma das três proibidas (Inter, Poppins, Montserrat).
+Se a prioridade do lançamento for volume de lead com mídia paga desde o
+primeiro dia, o C é o plano B defensável; nesse caso, importar do A o hero
+navy como abertura para não perder a assinatura.
 
 ## Próximo passo
 
-Marcílio escolhe a direção (ou pede uma rodada de ajuste em um conceito).
-Com a direção fechada, a FASE 3 começa pelo design system mínimo (tokens,
-tipografia definitiva, componentes de ficha e CTA) e pela home de produção.
+Marcílio escolhe a direção (ou pede uma rodada de ajuste). Na FASE 3:
+tokens definitivos, componentes, páginas internas, orçamento de performance
+para o movimento (LCP e CLS com meta verde) e fotografia.
