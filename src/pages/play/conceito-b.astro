@@ -93,8 +93,7 @@ const faq = [
 
     <header class="topo">
       <a class="topo-marca" href="/play/conceito-b/">
-        <img class="logo-claro" src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
-        <img class="logo-escuro" src="/imgs/logo-mi6.png" alt="" aria-hidden="true" width="219" height="47" />
+        <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
       </a>
       <nav aria-label="Navegação principal">
         <a href="#oque">O que é consórcio</a>
@@ -495,8 +494,12 @@ const faq = [
     text-decoration: none;
     font-weight: 600;
     font-size: 0.95rem;
-    padding: 0.9rem 1.8rem;
-    transition: transform 0.25s ease, background 0.25s ease;
+    padding: 0.95rem 2.1rem;
+    border-radius: 999px;
+    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+  }
+  .cta:hover {
+    box-shadow: 0 14px 28px -14px rgba(200, 16, 46, 0.55);
   }
   .cta:hover {
     background: #a50d26;
@@ -525,63 +528,48 @@ const faq = [
     align-items: center;
     justify-content: space-between;
     gap: 2rem;
-    padding: 1rem 2.5rem;
-    background: linear-gradient(to bottom, rgba(6, 10, 26, 0.66), transparent);
-    transition: background 0.35s ease, padding 0.35s ease, box-shadow 0.35s ease;
+    padding: 0.85rem 2.5rem;
+    background: rgba(247, 244, 238, 0.96);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(16, 21, 34, 0.1);
+    transition: padding 0.35s ease, box-shadow 0.35s ease;
   }
   .topo.rolou {
-    background: rgba(247, 244, 238, 0.95);
-    backdrop-filter: blur(10px);
     padding-top: 0.6rem;
     padding-bottom: 0.6rem;
-    box-shadow: 0 1px 0 var(--linha);
-  }
-  .topo.rolou nav a {
-    color: var(--tinta);
-  }
-  .topo.rolou nav a:hover {
-    color: var(--vermelho);
-  }
-  .topo-marca {
-    position: relative;
-    display: block;
+    box-shadow: 0 10px 30px -18px rgba(16, 21, 34, 0.4);
   }
   .topo-marca img {
-    height: 1.9rem;
+    height: 2rem;
     width: auto;
     display: block;
-  }
-  .logo-escuro {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  .topo.rolou .logo-claro {
-    opacity: 0;
-  }
-  .topo.rolou .logo-escuro {
-    opacity: 1;
   }
   .topo nav {
     display: flex;
     gap: 1.75rem;
   }
   .topo nav a {
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--cinza);
     text-decoration: none;
     font-size: 0.88rem;
+    font-weight: 500;
   }
   .topo nav a:hover {
-    color: #fff;
+    color: var(--navy);
   }
   .topo-cta {
     background: var(--vermelho);
     color: #fff;
     text-decoration: none;
-    font-size: 0.88rem;
-    font-weight: 600;
-    padding: 0.55rem 1.2rem;
+    font-size: 0.86rem;
+    font-weight: 700;
+    padding: 0.55rem 1.25rem;
+    border-radius: 999px;
+    transition: background 0.25s ease, transform 0.25s ease;
+  }
+  .topo-cta:hover {
+    background: #a50d26;
+    transform: translateY(-1px);
   }
 
   /* Hero */

@@ -11,7 +11,26 @@ Dossiê, como direção da homepage**, e abriu um ciclo de refino fino sobre
 ele ("refinar até ficar belo", com mais algumas rodadas previstas). O B
 permanece como linguagem candidata para as páginas narrativas.
 
-### Rodada 4 (refino contínuo do A, em andamento)
+### Rodada 5 (marca oficial no topo e microdetalhes)
+
+Feedback de Marcílio: a logo oficial primária não deve ser recolorida na
+barra do topo (variações seguem permitidas fora dela), e o nível de detalhe
+deve descer mais um degrau (ícones nos acessos de login, botões
+arredondados, criatividade nas cores).
+
+- Header redesenhado como barra clara fixa, habitat natural do logo
+  primário oficial, nos dois conceitos finalistas.
+- Acessos com identidade própria: Canal do parceiro (ícone de maleta,
+  fantasma, hover vermelho) e Área do cliente (ícone de pessoa, pílula
+  contornada em navy que preenche no hover); CTA vermelho em pílula.
+- Botões de ação em pílula em todo o site; cartões e fichas continuam de
+  canto reto de propósito (contraste intencional de raios, não raio
+  uniforme).
+- Faixa "0 juros" com tratamento tipográfico novo (itálico com grifo
+  vermelho); ticket de motos reage ao hover; o bloco vermelho final ganhou
+  a geometria diagonal da marca para não ficar chapado.
+
+### Rodada 4 (refino do A)
 
 - Logo: criada a versão branca para fundos navy
   (`public/imgs/logo-mi6-branco.png`, recolorida do original preservando o

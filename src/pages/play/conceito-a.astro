@@ -143,7 +143,7 @@ const faq = [
 
     <header class="topo">
       <a class="topo-marca" href="/play/conceito-a/">
-        <img src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
+        <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
       </a>
       <nav aria-label="Navegação principal">
         <a class="sub" href="#solucoes">Consórcio</a>
@@ -151,7 +151,14 @@ const faq = [
         <a class="sub" href="#faq">Dúvidas</a>
       </nav>
       <div class="topo-acessos">
-        <a class="topo-cliente sub" href="https://mi6.evertecinc.com.br/autoatendimento">Área do cliente</a>
+        <a class="acesso acesso-parceiro" href="https://mi6.evertecinc.com.br/newcon.web/frmCorCCCnsLogin.aspx?applicationKey=3M9zL0+WaLYAeBQwijSQEkhjyy42CGuQj8DXZNFUeAoW7bdn/JfcNmUNbNUgQJqaufUv7kqAamOQCRrx6B2F7w==">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="6.8" width="14" height="9.7" rx="2.2"/><path d="M7.4 6.8V5.1a1.8 1.8 0 0 1 1.8-1.8h1.6a1.8 1.8 0 0 1 1.8 1.8v1.7"/><path d="M3 11.2h14"/></svg>
+          <span>Canal do parceiro</span>
+        </a>
+        <a class="acesso acesso-cliente" href="https://mi6.evertecinc.com.br/autoatendimento">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="6.6" r="3.1"/><path d="M3.6 17.1c1.2-3 3.5-4.6 6.4-4.6s5.2 1.6 6.4 4.6"/></svg>
+          <span>Área do cliente</span>
+        </a>
         <a class="topo-cta" href="#contato">Simule agora</a>
       </div>
     </header>
@@ -345,6 +352,16 @@ const faq = [
       </section>
 
       <section class="contato" id="contato">
+        <svg class="contato-geo" aria-hidden="true" viewBox="0 0 1440 600" preserveAspectRatio="xMidYMid slice">
+          <g stroke="rgba(255,255,255,0.14)" stroke-width="1">
+            <line x1="0" y1="0" x2="1440" y2="600"></line>
+            <line x1="1440" y1="0" x2="0" y2="600"></line>
+          </g>
+          <g stroke="rgba(1,33,105,0.28)" stroke-width="1">
+            <line x1="80" y1="0" x2="1520" y2="600"></line>
+            <line x1="1360" y1="0" x2="-80" y2="600"></line>
+          </g>
+        </svg>
         <h2 data-reveal><em>Em breve,</em> simule o consórcio ideal para você</h2>
         <p data-reveal>
           Enquanto a simulação completa não chega, fale com um consultor e
@@ -649,15 +666,19 @@ const faq = [
     text-decoration: none;
     font-weight: 600;
     font-size: 0.95rem;
-    padding: 0.9rem 1.8rem;
-    transition: background 0.25s ease, transform 0.25s ease;
+    padding: 0.95rem 2.1rem;
+    border-radius: 999px;
+    transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .cta:hover {
+    box-shadow: 0 14px 28px -14px rgba(200, 16, 46, 0.55);
   }
   .cta:hover {
     background: #e21236;
     transform: translateY(-2px);
   }
 
-  /* Topo */
+  /* Topo: barra clara, habitat do logo oficial primário */
   .topo {
     position: fixed;
     top: 0;
@@ -668,51 +689,91 @@ const faq = [
     align-items: center;
     justify-content: space-between;
     gap: 2rem;
-    padding: 1rem 2.5rem;
-    transition: background 0.35s ease, padding 0.35s ease, box-shadow 0.35s ease;
+    padding: 0.85rem 2.5rem;
+    background: var(--papel);
+    border-bottom: 1px solid rgba(1, 33, 105, 0.12);
+    transition: padding 0.35s ease, box-shadow 0.35s ease;
   }
   .topo.rolou {
-    background: rgba(1, 19, 58, 0.92);
-    backdrop-filter: blur(10px);
-    padding-top: 0.65rem;
-    padding-bottom: 0.65rem;
-    box-shadow: 0 1px 0 var(--linha);
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    box-shadow: 0 10px 30px -18px rgba(1, 19, 58, 0.45);
   }
   .topo-marca img {
-    height: 1.9rem;
+    height: 2rem;
     width: auto;
     display: block;
   }
   .topo nav {
     display: flex;
-    gap: 2rem;
+    gap: 1.9rem;
   }
-  .topo nav a,
-  .topo-cliente {
-    color: var(--gelo);
+  .topo nav a {
+    color: var(--tinta-suave);
     font-size: 0.88rem;
+    font-weight: 500;
     letter-spacing: 0.02em;
   }
-  .topo nav a:hover,
-  .topo-cliente:hover {
-    color: var(--branco);
+  .topo nav a:hover {
+    color: var(--navy);
   }
   .topo-acessos {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 0.65rem;
+  }
+  .acesso {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.84rem;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.5rem 0.95rem;
+    border-radius: 999px;
+    transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  }
+  .acesso svg {
+    width: 1.05rem;
+    height: 1.05rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex: none;
+  }
+  .acesso-parceiro {
+    color: var(--tinta-suave);
+  }
+  .acesso-parceiro:hover {
+    color: var(--vermelho);
+    background: rgba(200, 16, 46, 0.07);
+  }
+  .acesso-cliente {
+    color: var(--navy);
+    border: 1.5px solid rgba(1, 33, 105, 0.45);
+  }
+  .acesso-cliente:hover {
+    background: var(--navy);
+    color: var(--papel);
+    border-color: var(--navy);
   }
   .topo-cta {
     background: var(--vermelho);
     color: var(--branco);
     text-decoration: none;
-    font-size: 0.88rem;
-    font-weight: 600;
-    padding: 0.55rem 1.2rem;
-    transition: background 0.25s ease;
+    font-size: 0.86rem;
+    font-weight: 700;
+    padding: 0.55rem 1.25rem;
+    border-radius: 999px;
+    margin-left: 0.35rem;
+    white-space: nowrap;
+    transition: background 0.25s ease, transform 0.25s ease;
   }
   .topo-cta:hover {
     background: #e21236;
+    transform: translateY(-1px);
   }
 
   /* Hero */
@@ -848,6 +909,12 @@ const faq = [
     backdrop-filter: blur(4px);
     padding: 1rem 1.25rem;
     max-width: 17rem;
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  }
+  .ticket:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(1, 19, 58, 0.9);
   }
   .ticket-rotulo {
     font-family: 'IBM Plex Mono', monospace;
@@ -1151,9 +1218,13 @@ const faq = [
   }
   .numeros-sufixo {
     display: inline-block;
-    font-size: 0.35em;
-    margin-left: 0.35em;
-    color: #ff8095;
+    font-size: 0.32em;
+    margin-left: 0.4em;
+    font-style: italic;
+    color: var(--branco);
+    border-bottom: 3px solid var(--vermelho);
+    padding-bottom: 0.1em;
+    transform: translateY(-0.35em);
   }
   .numeros-legenda {
     color: var(--gelo);
@@ -1261,10 +1332,21 @@ const faq = [
 
   /* Contato */
   .contato {
+    position: relative;
+    overflow: hidden;
     background: var(--vermelho);
     color: var(--branco);
     padding: 6rem 2.5rem;
     text-align: center;
+  }
+  .contato-geo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .contato > :not(.contato-geo) {
+    position: relative;
   }
   .contato h2 {
     font-size: clamp(2.2rem, 5vw, 4rem);
@@ -1401,10 +1483,27 @@ const faq = [
 
   @media (max-width: 60rem) {
     .topo {
-      padding: 0.9rem 1.25rem;
+      padding: 0.7rem 1rem;
+      gap: 0.75rem;
     }
     .topo nav {
       display: none;
+    }
+    .topo-marca img {
+      height: 1.7rem;
+    }
+    .acesso span {
+      display: none;
+    }
+    .acesso {
+      padding: 0.5rem;
+    }
+    .acesso svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+    .topo-cta {
+      margin-left: 0;
     }
     .hero {
       padding: 6.5rem 1.25rem 7.5rem;
