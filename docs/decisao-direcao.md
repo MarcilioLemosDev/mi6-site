@@ -11,6 +11,22 @@ Dossiê, como direção da homepage**, e abriu um ciclo de refino fino sobre
 ele ("refinar até ficar belo", com mais algumas rodadas previstas). O B
 permanece como linguagem candidata para as páginas narrativas.
 
+### Rodada 13 (a marca viva: contorno do logo desenhado por caneta)
+
+Ideia de Marcílio: as linhas sem forma do hero dariam lugar ao contorno do
+próprio logo MI6, percorrido por uma caneta fluorescente em laço, como uma
+dança. Executado:
+
+- O logo (PNG) foi vetorizado com potrace em dois traços, as letras MI6 e a
+  barra vermelha do I/6, salvos como dado em `src/dados/mi6-traco.json`.
+- No hero, as linhas diagonais animadas foram substituídas pelo contorno do
+  logo (fill nenhum, só traço), como watermark grande e fantasma (letras em
+  branco gelo a 0,3, barra em vermelho a 0,5, com brilho fluorescente).
+- A animação desenha o contorno via stroke-dashoffset, em laço yoyo: a
+  caneta percorre as letras, depois a barra (defasadas), segura e recolhe,
+  repetindo. Desligada sob prefers-reduced-motion (contorno estático), com
+  uma grade diagonal levíssima preservada para profundidade.
+
 ### Rodada 12 (Dossiê do Plano v1)
 
 Primeira das três ideias aprovadas a sair do papel. No simulador, o botão
