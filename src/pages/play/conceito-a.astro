@@ -449,6 +449,7 @@ const simInicial = {
       </button>
       <a class="dock-cta" href="#contato" aria-label="Simular agora">
         <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="2.6" width="12" height="14.8" rx="1.6"/><path d="M7 6.4h6"/><path d="M7 10h2M11 10h2M7 13.4h2M11 13.4h2"/></svg>
+        <span>Simular</span>
       </a>
       <button type="button" data-folha="duvidas">
         <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7.4 7.2a2.7 2.7 0 1 1 3.6 2.9c-.8.3-1 .9-1 1.7"/><circle cx="10" cy="14.9" r="0.4"/></svg>
@@ -2559,26 +2560,31 @@ const simInicial = {
     stroke-linecap: round;
     stroke-linejoin: round;
   }
+  /* Simular: item inteiriço da barra, destacado por cor, sem saltar para
+     fora; assim o dock não cria um eixo central que o site assimétrico não tem. */
   .dock-cta {
-    width: 3.4rem;
-    height: 3.4rem;
-    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.22rem;
+    text-decoration: none;
     background: var(--vermelho);
     color: var(--branco);
-    display: grid;
-    place-items: center;
-    margin: -1.6rem 0.35rem 0;
-    border: 3px solid rgba(1, 16, 47, 0.9);
-    box-shadow: 0 14px 30px -10px rgba(200, 16, 46, 0.7);
-    transition: transform 0.25s ease, background 0.25s ease;
+    padding: 0.5rem 0.95rem;
+    border-radius: 999px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: background 0.2s ease;
   }
   .dock-cta:hover {
-    transform: translateY(-3px);
     background: #e21236;
+    color: var(--branco);
   }
   .dock-cta svg {
-    width: 1.45rem;
-    height: 1.45rem;
+    width: 1.25rem;
+    height: 1.25rem;
   }
 
   /* Folhas: o conteúdo de apoio sobe em lâminas, fora da rolagem principal */
@@ -2907,9 +2913,8 @@ const simInicial = {
       font-size: 0.54rem;
     }
     .dock-cta {
-      width: 3rem;
-      height: 3rem;
-      margin-top: -1.3rem;
+      padding: 0.45rem 0.6rem;
+      font-size: 0.54rem;
     }
     .folha {
       padding: 1.25rem 1.25rem 2rem;
