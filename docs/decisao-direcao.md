@@ -11,6 +11,33 @@ Dossiê, como direção da homepage**, e abriu um ciclo de refino fino sobre
 ele ("refinar até ficar belo", com mais algumas rodadas previstas). O B
 permanece como linguagem candidata para as páginas narrativas.
 
+### Rodada 10 (home enxuta e dock flutuante)
+
+Veredito de Marcílio sobre a rodada de conversa (`rodada-conversa.md`):
+seguem em frente apenas o Dossiê do Plano, a régua dos 98 meses e o véu
+como navegação com 404 na voz do dossiê (todos para a fase 3); as demais
+ideias foram descartadas por ora. Foco do momento: design, um passo de
+cada vez.
+
+Pedido novo dele: rolagem da home mínima, só o que importa, com o restante
+disponível em um menu suspenso moderno e arredondado na parte central
+inferior da tela, estilo Nubank.
+
+- A home encolheu para: hero, faixa de credibilidade, marquee, seis
+  caminhos e simulador, com o rodapé institucional. Três telas de conteúdo,
+  todas de decisão.
+- Nasceu o dock flutuante central inferior (navy translúcido, pílula, cinco
+  itens): O básico, Método, Simular (círculo vermelho elevado), Dúvidas e
+  Cliente. Presente em todas as larguras de tela; entra animado depois do
+  véu.
+- O conteúdo retirado da rolagem virou três folhas (lâminas que sobem do
+  rodapé, papel, cantos arredondados): O básico (o que é consórcio e
+  vantagens), Método (passo a passo, números do setor) e Dúvidas (FAQ,
+  diferenciais, documentos). Fecham por botão, fundo ou Esc; foco vai ao
+  fechamento; links internos fecham a lâmina antes de rolar.
+- Header e rodapé passaram a acionar as folhas; o CTA de bolso do mobile
+  foi aposentado (o dock assume o papel, com o simulador no centro).
+
 ### Rodada 8 (simulador real, credenciais oficiais e autocrítica)
 
 Pedidos de Marcílio: "Em breve" fora de qualquer destaque (o estado do

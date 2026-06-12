@@ -139,8 +139,8 @@ const faq = [
       </a>
       <nav aria-label="Navegação principal">
         <a class="sub" href="#solucoes">Consórcio</a>
-        <a class="sub" href="#metodo">Passo a passo</a>
-        <a class="sub" href="#faq">Dúvidas</a>
+        <button type="button" class="sub" data-folha="metodo">Passo a passo</button>
+        <button type="button" class="sub" data-folha="duvidas">Dúvidas</button>
       </nav>
       <div class="topo-acessos">
         <a class="acesso acesso-parceiro" href="https://mi6.evertecinc.com.br/newcon.web/frmCorCCCnsLogin.aspx?applicationKey=3M9zL0+WaLYAeBQwijSQEkhjyy42CGuQj8DXZNFUeAoW7bdn/JfcNmUNbNUgQJqaufUv7kqAamOQCRrx6B2F7w==">
@@ -187,8 +187,8 @@ const faq = [
             </h1>
             <p class="hero-frase" data-intro>Você está perto de realizar o seu projeto de vida</p>
             <div class="hero-acoes" data-intro>
-              <a class="cta" href="#solucoes">Conheça as soluções MI6</a>
-              <a class="link-claro sub" href="#oque">O que é consórcio?</a>
+              <a class="cta" href="#contato">Simule agora</a>
+              <button type="button" class="link-claro sub" data-folha="basico">O que é consórcio?</button>
             </div>
             <p class="hero-prova" data-intro>
               <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.4l6 2.2v4.5c0 4.2-2.6 7-6 8.4-3.4-1.4-6-4.2-6-8.4V4.6z"/><path d="M7.2 10.1l2 2 3.6-3.8"/></svg>
@@ -233,36 +233,10 @@ const faq = [
         </div>
       </div>
 
-      <section class="claro" id="oque">
-        <div class="miolo">
-          <p class="indice" data-reveal>SEÇÃO 01 / O BÁSICO</p>
-          <h2 data-reveal>O que é consórcio?</h2>
-          <p class="statement" data-linhas>
-            Um modelo de compra inteligente e planejada que permite a aquisição
-            de bens e serviços com parcelas que cabem no seu bolso, <em>sem juros</em>.
-          </p>
-
-          <div class="vantagens">
-            <p class="indice" data-reveal>SEÇÃO 02 / VANTAGENS</p>
-            <ol class="vantagens-lista">
-              {
-                vantagens.map((v, i) => (
-                  <li data-reveal style={`--desloca:${i}`}>
-                    <span class="num">{String(i + 1).padStart(2, '0')}</span>
-                    <h3>{v.titulo}</h3>
-                    <p>{v.texto}</p>
-                  </li>
-                ))
-              }
-            </ol>
-          </div>
-        </div>
-      </section>
-
       <section class="galeria" id="solucoes">
         <div class="galeria-pin">
           <header class="galeria-cabeca">
-            <p class="indice">SEÇÃO 03 / SEIS CAMINHOS</p>
+            <p class="indice">SEIS CAMINHOS</p>
             <h2>O consórcio ideal para você</h2>
             <p class="galeria-apoio">
               Trabalhamos com soluções em seis segmentos do mercado, com planos
@@ -285,89 +259,6 @@ const faq = [
             }
           </div>
           <p class="galeria-dica" aria-hidden="true">passe o cursor para ver em cores</p>
-        </div>
-      </section>
-
-      <section class="claro" id="metodo">
-        <div class="miolo">
-          <p class="indice" data-reveal>SEÇÃO 04 / MÉTODO</p>
-          <h2 data-reveal>Passo a passo do Consórcio Nacional MI6</h2>
-          <p class="apoio" data-reveal>
-            Veja como realizar seus objetivos com segurança, liberdade e sem juros.
-          </p>
-          <ol class="metodo-lista">
-            <span class="metodo-fio" aria-hidden="true"><i></i></span>
-            {
-              passos.map((p, i) => (
-                <li data-reveal>
-                  <span class="metodo-num">{String(i + 1).padStart(2, '0')}</span>
-                  <p>{p}</p>
-                </li>
-              ))
-            }
-          </ol>
-          <p class="metodo-convite" data-reveal>
-            Pronto para o passo 1? <a class="sub" href="#contato">Comece agora</a>
-          </p>
-        </div>
-      </section>
-
-      <section class="numeros">
-        <span class="seis-marca" aria-hidden="true">6</span>
-        <div class="numeros-grande">
-          <p class="numeros-valor">
-            +<span id="contador" data-alvo="1.27">1,27</span> mi
-          </p>
-          <p class="numeros-legenda" data-reveal>
-            de contemplados em 2024*<br />
-            <small>*Fonte: ABAC, Associação Brasileira de Administradoras de Consórcios. Dado do setor.</small>
-          </p>
-        </div>
-        <div class="numeros-grande">
-          <p class="numeros-valor"><span data-reveal>0</span><span class="numeros-sufixo">juros</span></p>
-          <p class="numeros-legenda" data-reveal>
-            no consórcio você paga taxa de administração definida em contrato,
-            não juros bancários
-          </p>
-        </div>
-      </section>
-
-      <section class="claro" id="diferenciais">
-        <div class="miolo">
-          <p class="indice" data-reveal>SEÇÃO 05 / DIFERENCIAIS</p>
-          <h2 data-reveal>Diferenciais pensados para você</h2>
-          <ul class="diferenciais-lista">
-            {
-              diferenciais.map((d) => (
-                <li data-reveal>
-                  <h3>{d.titulo}</h3>
-                  <p>{d.texto}</p>
-                </li>
-              ))
-            }
-          </ul>
-          <p class="documentos" data-reveal>
-            Documentos públicos: <a class="sub" href="/docs/regulamento.pdf">Regulamento</a> e
-            <a class="sub" href="/docs/contrato-adesao.pdf">Contrato de adesão</a>.
-          </p>
-
-          <div class="faq" id="faq">
-            <p class="indice" data-reveal>SEÇÃO 06 / PERGUNTAS</p>
-            <h2 data-reveal>Perguntas frequentes</h2>
-            <div class="faq-lista">
-              {
-                faq.map((item) => (
-                  <details data-reveal>
-                    <summary>
-                      {item.p}
-                      <span class="faq-sinal" aria-hidden="true" />
-                    </summary>
-                    <p>{item.r}</p>
-                  </details>
-                ))
-              }
-            </div>
-          </div>
         </div>
       </section>
 
@@ -459,7 +350,8 @@ const faq = [
       <div class="rodape-colunas">
         <nav aria-label="Institucional">
           <h3>Institucional</h3>
-          <a class="sub" href="#oque">Quem somos</a>
+          <button type="button" class="sub" data-folha="basico">O que é consórcio</button>
+          <button type="button" class="sub" data-folha="duvidas">Perguntas frequentes</button>
           <a class="sub" href="#contato">Contato</a>
           <a class="sub" href="#">Política de privacidade</a>
         </nav>
@@ -494,7 +386,123 @@ const faq = [
       </p>
     </footer>
 
-    <a class="cta-bolso" href="#contato">Simular agora</a>
+    <nav class="dock" aria-label="Menu flutuante">
+      <button type="button" data-folha="basico">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4.2c-1.6-1.1-3.6-1.4-6-1V15c2.4-.4 4.4-.1 6 1 1.6-1.1 3.6-1.4 6-1V3.2c-2.4-.4-4.4-.1-6 1z"/><path d="M10 4.2V16"/></svg>
+        <span>O básico</span>
+      </button>
+      <button type="button" data-folha="metodo">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="4.5" cy="4.5" r="2"/><circle cx="15.5" cy="15.5" r="2"/><path d="M6.5 4.5h6a3 3 0 0 1 0 6h-5a3 3 0 0 0 0 6"/></svg>
+        <span>Método</span>
+      </button>
+      <a class="dock-cta" href="#contato" aria-label="Simular agora">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="2.6" width="12" height="14.8" rx="1.6"/><path d="M7 6.4h6"/><path d="M7 10h2M11 10h2M7 13.4h2M11 13.4h2"/></svg>
+      </a>
+      <button type="button" data-folha="duvidas">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7.4 7.2a2.7 2.7 0 1 1 3.6 2.9c-.8.3-1 .9-1 1.7"/><circle cx="10" cy="14.9" r="0.4"/></svg>
+        <span>Dúvidas</span>
+      </button>
+      <a href="https://mi6.evertecinc.com.br/autoatendimento">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="6.6" r="3.1"/><path d="M3.6 17.1c1.2-3 3.5-4.6 6.4-4.6s5.2 1.6 6.4 4.6"/></svg>
+        <span>Cliente</span>
+      </a>
+    </nav>
+
+    <div class="folha-fundo" id="folha-fundo" hidden></div>
+
+    <section class="folha" id="folha-basico" hidden role="dialog" aria-modal="true" aria-labelledby="folha-basico-t">
+      <header class="folha-cabeca">
+        <p class="indice">O básico</p>
+        <button type="button" class="folha-fechar" data-fechar aria-label="Fechar">&times;</button>
+      </header>
+      <h2 id="folha-basico-t">O que é consórcio?</h2>
+      <p class="statement">
+        Um modelo de compra inteligente e planejada que permite a aquisição
+        de bens e serviços com parcelas que cabem no seu bolso, <em>sem juros</em>.
+      </p>
+      <div class="vantagens">
+        <p class="indice">Vantagens do consórcio</p>
+        <ol class="vantagens-lista folha-vantagens">
+          {
+            vantagens.map((v, i) => (
+              <li>
+                <span class="num">{String(i + 1).padStart(2, '0')}</span>
+                <h3>{v.titulo}</h3>
+                <p>{v.texto}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+      <p class="folha-acao"><a class="cta" href="#contato">Simule agora</a></p>
+    </section>
+
+    <section class="folha" id="folha-metodo" hidden role="dialog" aria-modal="true" aria-labelledby="folha-metodo-t">
+      <header class="folha-cabeca">
+        <p class="indice">Método</p>
+        <button type="button" class="folha-fechar" data-fechar aria-label="Fechar">&times;</button>
+      </header>
+      <h2 id="folha-metodo-t">Passo a passo do Consórcio Nacional MI6</h2>
+      <p class="apoio">Veja como realizar seus objetivos com segurança, liberdade e sem juros.</p>
+      <ol class="metodo-lista">
+        <span class="metodo-fio" aria-hidden="true"><i></i></span>
+        {
+          passos.map((p, i) => (
+            <li>
+              <span class="metodo-num">{String(i + 1).padStart(2, '0')}</span>
+              <p>{p}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="folha-numeros">
+        <div>
+          <strong>+1,27 mi</strong>
+          <span>contemplados em 2024. Fonte: ABAC, dado do setor.</span>
+        </div>
+        <div>
+          <strong>0 juros</strong>
+          <span>taxa de administração definida em contrato, não juros bancários.</span>
+        </div>
+      </div>
+      <p class="folha-acao">Pronto para o passo 1? <a class="cta" href="#contato">Comece agora</a></p>
+    </section>
+
+    <section class="folha" id="folha-duvidas" hidden role="dialog" aria-modal="true" aria-labelledby="folha-duvidas-t">
+      <header class="folha-cabeca">
+        <p class="indice">Dúvidas</p>
+        <button type="button" class="folha-fechar" data-fechar aria-label="Fechar">&times;</button>
+      </header>
+      <h2 id="folha-duvidas-t">Perguntas frequentes</h2>
+      <div class="faq-lista">
+        {
+          faq.map((item) => (
+            <details>
+              <summary>
+                {item.p}
+                <span class="faq-sinal" aria-hidden="true" />
+              </summary>
+              <p>{item.r}</p>
+            </details>
+          ))
+        }
+      </div>
+      <p class="indice folha-sub">Diferenciais pensados para você</p>
+      <ul class="diferenciais-lista">
+        {
+          diferenciais.map((d) => (
+            <li>
+              <h3>{d.titulo}</h3>
+              <p>{d.texto}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="documentos">
+        Documentos públicos: <a class="sub" href="/docs/regulamento.pdf">Regulamento</a> e
+        <a class="sub" href="/docs/contrato-adesao.pdf">Contrato de adesão</a>.
+      </p>
+    </section>
 
     <nav class="play-nav" aria-label="Navegação entre protótipos">
       <a href="/play/">Play</a>
@@ -515,15 +523,16 @@ const faq = [
       const motionOk = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
       if (!motionOk) document.querySelector('.veu')?.remove();
 
+      let lenis: Lenis | null = null;
       if (motionOk) {
-        const lenis = new Lenis({ autoRaf: true, lerp: 0.12 });
+        lenis = new Lenis({ autoRaf: true, lerp: 0.12 });
         lenis.on('scroll', ScrollTrigger.update);
         document.querySelectorAll('a[href^="#"]').forEach((a) => {
           a.addEventListener('click', (e) => {
             const alvo = a.getAttribute('href');
             if (alvo && alvo.length > 1) {
               e.preventDefault();
-              lenis.scrollTo(alvo, { offset: -72 });
+              lenis?.scrollTo(alvo, { offset: -72 });
             }
           });
         });
@@ -536,13 +545,53 @@ const faq = [
         toggleClass: { className: 'rolou', targets: '.topo' },
       });
 
-      // CTA de bolso (mobile): visível entre o fim do hero e o bloco final.
-      ScrollTrigger.create({
-        trigger: '.marquee',
-        start: 'top 60%',
-        endTrigger: '.contato',
-        end: 'top 75%',
-        toggleClass: { className: 'mostra', targets: '.cta-bolso' },
+      // Folhas: o conteúdo de apoio sobe em lâminas a partir do dock.
+      const fundo = document.getElementById('folha-fundo');
+      let folhaAberta: HTMLElement | null = null;
+      function abrirFolha(id: string) {
+        const folha = document.getElementById(`folha-${id}`);
+        if (!folha || folhaAberta) return;
+        folhaAberta = folha;
+        fundo?.removeAttribute('hidden');
+        folha.removeAttribute('hidden');
+        document.documentElement.style.overflow = 'hidden';
+        lenis?.stop();
+        if (motionOk) {
+          gsap.fromTo(fundo, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35, ease: 'power2.out' });
+          gsap.fromTo(folha, { yPercent: 100 }, { yPercent: 0, duration: 0.55, ease: 'power3.out' });
+        }
+        folha.querySelector<HTMLButtonElement>('.folha-fechar')?.focus();
+      }
+      function fecharFolha() {
+        const folha = folhaAberta;
+        if (!folha) return;
+        folhaAberta = null;
+        const encerrar = () => {
+          folha.setAttribute('hidden', '');
+          fundo?.setAttribute('hidden', '');
+          document.documentElement.style.overflow = '';
+          lenis?.start();
+        };
+        if (motionOk) {
+          gsap.to(fundo, { autoAlpha: 0, duration: 0.3, ease: 'power2.in' });
+          gsap.to(folha, { yPercent: 100, duration: 0.4, ease: 'power3.in', onComplete: encerrar });
+        } else {
+          encerrar();
+        }
+      }
+      document.querySelectorAll<HTMLElement>('[data-folha]').forEach((el) => {
+        el.addEventListener('click', () => abrirFolha(el.dataset.folha ?? ''));
+      });
+      document.querySelectorAll('[data-fechar]').forEach((el) => {
+        el.addEventListener('click', fecharFolha);
+      });
+      fundo?.addEventListener('click', fecharFolha);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') fecharFolha();
+      });
+      // Link interno dentro de uma folha fecha a lâmina antes de rolar.
+      document.querySelectorAll('.folha a[href^="#"]').forEach((a) => {
+        a.addEventListener('click', () => fecharFolha());
       });
 
       // Simulador: a conta inteira do plano de motos, ao vivo.
@@ -637,7 +686,8 @@ const faq = [
           .from(split.lines, { yPercent: 115, duration: 1.1, stagger: 0.14 }, 0.4)
           .from('[data-intro]', { y: 28, autoAlpha: 0, duration: 0.9, stagger: 0.14 }, '-=0.55')
           .from('.hero-geo', { scale: 1.12, autoAlpha: 0, duration: 1.6, ease: 'power2.out' }, 0.2)
-          .from('.hero-coord, .hero-scroll', { autoAlpha: 0, duration: 0.8 }, '-=0.8');
+          .from('.hero-coord, .hero-scroll', { autoAlpha: 0, duration: 0.8 }, '-=0.8')
+          .from('.dock', { y: 90, autoAlpha: 0, duration: 0.8, ease: 'power3.out' }, '-=0.9');
 
         // Véu de abertura: a linha vermelha desenha, o logo é revelado,
         // a cortina sobe e só então o hero entra. Uma vez por sessão.
@@ -686,48 +736,6 @@ const faq = [
           });
         });
 
-        const guia = document.querySelector('[data-linhas]');
-        if (guia) {
-          const linhas = new SplitText(guia, { type: 'lines', mask: 'lines' });
-          gsap.from(linhas.lines, {
-            yPercent: 110,
-            duration: 0.9,
-            stagger: 0.08,
-            ease: 'power3.out',
-            scrollTrigger: { trigger: guia, start: 'top 82%' },
-          });
-        }
-
-        // Fio do método se preenche com a leitura (gradiente de meta).
-        gsap.from('.metodo-fio i', {
-          scaleY: 0,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: '.metodo-lista',
-            start: 'top 78%',
-            end: 'bottom 55%',
-            scrub: true,
-          },
-        });
-
-        const contador = document.getElementById('contador');
-        if (contador) {
-          const alvo = parseFloat(contador.dataset.alvo ?? '0');
-          const obj = { v: 0 };
-          contador.textContent = '0,00';
-          gsap.to(obj, {
-            v: alvo,
-            duration: 2,
-            ease: 'power2.out',
-            scrollTrigger: { trigger: '.numeros', start: 'top 75%' },
-            onUpdate: () => {
-              contador.textContent = obj.v.toLocaleString('pt-BR', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              });
-            },
-          });
-        }
         return () => split.revert();
       });
 
@@ -2004,7 +2012,7 @@ const faq = [
   /* Rodapé */
   .rodape {
     background: var(--navy-escuro);
-    padding: 4rem 2.5rem 2rem;
+    padding: 4rem 2.5rem 7rem;
     border-top: 1px solid var(--linha);
   }
   .rodape-topo {
@@ -2062,33 +2070,235 @@ const faq = [
     width: auto !important;
   }
 
-  /* CTA de bolso: zona do polegar no mobile, aparece após o hero */
-  .cta-bolso {
-    display: none;
+  /* Dock flutuante: a navegação mora na zona do polegar */
+  .dock {
     position: fixed;
     left: 50%;
-    bottom: 1rem;
-    z-index: 55;
-    transform: translate(-50%, 160%);
+    bottom: 1.1rem;
+    transform: translateX(-50%);
+    z-index: 70;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    background: rgba(1, 16, 47, 0.88);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    padding: 0.45rem 0.7rem;
+    box-shadow: 0 24px 60px -20px rgba(1, 10, 30, 0.8);
+  }
+  .dock > button,
+  .dock > a:not(.dock-cta) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.22rem;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    color: var(--gelo);
+    text-decoration: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.5rem 0.85rem;
+    border-radius: 999px;
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+  .dock > button:hover,
+  .dock > a:not(.dock-cta):hover {
+    color: var(--branco);
+    background: rgba(255, 255, 255, 0.09);
+  }
+  .dock svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .dock-cta {
+    width: 3.4rem;
+    height: 3.4rem;
+    border-radius: 50%;
     background: var(--vermelho);
     color: var(--branco);
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 0.95rem;
-    padding: 0.85rem 1.9rem;
-    border-radius: 999px;
-    box-shadow: 0 16px 32px -12px rgba(1, 19, 58, 0.65);
-    transition: transform 0.35s ease;
-    white-space: nowrap;
+    display: grid;
+    place-items: center;
+    margin: -1.6rem 0.35rem 0;
+    border: 3px solid rgba(1, 16, 47, 0.9);
+    box-shadow: 0 14px 30px -10px rgba(200, 16, 46, 0.7);
+    transition: transform 0.25s ease, background 0.25s ease;
   }
-  .cta-bolso.mostra {
-    transform: translate(-50%, 0);
+  .dock-cta:hover {
+    transform: translateY(-3px);
+    background: #e21236;
+  }
+  .dock-cta svg {
+    width: 1.45rem;
+    height: 1.45rem;
+  }
+
+  /* Folhas: o conteúdo de apoio sobe em lâminas, fora da rolagem principal */
+  .folha-fundo {
+    position: fixed;
+    inset: 0;
+    z-index: 75;
+    background: rgba(1, 8, 24, 0.6);
+    backdrop-filter: blur(3px);
+  }
+  .folha {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: min(46rem, 100%);
+    max-height: 86svh;
+    overflow-y: auto;
+    z-index: 80;
+    background: var(--papel);
+    color: var(--tinta);
+    border-radius: 22px 22px 0 0;
+    padding: 1.4rem 2rem 2.5rem;
+    box-shadow: 0 -30px 80px rgba(1, 10, 30, 0.5);
+  }
+  .folha-cabeca {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.9rem;
+  }
+  .folha .indice {
+    color: #8a90a0;
+    margin: 0;
+  }
+  .folha-fechar {
+    border: 0;
+    background: rgba(1, 33, 105, 0.08);
+    color: var(--navy);
+    width: 2.3rem;
+    height: 2.3rem;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .folha-fechar:hover {
+    background: var(--navy);
+    color: var(--branco);
+  }
+  .folha h2 {
+    color: var(--navy);
+    font-size: clamp(1.8rem, 3.4vw, 2.5rem);
+    border-top: 2px solid var(--navy);
+    padding-top: 1rem;
+    position: relative;
+    margin-bottom: 1.25rem;
+  }
+  .folha h2::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 0;
+    width: 4rem;
+    height: 2px;
+    background: var(--vermelho);
+  }
+  .folha h3 {
+    color: var(--navy);
+  }
+  .folha .statement {
+    font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  }
+  .folha .vantagens {
+    margin-top: 2.25rem;
+  }
+  .folha .apoio {
+    color: var(--tinta-suave);
+    margin: -0.5rem 0 2rem;
+  }
+  .folha-vantagens {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .folha-vantagens li {
+    transform: none;
+  }
+  .folha .metodo-fio {
+    left: -1.1rem;
+  }
+  .folha-numeros {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    border-top: 1px solid var(--linha-clara);
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+  }
+  .folha-numeros strong {
+    display: block;
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    font-size: 2rem;
+    color: var(--navy);
+  }
+  .folha-numeros span {
+    color: var(--tinta-suave);
+    font-size: 0.85rem;
+  }
+  .folha-sub {
+    margin: 2.25rem 0 0.75rem !important;
+  }
+  .folha-acao {
+    margin: 2.25rem 0 0;
+    color: var(--tinta-suave);
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  /* Botões que se vestem de link (gatilhos das folhas) */
+  .topo nav button.sub,
+  .rodape button.sub,
+  button.link-claro {
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font: inherit;
+    padding: 0;
+    padding-bottom: 2px;
+    text-align: left;
+  }
+  .topo nav button.sub {
+    color: var(--tinta-suave);
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .topo nav button.sub:hover {
+    color: var(--navy);
+  }
+  .rodape button.sub {
+    display: block;
+    width: fit-content;
+    color: var(--gelo);
+    font-size: 0.92rem;
+    margin: 0 0 0.55rem;
+  }
+  .rodape button.sub:hover {
+    color: var(--branco);
   }
 
   .play-nav {
     position: fixed;
-    bottom: 1rem;
-    right: 1rem;
+    bottom: 6.2rem;
+    right: 0.9rem;
     z-index: 60;
     background: rgba(1, 19, 58, 0.85);
     border: 1px solid var(--linha);
@@ -2207,11 +2417,34 @@ const faq = [
     .metodo-fio {
       display: none;
     }
-    .cta-bolso {
-      display: block;
+    .dock {
+      bottom: 0.75rem;
+      gap: 0;
+      padding: 0.4rem 0.45rem;
+      width: max-content;
+      max-width: calc(100% - 1rem);
     }
-    .seis-marca {
-      font-size: 13rem;
+    .dock > button,
+    .dock > a:not(.dock-cta) {
+      padding: 0.45rem 0.55rem;
+      font-size: 0.54rem;
+    }
+    .dock-cta {
+      width: 3rem;
+      height: 3rem;
+      margin-top: -1.3rem;
+    }
+    .folha {
+      padding: 1.25rem 1.25rem 2rem;
+      border-radius: 18px 18px 0 0;
+    }
+    .folha-numeros {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .play-nav {
+      bottom: 5.4rem;
+      right: 0.5rem;
     }
     .sim-grade {
       grid-template-columns: 1fr;
