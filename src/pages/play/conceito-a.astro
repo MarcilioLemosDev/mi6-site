@@ -202,7 +202,7 @@ const guiaBarra = guiaInclinada(388);
                 <line class="guia" x1={g.x1} y1={g.y1} x2={g.x2} y2={g.y2} pathLength="100" />
               ))
             }
-            <line class="guia guia-rubra" x1={guiaBarra.x1} y1={guiaBarra.y1} x2={guiaBarra.x2} y2={guiaBarra.y2} pathLength="100"></line>
+            <line class="guia" x1={guiaBarra.x1} y1={guiaBarra.y1} x2={guiaBarra.x2} y2={guiaBarra.y2} pathLength="100"></line>
             {marca.letras.map((d) => <path class="traco traco-letras" d={d} pathLength="100" />)}
             {marca.barra.map((d) => <path class="traco traco-barra" d={d} pathLength="100" />)}
           </g>
@@ -1560,19 +1560,11 @@ const guiaBarra = guiaInclinada(388);
   }
   .traco {
     stroke-width: 2.6;
-  }
-  .traco-letras {
-    stroke: rgba(208, 220, 255, 0.32);
-  }
-  .traco-barra {
-    stroke: rgba(255, 60, 92, 0.5);
+    stroke: rgba(255, 255, 255, 0.34);
   }
   .guia {
     stroke-width: 1.6;
     stroke: rgba(255, 255, 255, 0.1);
-  }
-  .guia-rubra {
-    stroke: rgba(255, 60, 92, 0.18);
   }
   @media (prefers-reduced-motion: no-preference) {
     .traco,
