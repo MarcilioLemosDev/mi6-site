@@ -329,6 +329,8 @@ const simInicial = {
             data-fres={grupoMotos.fundo_reserva}
             data-seguro={grupoMotos.seguro_prestamista_mes}
             data-credito-padrao={grupoMotos.credito_padrao}
+            data-grupo={grupoMotos.grupo}
+            data-dia={grupoMotos.dia_assembleia}
           >
             <p class="sim-passo">01 · O que você quer conquistar?</p>
             <div class="chips" id="sim-chips">
@@ -368,6 +370,10 @@ const simInicial = {
               </dl>
               <p class="sim-assembleia">Grupo {grupoMotos.grupo} · assembleias todo dia {grupoMotos.dia_assembleia}</p>
               <button type="button" class="cta sim-cta" id="sim-enviar">Quero esta proposta</button>
+              <button type="button" class="sim-cta-sec" id="sim-dossie">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v9.5"/><path d="m6.6 9.4 3.4 3.4 3.4-3.4"/><path d="M4 16.6h12"/></svg>
+                Baixar o dossiê do meu plano
+              </button>
               <p class="sim-nota">
                 Simulação do plano de motos em vigor. Valores aproximados, sem
                 valor contratual; a proposta final vem do consultor.
@@ -801,6 +807,148 @@ const simInicial = {
             b.removeAttribute('disabled');
           }, 1800);
         });
+      });
+
+      // Dossiê do Plano: o artefato que o lead leva. Desenhado em canvas com
+      // a identidade do site e os números da simulação atual; no celular vai
+      // direto para a folha de compartilhamento (WhatsApp), no desktop baixa.
+      const pctTexto = (v: number) => (v * 100).toLocaleString('pt-BR') + '%';
+      async function gerarDossie(): Promise<Blob | null> {
+        await Promise.all([
+          document.fonts.load('400 130px "Instrument Serif"'),
+          document.fonts.load('500 26px "IBM Plex Mono"'),
+          document.fonts.load('600 30px "Public Sans Variable"'),
+        ]).catch(() => {});
+        const W = 1080;
+        const H = 1350;
+        const cv = document.createElement('canvas');
+        cv.width = W;
+        cv.height = H;
+        const cx2 = cv.getContext('2d');
+        if (!cx2) return null;
+
+        const grad = cx2.createRadialGradient(W / 2, 0, 120, W / 2, 0, H * 1.1);
+        grad.addColorStop(0, '#022169');
+        grad.addColorStop(0.7, '#021a4f');
+        grad.addColorStop(1, '#01133a');
+        cx2.fillStyle = grad;
+        cx2.fillRect(0, 0, W, H);
+        cx2.lineWidth = 1;
+        cx2.strokeStyle = 'rgba(255,255,255,0.10)';
+        cx2.beginPath(); cx2.moveTo(0, 0); cx2.lineTo(W, H); cx2.stroke();
+        cx2.beginPath(); cx2.moveTo(W, 0); cx2.lineTo(0, H); cx2.stroke();
+        cx2.strokeStyle = 'rgba(200,16,46,0.35)';
+        cx2.beginPath(); cx2.moveTo(90, 0); cx2.lineTo(W + 90, H); cx2.stroke();
+        cx2.beginPath(); cx2.moveTo(W - 90, 0); cx2.lineTo(-90, H); cx2.stroke();
+
+        const logo = new Image();
+        logo.src = '/imgs/logo-mi6-branco.png';
+        await new Promise((res) => {
+          logo.onload = res;
+          logo.onerror = res;
+        });
+        if (logo.naturalWidth) cx2.drawImage(logo, 84, 78, 233, 50);
+
+        const mono = (px: number) => `500 ${px}px "IBM Plex Mono", monospace`;
+        const serif = (px: number) => `400 ${px}px "Instrument Serif", Georgia, serif`;
+        const sans = (px: number, w = 600) => `${w} ${px}px "Public Sans Variable", Arial, sans-serif`;
+
+        cx2.fillStyle = 'rgba(255,255,255,0.65)';
+        cx2.font = mono(24);
+        cx2.textAlign = 'right';
+        cx2.fillText('DOSSIÊ DO PLANO', W - 84, 104);
+        cx2.fillText(new Date().toLocaleDateString('pt-BR'), W - 84, 138);
+
+        cx2.textAlign = 'left';
+        cx2.fillStyle = 'rgba(255,255,255,0.6)';
+        cx2.font = mono(26);
+        cx2.fillText('CRÉDITO SIMULADO · MOTOS', 84, 318);
+        cx2.fillStyle = '#ffffff';
+        cx2.font = serif(130);
+        cx2.fillText('R$ ' + Math.round(exib.c).toLocaleString('pt-BR'), 78, 442);
+
+        cx2.fillStyle = 'rgba(255,255,255,0.5)';
+        cx2.fillRect(84, 502, W - 168, 2);
+        cx2.fillStyle = '#c8102e';
+        cx2.fillRect(84, 502, 96, 2);
+
+        const base = exib.c * (1 + TX_ADM + F_RES);
+        const linhas: Array<[string, string, boolean]> = [
+          ['Fundo comum', brl(exib.c / PRAZO), false],
+          ['Taxa de administração · ' + pctTexto(TX_ADM), brl((exib.c * TX_ADM) / PRAZO), false],
+          ['Fundo de reserva · ' + pctTexto(F_RES), brl((exib.c * F_RES) / PRAZO), false],
+          ['Parcela em ' + PRAZO + ' meses', brl(base / PRAZO), true],
+          ['Com seguro prestamista · ' + pctTexto(SEGURO), brl(base / PRAZO + base * SEGURO), false],
+        ];
+        let y = 596;
+        for (const [rotulo, valor, destaque] of linhas) {
+          cx2.textAlign = 'left';
+          cx2.fillStyle = destaque ? '#ffffff' : 'rgba(255,255,255,0.7)';
+          cx2.font = destaque ? sans(33, 700) : sans(29, 500);
+          cx2.fillText(rotulo, 84, y);
+          cx2.textAlign = 'right';
+          cx2.fillStyle = '#ffffff';
+          cx2.font = destaque ? serif(62) : sans(33, 600);
+          cx2.fillText(valor, W - 84, destaque ? y + 6 : y);
+          if (destaque) {
+            cx2.fillStyle = '#c8102e';
+            cx2.fillRect(W - 84 - 300, y + 28, 300, 3);
+          } else {
+            cx2.fillStyle = 'rgba(255,255,255,0.14)';
+            cx2.fillRect(84, y + 26, W - 168, 1);
+          }
+          y += destaque ? 112 : 84;
+        }
+
+        const grupoId = simCard?.dataset.grupo ?? 'M-01';
+        const diaAss = simCard?.dataset.dia ?? '20';
+        cx2.textAlign = 'left';
+        cx2.fillStyle = 'rgba(255,255,255,0.6)';
+        cx2.font = mono(24);
+        cx2.fillText('GRUPO ' + grupoId + ' · ' + PRAZO + ' MESES · ASSEMBLEIAS DIA ' + diaAss, 84, 1126);
+        cx2.fillStyle = 'rgba(255,255,255,0.45)';
+        cx2.font = sans(22, 500);
+        cx2.fillText('Valores aproximados, sem valor contratual. A proposta final vem do consultor.', 84, 1168);
+        cx2.fillStyle = '#c8102e';
+        cx2.fillRect(84, 1214, W - 168, 3);
+        cx2.fillStyle = 'rgba(255,255,255,0.82)';
+        cx2.font = sans(24, 600);
+        cx2.fillText('Autorizada pelo Banco Central do Brasil · Ofício nº 33.288/2024', 84, 1262);
+        cx2.textAlign = 'right';
+        cx2.fillText('mi6consorcio.com.br', W - 84, 1300);
+        return await new Promise((res) => cv.toBlob(res, 'image/png'));
+      }
+
+      const botaoDossie = document.getElementById('sim-dossie');
+      botaoDossie?.addEventListener('click', async () => {
+        if (botaoDossie.hasAttribute('disabled')) return;
+        const original = botaoDossie.innerHTML;
+        botaoDossie.setAttribute('disabled', '');
+        botaoDossie.textContent = 'Preparando seu dossiê...';
+        try {
+          const blob = await gerarDossie();
+          if (blob) {
+            const arquivo = new File([blob], 'dossie-mi6-motos.png', { type: 'image/png' });
+            const podeCompartilhar =
+              typeof navigator.canShare === 'function' && navigator.canShare({ files: [arquivo] });
+            if (podeCompartilhar) {
+              await navigator.share({ files: [arquivo], title: 'Meu plano MI6' }).catch(() => {});
+            } else {
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'dossie-mi6-motos.png';
+              a.click();
+              setTimeout(() => URL.revokeObjectURL(url), 4000);
+            }
+            botaoDossie.textContent = 'Dossiê gerado!';
+          }
+        } finally {
+          setTimeout(() => {
+            botaoDossie.innerHTML = original;
+            botaoDossie.removeAttribute('disabled');
+          }, 1800);
+        }
       });
 
       const mm = gsap.matchMedia();
@@ -2202,6 +2350,43 @@ const simInicial = {
   }
   .sim-cta[disabled] {
     opacity: 0.85;
+    cursor: default;
+  }
+  .sim-cta-sec {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 0.6rem;
+    padding: 0.8rem 1.5rem;
+    border-radius: 999px;
+    border: 1.5px solid rgba(1, 33, 105, 0.4);
+    background: none;
+    color: var(--navy);
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.92rem;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .sim-cta-sec:hover {
+    background: var(--navy);
+    color: var(--papel);
+    border-color: var(--navy);
+  }
+  .sim-cta-sec svg {
+    width: 1.05rem;
+    height: 1.05rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex: none;
+  }
+  .sim-cta-sec[disabled] {
+    opacity: 0.7;
     cursor: default;
   }
   .sim-nota {

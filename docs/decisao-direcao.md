@@ -11,6 +11,19 @@ Dossiê, como direção da homepage**, e abriu um ciclo de refino fino sobre
 ele ("refinar até ficar belo", com mais algumas rodadas previstas). O B
 permanece como linguagem candidata para as páginas narrativas.
 
+### Rodada 12 (Dossiê do Plano v1)
+
+Primeira das três ideias aprovadas a sair do papel. No simulador, o botão
+"Baixar o dossiê do meu plano" gera na hora um cartão-documento (canvas,
+1080x1350) com a identidade do site: logo branco, geometria da marca,
+crédito simulado em serif gigante, a conta decomposta linha a linha com a
+parcela grifada em vermelho, grupo, prazo, dia de assembleia, aviso de
+valores aproximados e a autorização do BACEN com ofício no rodapé. No
+celular abre direto a folha de compartilhamento (WhatsApp); no desktop
+baixa o PNG. Os números vêm do mesmo estado vivo do simulador, alimentado
+pelo espelho da tabela verdade. O artefato viaja sozinho e leva a marca
+junto; nenhum concorrente do benchmark entrega isso.
+
 ### Rodada 11 (diamante três: dados, dois usuários e a cortina-pergunta)
 
 Rodada de diálogo (diamante um e dois do "triplo diamante" de Marcílio)
