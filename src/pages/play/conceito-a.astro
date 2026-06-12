@@ -441,7 +441,7 @@ const simInicial = {
     <nav class="dock" aria-label="Menu flutuante">
       <button type="button" data-folha="funciona">
         <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4.2c-1.6-1.1-3.6-1.4-6-1V15c2.4-.4 4.4-.1 6 1 1.6-1.1 3.6-1.4 6-1V3.2c-2.4-.4-4.4-.1-6 1z"/><path d="M10 4.2V16"/></svg>
-        <span>Como funciona</span>
+        <span>Consórcio</span>
       </button>
       <button type="button" data-folha="contemplacao">
         <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="8" r="4.6"/><path d="M7.8 11.9 6.2 17l3.8-2 3.8 2-1.6-5.1"/><path d="M8.4 8l1.2 1.2 2.2-2.4"/></svg>
@@ -457,7 +457,7 @@ const simInicial = {
       </button>
       <button type="button" data-folha="cliente">
         <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="6.6" r="3.1"/><path d="M3.6 17.1c1.2-3 3.5-4.6 6.4-4.6s5.2 1.6 6.4 4.6"/></svg>
-        <span>Sou cliente</span>
+        <span>Cliente</span>
       </button>
     </nav>
 
@@ -2510,39 +2510,44 @@ const simInicial = {
     width: auto !important;
   }
 
-  /* Dock flutuante: a navegação mora na zona do polegar */
+  /* Dock flutuante: a navegação mora na zona do polegar. Colunas de largura
+     igual (flex-basis 0) dão ritmo regular, independente do tamanho da palavra. */
   .dock {
     position: fixed;
     left: 50%;
     bottom: 1.1rem;
     transform: translateX(-50%);
     z-index: 70;
+    width: min(35rem, calc(100% - 2rem));
     display: flex;
-    align-items: center;
-    gap: 0.2rem;
+    align-items: stretch;
     background: rgba(1, 16, 47, 0.88);
     backdrop-filter: blur(14px);
     border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 999px;
-    padding: 0.45rem 0.7rem;
+    padding: 0.4rem 0.45rem;
     box-shadow: 0 24px 60px -20px rgba(1, 10, 30, 0.8);
   }
   .dock > button,
-  .dock > a:not(.dock-cta) {
+  .dock > a {
+    flex: 1 1 0;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.22rem;
+    justify-content: center;
+    gap: 0.26rem;
     background: none;
     border: 0;
     cursor: pointer;
     color: var(--gelo);
     text-decoration: none;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.58rem;
-    letter-spacing: 0.12em;
+    font-size: 0.56rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 0.5rem 0.85rem;
+    white-space: nowrap;
+    padding: 0.55rem 0.2rem;
     border-radius: 999px;
     transition: color 0.2s ease, background 0.2s ease;
   }
@@ -2560,25 +2565,13 @@ const simInicial = {
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-  /* Simular: item inteiriço da barra, destacado por cor, sem saltar para
-     fora; assim o dock não cria um eixo central que o site assimétrico não tem. */
-  .dock-cta {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.22rem;
-    text-decoration: none;
+  /* Simular: mesma coluna dos demais, destacado por cor, sem saltar para fora;
+     assim o dock não cria um eixo central que o site assimétrico não tem. */
+  .dock > .dock-cta {
     background: var(--vermelho);
     color: var(--branco);
-    padding: 0.5rem 0.95rem;
-    border-radius: 999px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.58rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    transition: background 0.2s ease;
   }
-  .dock-cta:hover {
+  .dock > .dock-cta:hover {
     background: #e21236;
     color: var(--branco);
   }
@@ -2902,19 +2895,15 @@ const simInicial = {
     }
     .dock {
       bottom: 0.75rem;
-      gap: 0;
-      padding: 0.4rem 0.45rem;
-      width: max-content;
-      max-width: calc(100% - 1rem);
+      padding: 0.35rem 0.35rem;
+      width: calc(100% - 0.9rem);
     }
     .dock > button,
-    .dock > a:not(.dock-cta) {
-      padding: 0.45rem 0.55rem;
-      font-size: 0.54rem;
-    }
-    .dock-cta {
-      padding: 0.45rem 0.6rem;
-      font-size: 0.54rem;
+    .dock > a {
+      padding: 0.5rem 0.1rem;
+      gap: 0.28rem;
+      font-size: 0.5rem;
+      letter-spacing: 0.04em;
     }
     .folha {
       padding: 1.25rem 1.25rem 2rem;
