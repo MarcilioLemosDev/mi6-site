@@ -11,6 +11,33 @@ Dossiê, como direção da homepage**, e abriu um ciclo de refino fino sobre
 ele ("refinar até ficar belo", com mais algumas rodadas previstas). O B
 permanece como linguagem candidata para as páginas narrativas.
 
+### Rodada 11 (diamante três: dados, dois usuários e a cortina-pergunta)
+
+Rodada de diálogo (diamante um e dois do "triplo diamante" de Marcílio)
+seguida de implementação aprovada em quatro marteladas:
+
+1. Cortina-pergunta aprovada: o véu de abertura virou a pergunta
+   estratégica. Dois panos (navy "Já sou cliente", vermelho "Ainda não
+   sou"), logo revelado pela linha central, "Entrar sem escolher" e Esc
+   como saídas, escolha guardada e trocável no rodapé ("Trocar perfil de
+   navegação"), página completa por baixo (SEO intacto). A escolha
+   reordena os destaques: cliente vê "Área do Cliente" como CTA primário
+   do hero e atalho de contemplação; visitante novo vê o fluxo de venda.
+2. Barra do topo: os três links de conteúdo saíram (moraram no dock); a
+   barra carrega só o par estratégico, "Sou cliente" e "Simular". Canal do
+   parceiro saiu do palco (vive na folha do cliente e no rodapé).
+3. Nomes do dock (decisão delegada e tomada): Como funciona ·
+   Contemplação · Simular (círculo central) · Dúvidas · Sou cliente.
+   Critério: vocabulário de app que o usuário moderno já conhece.
+4. Dados: criado `src/dados/grupos.json` (espelho da tabela verdade do
+   Excel 365) e o simulador passou a ler tudo dele; arquitetura completa
+   registrada em `arquitetura-dados.md`. Folhas reorganizadas: "Como
+   funciona" (o que é + vantagens + passo a passo + números),
+   "Contemplação" (educativo v0 da jornada, com a régua interativa
+   prevista para a fase 3) e "Sou cliente" (hub do cliente: Área do
+   Cliente, contemplado e agora, simular de novo, parceiro, canais
+   humanos).
+
 ### Rodada 10 (home enxuta e dock flutuante)
 
 Veredito de Marcílio sobre a rodada de conversa (`rodada-conversa.md`):

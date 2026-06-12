@@ -4,6 +4,7 @@ import '@fontsource/instrument-serif/400-italic.css';
 import '@fontsource-variable/public-sans';
 import '@fontsource/ibm-plex-mono';
 import '@fontsource/ibm-plex-mono/500.css';
+import dados from '../../dados/grupos.json';
 
 // CONCEITO A, DOSSIÊ (v2.1)
 // Refino pós-feedback: mantém a modernidade navy cinematográfica e ganha a
@@ -114,6 +115,22 @@ const faq = [
     r: 'Sim, principalmente para quem deseja planejar a compra sem pagar juros. No Consórcio Nacional MI6, você pode adquirir imóveis, veículos, equipamentos ou eletroeletrônicos com parcelas acessíveis e flexibilidade para ofertar lances e antecipar a contemplação.',
   },
 ];
+
+// Grupo ativo de motos: parâmetros vêm do espelho da tabela verdade
+// (src/dados/grupos.json), que na fase 3 será alimentado pelo Excel do 365.
+const grupoMotos = dados.grupos.find((g) => g.segmento === 'motos' && g.status === 'ativo')!;
+const brlServidor = (v: number) =>
+  'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const pct = (v: number) => (v * 100).toLocaleString('pt-BR');
+const baseSim = grupoMotos.credito_padrao * (1 + grupoMotos.taxa_administracao + grupoMotos.fundo_reserva);
+const simInicial = {
+  credito: grupoMotos.credito_padrao.toLocaleString('pt-BR'),
+  fc: brlServidor(grupoMotos.credito_padrao / grupoMotos.prazo_restante_meses),
+  tx: brlServidor((grupoMotos.credito_padrao * grupoMotos.taxa_administracao) / grupoMotos.prazo_restante_meses),
+  fr: brlServidor((grupoMotos.credito_padrao * grupoMotos.fundo_reserva) / grupoMotos.prazo_restante_meses),
+  parcela: brlServidor(baseSim / grupoMotos.prazo_restante_meses),
+  seguro: brlServidor(baseSim / grupoMotos.prazo_restante_meses + baseSim * grupoMotos.seguro_prestamista_mes),
+};
 ---
 
 <!doctype html>
@@ -127,9 +144,23 @@ const faq = [
     <meta name="description" content="Protótipo da FASE 2: inteligência britânica cinematográfica com pulso humano." />
   </head>
   <body>
-    <div class="veu" aria-hidden="true">
-      <span class="veu-linha"></span>
-      <img class="veu-logo" src="/imgs/logo-mi6-branco.png" alt="" width="219" height="47" />
+    <div class="veu" role="dialog" aria-label="Boas-vindas MI6">
+      <button type="button" class="veu-pano veu-pano-cliente" data-perfil="cliente">
+        <span class="veu-pano-rotulo">Já sou cliente</span>
+        <span class="veu-pano-sub">boletos, lances e contemplação</span>
+      </button>
+      <button type="button" class="veu-pano veu-pano-novo" data-perfil="novo">
+        <span class="veu-pano-rotulo">Ainda não sou</span>
+        <span class="veu-pano-sub">quero simular meu plano</span>
+      </button>
+      <div class="veu-centro" aria-hidden="true">
+        <span class="veu-linha"></span>
+        <div class="veu-miolo">
+          <img class="veu-logo" src="/imgs/logo-mi6-branco.png" alt="" width="219" height="47" />
+          <p class="veu-pergunta">Como podemos te receber hoje?</p>
+        </div>
+      </div>
+      <button type="button" class="veu-pular" data-perfil="">Entrar sem escolher</button>
     </div>
     <div class="grao" aria-hidden="true"></div>
 
@@ -137,21 +168,12 @@ const faq = [
       <a class="topo-marca" href="/play/conceito-a/">
         <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
       </a>
-      <nav aria-label="Navegação principal">
-        <a class="sub" href="#solucoes">Consórcio</a>
-        <button type="button" class="sub" data-folha="metodo">Passo a passo</button>
-        <button type="button" class="sub" data-folha="duvidas">Dúvidas</button>
-      </nav>
       <div class="topo-acessos">
-        <a class="acesso acesso-parceiro" href="https://mi6.evertecinc.com.br/newcon.web/frmCorCCCnsLogin.aspx?applicationKey=3M9zL0+WaLYAeBQwijSQEkhjyy42CGuQj8DXZNFUeAoW7bdn/JfcNmUNbNUgQJqaufUv7kqAamOQCRrx6B2F7w==">
-          <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="6.8" width="14" height="9.7" rx="2.2"/><path d="M7.4 6.8V5.1a1.8 1.8 0 0 1 1.8-1.8h1.6a1.8 1.8 0 0 1 1.8 1.8v1.7"/><path d="M3 11.2h14"/></svg>
-          <span>Canal do parceiro</span>
-        </a>
         <a class="acesso acesso-cliente" href="https://mi6.evertecinc.com.br/autoatendimento">
           <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="6.6" r="3.1"/><path d="M3.6 17.1c1.2-3 3.5-4.6 6.4-4.6s5.2 1.6 6.4 4.6"/></svg>
-          <span>Área do cliente</span>
+          <span>Sou cliente</span>
         </a>
-        <a class="topo-cta" href="#contato">Simule agora</a>
+        <a class="topo-cta" href="#contato">Simular</a>
       </div>
     </header>
 
@@ -187,8 +209,10 @@ const faq = [
             </h1>
             <p class="hero-frase" data-intro>Você está perto de realizar o seu projeto de vida</p>
             <div class="hero-acoes" data-intro>
-              <a class="cta" href="#contato">Simule agora</a>
-              <button type="button" class="link-claro sub" data-folha="basico">O que é consórcio?</button>
+              <a class="cta so-novo" href="#contato">Simule agora</a>
+              <a class="cta so-cliente" href="https://mi6.evertecinc.com.br/autoatendimento">Área do Cliente</a>
+              <button type="button" class="link-claro sub so-novo" data-folha="funciona">O que é consórcio?</button>
+              <button type="button" class="link-claro sub so-cliente" data-folha="contemplacao">Fui contemplado, e agora?</button>
             </div>
             <p class="hero-prova" data-intro>
               <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.4l6 2.2v4.5c0 4.2-2.6 7-6 8.4-3.4-1.4-6-4.2-6-8.4V4.6z"/><path d="M7.2 10.1l2 2 3.6-3.8"/></svg>
@@ -296,7 +320,16 @@ const faq = [
             </p>
           </div>
 
-          <form class="sim-card" data-reveal aria-label="Simulador de parcela">
+          <form
+            class="sim-card"
+            data-reveal
+            aria-label="Simulador de parcela"
+            data-prazo={grupoMotos.prazo_restante_meses}
+            data-txadm={grupoMotos.taxa_administracao}
+            data-fres={grupoMotos.fundo_reserva}
+            data-seguro={grupoMotos.seguro_prestamista_mes}
+            data-credito-padrao={grupoMotos.credito_padrao}
+          >
             <p class="sim-passo">01 · O que você quer conquistar?</p>
             <div class="chips" id="sim-chips">
               {
@@ -311,17 +344,29 @@ const faq = [
             <div class="sim-vivo" id="sim-vivo">
               <p class="sim-passo">02 · Qual crédito você precisa?</p>
               <p class="sim-credito">
-                <span class="sim-moeda">R$</span><output id="sim-valor" for="sim-credito">15.000</output>
+                <span class="sim-moeda">R$</span><output id="sim-valor" for="sim-credito">{simInicial.credito}</output>
               </p>
-              <input type="range" id="sim-credito" min="8000" max="40000" step="500" value="15000" aria-label="Valor de crédito desejado" />
-              <div class="sim-extremos" aria-hidden="true"><span>R$ 8.000</span><span>R$ 40.000</span></div>
+              <input
+                type="range"
+                id="sim-credito"
+                min={grupoMotos.credito_min}
+                max={grupoMotos.credito_max}
+                step={grupoMotos.passo_credito}
+                value={grupoMotos.credito_padrao}
+                aria-label="Valor de crédito desejado"
+              />
+              <div class="sim-extremos" aria-hidden="true">
+                <span>R$ {grupoMotos.credito_min.toLocaleString('pt-BR')}</span>
+                <span>R$ {grupoMotos.credito_max.toLocaleString('pt-BR')}</span>
+              </div>
               <dl class="sim-conta">
-                <div><dt>Fundo comum</dt><dd id="sim-fc">R$ 153,06</dd></div>
-                <div><dt>Taxa de administração · 20%</dt><dd id="sim-tx">R$ 30,61</dd></div>
-                <div><dt>Fundo de reserva · 4%</dt><dd id="sim-fr">R$ 6,12</dd></div>
-                <div class="sim-parcela"><dt>Parcela em 98 meses</dt><dd id="sim-parcela">R$ 189,80</dd></div>
-                <div><dt>Com seguro prestamista · 0,08%</dt><dd id="sim-seguro">R$ 204,68</dd></div>
+                <div><dt>Fundo comum</dt><dd id="sim-fc">{simInicial.fc}</dd></div>
+                <div><dt>Taxa de administração · {pct(grupoMotos.taxa_administracao)}%</dt><dd id="sim-tx">{simInicial.tx}</dd></div>
+                <div><dt>Fundo de reserva · {pct(grupoMotos.fundo_reserva)}%</dt><dd id="sim-fr">{simInicial.fr}</dd></div>
+                <div class="sim-parcela"><dt>Parcela em {grupoMotos.prazo_restante_meses} meses</dt><dd id="sim-parcela">{simInicial.parcela}</dd></div>
+                <div><dt>Com seguro prestamista · {pct(grupoMotos.seguro_prestamista_mes)}%</dt><dd id="sim-seguro">{simInicial.seguro}</dd></div>
               </dl>
+              <p class="sim-assembleia">Grupo {grupoMotos.grupo} · assembleias todo dia {grupoMotos.dia_assembleia}</p>
               <button type="button" class="cta sim-cta" id="sim-enviar">Quero esta proposta</button>
               <p class="sim-nota">
                 Simulação do plano de motos em vigor. Valores aproximados, sem
@@ -350,10 +395,11 @@ const faq = [
       <div class="rodape-colunas">
         <nav aria-label="Institucional">
           <h3>Institucional</h3>
-          <button type="button" class="sub" data-folha="basico">O que é consórcio</button>
+          <button type="button" class="sub" data-folha="funciona">Como funciona</button>
+          <button type="button" class="sub" data-folha="contemplacao">Contemplação</button>
           <button type="button" class="sub" data-folha="duvidas">Perguntas frequentes</button>
-          <a class="sub" href="#contato">Contato</a>
           <a class="sub" href="#">Política de privacidade</a>
+          <button type="button" class="sub" data-trocar-perfil>Trocar perfil de navegação</button>
         </nav>
         <nav aria-label="Consórcios">
           <h3>Consórcios</h3>
@@ -387,13 +433,13 @@ const faq = [
     </footer>
 
     <nav class="dock" aria-label="Menu flutuante">
-      <button type="button" data-folha="basico">
+      <button type="button" data-folha="funciona">
         <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4.2c-1.6-1.1-3.6-1.4-6-1V15c2.4-.4 4.4-.1 6 1 1.6-1.1 3.6-1.4 6-1V3.2c-2.4-.4-4.4-.1-6 1z"/><path d="M10 4.2V16"/></svg>
-        <span>O básico</span>
+        <span>Como funciona</span>
       </button>
-      <button type="button" data-folha="metodo">
-        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="4.5" cy="4.5" r="2"/><circle cx="15.5" cy="15.5" r="2"/><path d="M6.5 4.5h6a3 3 0 0 1 0 6h-5a3 3 0 0 0 0 6"/></svg>
-        <span>Método</span>
+      <button type="button" data-folha="contemplacao">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="8" r="4.6"/><path d="M7.8 11.9 6.2 17l3.8-2 3.8 2-1.6-5.1"/><path d="M8.4 8l1.2 1.2 2.2-2.4"/></svg>
+        <span>Contemplação</span>
       </button>
       <a class="dock-cta" href="#contato" aria-label="Simular agora">
         <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="2.6" width="12" height="14.8" rx="1.6"/><path d="M7 6.4h6"/><path d="M7 10h2M11 10h2M7 13.4h2M11 13.4h2"/></svg>
@@ -402,20 +448,20 @@ const faq = [
         <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7.4 7.2a2.7 2.7 0 1 1 3.6 2.9c-.8.3-1 .9-1 1.7"/><circle cx="10" cy="14.9" r="0.4"/></svg>
         <span>Dúvidas</span>
       </button>
-      <a href="https://mi6.evertecinc.com.br/autoatendimento">
+      <button type="button" data-folha="cliente">
         <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="6.6" r="3.1"/><path d="M3.6 17.1c1.2-3 3.5-4.6 6.4-4.6s5.2 1.6 6.4 4.6"/></svg>
-        <span>Cliente</span>
-      </a>
+        <span>Sou cliente</span>
+      </button>
     </nav>
 
     <div class="folha-fundo" id="folha-fundo" hidden></div>
 
-    <section class="folha" id="folha-basico" hidden role="dialog" aria-modal="true" aria-labelledby="folha-basico-t">
+    <section class="folha" id="folha-funciona" hidden role="dialog" aria-modal="true" aria-labelledby="folha-funciona-t">
       <header class="folha-cabeca">
-        <p class="indice">O básico</p>
+        <p class="indice">Como funciona</p>
         <button type="button" class="folha-fechar" data-fechar aria-label="Fechar">&times;</button>
       </header>
-      <h2 id="folha-basico-t">O que é consórcio?</h2>
+      <h2 id="folha-funciona-t">Como funciona o consórcio</h2>
       <p class="statement">
         Um modelo de compra inteligente e planejada que permite a aquisição
         de bens e serviços com parcelas que cabem no seu bolso, <em>sem juros</em>.
@@ -434,16 +480,7 @@ const faq = [
           }
         </ol>
       </div>
-      <p class="folha-acao"><a class="cta" href="#contato">Simule agora</a></p>
-    </section>
-
-    <section class="folha" id="folha-metodo" hidden role="dialog" aria-modal="true" aria-labelledby="folha-metodo-t">
-      <header class="folha-cabeca">
-        <p class="indice">Método</p>
-        <button type="button" class="folha-fechar" data-fechar aria-label="Fechar">&times;</button>
-      </header>
-      <h2 id="folha-metodo-t">Passo a passo do Consórcio Nacional MI6</h2>
-      <p class="apoio">Veja como realizar seus objetivos com segurança, liberdade e sem juros.</p>
+      <p class="indice folha-sub">Passo a passo</p>
       <ol class="metodo-lista">
         <span class="metodo-fio" aria-hidden="true"><i></i></span>
         {
@@ -465,7 +502,81 @@ const faq = [
           <span>taxa de administração definida em contrato, não juros bancários.</span>
         </div>
       </div>
-      <p class="folha-acao">Pronto para o passo 1? <a class="cta" href="#contato">Comece agora</a></p>
+      <p class="folha-acao">Pronto para o passo 1? <a class="cta" href="#contato">Simule agora</a></p>
+    </section>
+
+    <section class="folha" id="folha-contemplacao" hidden role="dialog" aria-modal="true" aria-labelledby="folha-contemplacao-t">
+      <header class="folha-cabeca">
+        <p class="indice">Contemplação</p>
+        <button type="button" class="folha-fechar" data-fechar aria-label="Fechar">&times;</button>
+      </header>
+      <h2 id="folha-contemplacao-t">A jornada da contemplação</h2>
+      <p class="apoio">
+        Contemplação é o momento em que o grupo libera o seu crédito. O
+        caminho, do sorteio à conquista:
+      </p>
+      <ol class="metodo-lista">
+        <span class="metodo-fio" aria-hidden="true"><i></i></span>
+        <li>
+          <span class="metodo-num">01</span>
+          <p>Todo dia 20 acontece a assembleia mensal do grupo; é nela que saem as contemplações.</p>
+        </li>
+        <li>
+          <span class="metodo-num">02</span>
+          <p>A contemplação vem por sorteio, vinculado à Loteria Federal, ou pela melhor oferta de lance.</p>
+        </li>
+        <li>
+          <span class="metodo-num">03</span>
+          <p>A MI6 comunica o contemplado e orienta os próximos passos, pelos canais oficiais.</p>
+        </li>
+        <li>
+          <span class="metodo-num">04</span>
+          <p>Você apresenta a documentação e as garantias previstas no regulamento do grupo.</p>
+        </li>
+        <li>
+          <span class="metodo-num">05</span>
+          <p>Com tudo aprovado, a carta de crédito paga o seu bem, com o poder de quem compra à vista.</p>
+        </li>
+      </ol>
+      <p class="folha-nota">
+        Carta contemplada é a cota que já foi sorteada ou venceu o lance; a
+        carta de crédito é o documento com o valor disponível, usado na compra
+        do bem. A MI6 não comercializa cotas contempladas.
+      </p>
+      <p class="folha-acao">
+        <a class="cta cta-navy" href="https://mi6.evertecinc.com.br/autoatendimento">Área do Cliente</a>
+        <a class="sub link-navy" href="https://wa.me/5511981406486">Falar com a MI6 no WhatsApp</a>
+      </p>
+    </section>
+
+    <section class="folha" id="folha-cliente" hidden role="dialog" aria-modal="true" aria-labelledby="folha-cliente-t">
+      <header class="folha-cabeca">
+        <p class="indice">Sou cliente</p>
+        <button type="button" class="folha-fechar" data-fechar aria-label="Fechar">&times;</button>
+      </header>
+      <h2 id="folha-cliente-t">Bem-vindo de volta</h2>
+      <p class="apoio">
+        Boletos e segunda via, contratos, extrato do plano e oferta de lances
+        ficam na sua Área do Cliente.
+      </p>
+      <p class="folha-acao folha-acao-topo">
+        <a class="cta cta-navy" href="https://mi6.evertecinc.com.br/autoatendimento">Entrar na Área do Cliente</a>
+      </p>
+      <ul class="cliente-atalhos">
+        <li>
+          <button type="button" class="sub link-navy" data-folha="contemplacao">Fui contemplado, e agora?</button>
+        </li>
+        <li>
+          <a class="sub link-navy" href="#contato">Quero mais um consórcio, simular de novo</a>
+        </li>
+        <li>
+          <a class="sub link-navy" href="https://mi6.evertecinc.com.br/newcon.web/frmCorCCCnsLogin.aspx?applicationKey=3M9zL0+WaLYAeBQwijSQEkhjyy42CGuQj8DXZNFUeAoW7bdn/JfcNmUNbNUgQJqaufUv7kqAamOQCRrx6B2F7w==">Sou parceiro, acessar o Canal do parceiro</a>
+        </li>
+      </ul>
+      <p class="folha-nota">
+        Atendimento humano: SAC 0800 000 5228 · Ouvidoria 0800 000 5267 ·
+        WhatsApp (11) 98140-6486 · contato@mi6consorcio.com.br
+      </p>
     </section>
 
     <section class="folha" id="folha-duvidas" hidden role="dialog" aria-modal="true" aria-labelledby="folha-duvidas-t">
@@ -523,6 +634,19 @@ const faq = [
       const motionOk = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
       if (!motionOk) document.querySelector('.veu')?.remove();
 
+      // Perfil guardado de visitas anteriores reordena os destaques.
+      const perfilSalvo = localStorage.getItem('mi6-perfil');
+      if (perfilSalvo === 'cliente' || perfilSalvo === 'novo') {
+        document.body.dataset.perfil = perfilSalvo;
+      }
+      document.querySelectorAll('[data-trocar-perfil]').forEach((b) => {
+        b.addEventListener('click', () => {
+          localStorage.removeItem('mi6-perfil');
+          sessionStorage.removeItem('mi6-veu');
+          location.reload();
+        });
+      });
+
       let lenis: Lenis | null = null;
       if (motionOk) {
         lenis = new Lenis({ autoRaf: true, lerp: 0.12 });
@@ -550,7 +674,13 @@ const faq = [
       let folhaAberta: HTMLElement | null = null;
       function abrirFolha(id: string) {
         const folha = document.getElementById(`folha-${id}`);
-        if (!folha || folhaAberta) return;
+        if (!folha) return;
+        if (folhaAberta === folha) return;
+        if (folhaAberta) {
+          // Troca direta de lâmina: a aberta sai na hora, a nova entra animada.
+          folhaAberta.setAttribute('hidden', '');
+          folhaAberta = null;
+        }
         folhaAberta = folha;
         fundo?.removeAttribute('hidden');
         folha.removeAttribute('hidden');
@@ -594,16 +724,16 @@ const faq = [
         a.addEventListener('click', () => fecharFolha());
       });
 
-      // Simulador: a conta inteira do plano de motos, ao vivo.
-      // Parâmetros do plano vigente: prazo 98 meses, taxa de administração
-      // 20%, fundo de reserva 4%, seguro prestamista 0,08% sobre o total.
-      const PRAZO = 98;
-      const TX_ADM = 0.2;
-      const F_RES = 0.04;
-      const SEGURO = 0.0008;
+      // Simulador: a conta inteira do grupo ativo, ao vivo. Os parâmetros
+      // chegam pelo HTML, vindos do espelho da tabela verdade (grupos.json).
+      const simCard = document.querySelector<HTMLElement>('.sim-card');
+      const PRAZO = parseInt(simCard?.dataset.prazo ?? '98', 10);
+      const TX_ADM = parseFloat(simCard?.dataset.txadm ?? '0.2');
+      const F_RES = parseFloat(simCard?.dataset.fres ?? '0.04');
+      const SEGURO = parseFloat(simCard?.dataset.seguro ?? '0.0008');
       const brl = (v: number) =>
         'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      const exib = { c: 15000 };
+      const exib = { c: parseInt(simCard?.dataset.creditoPadrao ?? '15000', 10) };
       function pintarSim() {
         const c = exib.c;
         const base = c * (1 + TX_ADM + F_RES);
@@ -689,25 +819,46 @@ const faq = [
           .from('.hero-coord, .hero-scroll', { autoAlpha: 0, duration: 0.8 }, '-=0.8')
           .from('.dock', { y: 90, autoAlpha: 0, duration: 0.8, ease: 'power3.out' }, '-=0.9');
 
-        // Véu de abertura: a linha vermelha desenha, o logo é revelado,
-        // a cortina sobe e só então o hero entra. Uma vez por sessão.
+        // Cortina-pergunta: a linha desenha, o logo é revelado, os dois
+        // panos perguntam o perfil e a cortina abre para os lados.
+        // Pergunta uma vez; a escolha fica guardada (trocável no rodapé),
+        // é escapável (Esc ou "entrar sem escolher") e a página completa
+        // existe por baixo, intacta para buscadores.
         const veu = document.querySelector<HTMLElement>('.veu');
-        if (veu && !sessionStorage.getItem('mi6-veu')) {
-          sessionStorage.setItem('mi6-veu', '1');
-          veu.style.visibility = 'visible';
-          document.documentElement.style.overflow = 'hidden';
+        const abrirCortina = (escolha: string) => {
+          if (escolha === 'cliente' || escolha === 'novo') {
+            localStorage.setItem('mi6-perfil', escolha);
+            document.body.dataset.perfil = escolha;
+          }
           gsap.timeline({
             onComplete: () => {
               document.documentElement.style.overflow = '';
-              veu.remove();
+              veu?.remove();
             },
           })
+            .to('.veu-centro, .veu-pular', { autoAlpha: 0, duration: 0.25 }, 0)
+            .to('.veu-pano-cliente', { xPercent: -101, duration: 0.85, ease: 'power3.inOut' }, 0.05)
+            .to('.veu-pano-novo', { xPercent: 101, duration: 0.85, ease: 'power3.inOut' }, 0.05)
+            .add(() => tl.play(), '-=0.5');
+        };
+        if (veu && !sessionStorage.getItem('mi6-veu') && !perfilSalvo) {
+          sessionStorage.setItem('mi6-veu', '1');
+          veu.style.visibility = 'visible';
+          document.documentElement.style.overflow = 'hidden';
+          gsap.timeline()
             .to('.veu-linha', { scaleX: 1, duration: 0.55, ease: 'power2.inOut' })
             .to('.veu-logo', { clipPath: 'inset(0 0% 0 0)', duration: 0.85, ease: 'power3.inOut' }, '-=0.15')
-            .to('.veu-linha', { scaleX: 0, transformOrigin: 'right center', duration: 0.45, ease: 'power2.in' }, '-=0.25')
-            .to({}, { duration: 0.3 })
-            .to('.veu', { yPercent: -100, duration: 0.75, ease: 'power3.inOut' })
-            .add(() => tl.play(), '-=0.4');
+            .to('.veu-pano-rotulo, .veu-pano-sub', { autoAlpha: 1, duration: 0.6, stagger: 0.08 }, '-=0.2')
+            .to('.veu-pergunta, .veu-pular', { autoAlpha: 1, duration: 0.5 }, '-=0.35');
+          veu.querySelectorAll<HTMLElement>('[data-perfil]').forEach((b) => {
+            b.addEventListener('click', () => abrirCortina(b.dataset.perfil ?? ''));
+          });
+          document.addEventListener('keydown', function escCortina(e) {
+            if (e.key === 'Escape' && veu && document.body.contains(veu)) {
+              abrirCortina('');
+              document.removeEventListener('keydown', escCortina);
+            }
+          });
         } else {
           veu?.remove();
           tl.play();
@@ -812,16 +963,67 @@ const faq = [
     outline-offset: 3px;
   }
 
-  /* Véu de abertura: o logo é revelado por uma linha vermelha e a cortina sobe.
-     Invisível por padrão; só o JavaScript (com movimento permitido) o exibe. */
+  /* Cortina de abertura: a linha revela o logo e os dois panos fazem a
+     pergunta (cliente à esquerda em navy, novo à direita em vermelho).
+     Invisível por padrão; só o JavaScript (com movimento permitido) a exibe. */
   .veu {
     position: fixed;
     inset: 0;
     z-index: 100;
+    visibility: hidden;
+  }
+  .veu-pano {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    border: 0;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.45rem;
+    padding-bottom: 16vh;
+    color: var(--branco);
+    transition: filter 0.3s ease;
+  }
+  .veu-pano:hover {
+    filter: brightness(1.18);
+  }
+  .veu-pano-cliente {
+    left: 0;
     background: var(--navy-escuro);
+  }
+  .veu-pano-novo {
+    right: 0;
+    background: var(--vermelho);
+  }
+  .veu-pano-rotulo {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(1.7rem, 3.6vw, 2.7rem);
+    line-height: 1;
+    opacity: 0;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.25s ease;
+  }
+  .veu-pano:hover .veu-pano-rotulo {
+    border-bottom-color: rgba(255, 255, 255, 0.7);
+  }
+  .veu-pano-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.64rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0;
+  }
+  .veu-centro {
+    position: absolute;
+    inset: 0;
     display: grid;
     place-items: center;
-    visibility: hidden;
+    pointer-events: none;
+    z-index: 2;
   }
   .veu-linha {
     position: absolute;
@@ -829,14 +1031,58 @@ const faq = [
     top: 50%;
     width: min(34rem, 76vw);
     height: 1px;
-    background: var(--vermelho);
+    background: var(--branco);
     transform: translate(-50%, -50%) scaleX(0);
     transform-origin: left center;
+  }
+  .veu-miolo {
+    display: grid;
+    justify-items: center;
+    gap: 1.1rem;
   }
   .veu-logo {
     height: 2.7rem;
     width: auto;
     clip-path: inset(0 100% 0 0);
+  }
+  .veu-pergunta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+    margin: 0;
+    opacity: 0;
+  }
+  .veu-pular {
+    position: absolute;
+    left: 50%;
+    bottom: 1.5rem;
+    transform: translateX(-50%);
+    z-index: 3;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.85);
+    border-radius: 999px;
+    padding: 0.5rem 1.15rem;
+    font-size: 0.78rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: background 0.25s ease;
+  }
+  .veu-pular:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  /* Perfil de navegação: a escolha da cortina reordena os destaques */
+  .so-cliente {
+    display: none !important;
+  }
+  body[data-perfil='cliente'] .so-cliente {
+    display: inline-block !important;
+  }
+  body[data-perfil='cliente'] .so-novo {
+    display: none !important;
   }
 
   /* Linhas vivas: a geometria respira entre as cores da marca
@@ -1937,6 +2183,14 @@ const faq = [
     font-weight: 400;
     color: var(--navy);
   }
+  .sim-assembleia {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--tinta-suave);
+    margin: 0 0 1.1rem;
+  }
   .sim-cta {
     display: block;
     width: 100%;
@@ -2261,6 +2515,44 @@ const faq = [
     align-items: center;
     gap: 1.25rem;
     flex-wrap: wrap;
+  }
+  .folha-acao-topo {
+    margin: 0 0 1.75rem;
+  }
+  .cta-navy {
+    background: var(--navy);
+  }
+  .cta-navy:hover {
+    background: #032a82;
+    box-shadow: 0 14px 28px -14px rgba(1, 33, 105, 0.6);
+  }
+  .link-navy {
+    color: var(--navy);
+    font-weight: 600;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font-size: inherit;
+    font-family: inherit;
+    padding: 0 0 2px;
+    text-align: left;
+  }
+  .cliente-atalhos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.9rem;
+    border-top: 1px solid var(--linha-clara);
+    padding-top: 1.5rem;
+  }
+  .folha-nota {
+    margin: 2rem 0 0;
+    padding-top: 1.25rem;
+    border-top: 1px dotted var(--linha-clara);
+    color: var(--tinta-suave);
+    font-size: 0.88rem;
+    line-height: 1.6;
   }
 
   /* Botões que se vestem de link (gatilhos das folhas) */
