@@ -301,31 +301,28 @@ const guiaBarra = guiaInclinada(388);
       </div>
 
       <section class="galeria" id="solucoes">
-        <div class="galeria-pin">
-          <header class="galeria-cabeca">
-            <p class="indice">SEIS CAMINHOS</p>
-            <h2>O consórcio ideal para você</h2>
-            <p class="galeria-apoio">
-              Trabalhamos com soluções em seis segmentos do mercado, com planos
-              flexíveis, atendimento consultivo e foco total em custo-benefício.
-              Quem registra interesse entra no início do grupo.
-            </p>
-          </header>
-          <div class="galeria-track">
-            {
-              segmentos.map((s) => (
-                <article class="painel">
-                  <div class="painel-foto">
-                    <img src={s.img} alt={s.alt} loading="lazy" />
-                  </div>
-                  <p class="painel-num" aria-hidden="true">{s.n}</p>
-                  <h3>{s.nome}</h3>
-                  <a class="sub" href="#contato" data-segmento={s.id}>Simule agora</a>
-                </article>
-              ))
-            }
-          </div>
-          <p class="galeria-dica" aria-hidden="true">passe o cursor para ver em cores</p>
+        <header class="galeria-cabeca">
+          <p class="indice" data-reveal>SEIS CAMINHOS</p>
+          <h2 data-reveal>O consórcio ideal para você</h2>
+          <p class="galeria-apoio" data-reveal>
+            Trabalhamos com soluções em seis segmentos do mercado, com planos
+            flexíveis, atendimento consultivo e foco total em custo-benefício.
+            Quem registra interesse entra no início do grupo.
+          </p>
+        </header>
+        <div class="galeria-grade">
+          {
+            segmentos.map((s) => (
+              <article class="painel" data-reveal>
+                <div class="painel-foto">
+                  <img src={s.img} alt={s.alt} loading="lazy" />
+                </div>
+                <p class="painel-num" aria-hidden="true">{s.n}</p>
+                <h3>{s.nome}</h3>
+                <a class="sub" href="#contato" data-segmento={s.id}>Simular</a>
+              </article>
+            ))
+          }
         </div>
       </section>
 
@@ -342,31 +339,25 @@ const guiaBarra = guiaInclinada(388);
         </svg>
         <div class="sim-grade">
           <div class="sim-texto">
-            <h2 data-reveal>Simule o consórcio <em>ideal</em> para você</h2>
+            <h2 data-reveal>Simule e <em>fale</em> com um consultor</h2>
             <p data-reveal>
-              Escolha o segmento, ajuste o crédito e veja a conta inteira,
-              parcela por parcela, sem letra miúda. Um consultor confirma as
-              condições com você.
+              Diga o que você quer conquistar e o valor do bem. A parcela
+              aparece na hora, sem juros. Um consultor confirma as condições
+              e tira suas dúvidas pelo canal que você preferir.
             </p>
             <ul class="contato-garantias" data-reveal>
               <li>Sem compromisso</li>
               <li>Menos de 2 minutos</li>
               <li>Resposta de gente</li>
             </ul>
-            <div class="contato-acoes" data-reveal>
-              <a class="cta cta-inverso" href="https://wa.me/5511981406486">Prefiro o WhatsApp</a>
-              <span class="contato-alt">ou SAC 0800 000 5228</span>
-            </div>
             <p class="contato-nota" data-reveal>
-              [ o envio abre o Microsoft Forms incorporado, já preenchido com
-              segmento e valores da simulação ]
+              Atendimento em todo o Brasil. SAC 0800 000 5228 · Ouvidoria 0800 000 5267.
             </p>
           </div>
 
           <form
             class="sim-card"
-            data-reveal
-            aria-label="Simulador de parcela"
+            aria-label="Simulação e contato"
             data-prazo={grupoMotos.prazo_restante_meses}
             data-txadm={grupoMotos.taxa_administracao}
             data-fres={grupoMotos.fundo_reserva}
@@ -375,65 +366,88 @@ const guiaBarra = guiaInclinada(388);
             data-grupo={grupoMotos.grupo}
             data-dia={grupoMotos.dia_assembleia}
           >
-            <p class="sim-passo">01 · O que você quer conquistar?</p>
-            <div class="chips" id="sim-chips">
-              {
-                segmentos.map((s) => (
-                  <button type="button" data-segmento={s.id} aria-pressed={s.id === 'motos' ? 'true' : 'false'}>
-                    {s.nome.replace('Consórcio de ', '')}
-                  </button>
-                ))
-              }
-            </div>
-
-            <div class="sim-vivo" id="sim-vivo">
-              <p class="sim-passo">02 · Qual crédito você precisa?</p>
-              <p class="sim-credito">
-                <span class="sim-moeda">R$</span><output id="sim-valor" for="sim-credito">{simInicial.credito}</output>
-              </p>
-              <input
-                type="range"
-                id="sim-credito"
-                min={grupoMotos.credito_min}
-                max={grupoMotos.credito_max}
-                step={grupoMotos.passo_credito}
-                value={grupoMotos.credito_padrao}
-                aria-label="Valor de crédito desejado"
-              />
-              <div class="sim-extremos" aria-hidden="true">
-                <span>R$ {grupoMotos.credito_min.toLocaleString('pt-BR')}</span>
-                <span>R$ {grupoMotos.credito_max.toLocaleString('pt-BR')}</span>
+            <div class="sim-corpo" id="sim-corpo">
+              <p class="sim-passo">01 · O que você quer conquistar?</p>
+              <div class="chips" id="sim-chips">
+                {
+                  segmentos.map((s) => (
+                    <button type="button" data-segmento={s.id} aria-pressed={s.id === 'motos' ? 'true' : 'false'}>
+                      {s.nome.replace('Consórcio de ', '')}
+                    </button>
+                  ))
+                }
               </div>
-              <div class="sim-resultado">
-                <p class="sim-res-rotulo">Sua parcela mensal, sem juros</p>
-                <p class="sim-res-valor">
-                  <span class="sim-moeda-sm">R$</span><span id="sim-parcela">{simInicial.parcela}</span><span class="sim-res-mes">por mês</span>
+
+              <div class="sim-vivo" id="sim-vivo">
+                <p class="sim-passo">02 · Qual o valor do bem?</p>
+                <p class="sim-credito">
+                  <span class="sim-moeda">R$</span><output id="sim-valor" for="sim-credito">{simInicial.credito}</output>
                 </p>
-                <p class="sim-res-seguro">com seguro prestamista opcional, <strong id="sim-seguro">{simInicial.seguro}</strong></p>
+                <input
+                  type="range"
+                  id="sim-credito"
+                  min={grupoMotos.credito_min}
+                  max={grupoMotos.credito_max}
+                  step={grupoMotos.passo_credito}
+                  value={grupoMotos.credito_padrao}
+                  aria-label="Valor do bem desejado"
+                />
+                <div class="sim-extremos" aria-hidden="true">
+                  <span>R$ {grupoMotos.credito_min.toLocaleString('pt-BR')}</span>
+                  <span>R$ {grupoMotos.credito_max.toLocaleString('pt-BR')}</span>
+                </div>
+                <div class="sim-resultado">
+                  <p class="sim-res-rotulo">Sua parcela mensal, sem juros</p>
+                  <p class="sim-res-valor">
+                    <span class="sim-moeda-sm">R$</span><span id="sim-parcela">{simInicial.parcela}</span><span class="sim-res-mes">por mês</span>
+                  </p>
+                  <p class="sim-res-seguro">com seguro prestamista opcional, <strong id="sim-seguro">{simInicial.seguro}</strong></p>
+                </div>
+                <p class="sim-taxa">
+                  <span class="sim-taxa-rot">Taxa de administração</span>
+                  <span class="sim-taxa-val">{simInicial.taxaAdm}%<em>equivale a {simInicial.taxaMensal}% ao mês</em></span>
+                </p>
+                <p class="sim-assembleia">Grupo {grupoMotos.grupo} · {grupoMotos.prazo_restante_meses} meses · assembleias dia {grupoMotos.dia_assembleia}</p>
               </div>
-              <p class="sim-taxa">
-                <span class="sim-taxa-rot">Taxa de administração</span>
-                <span class="sim-taxa-val">{simInicial.taxaAdm}%<em>equivale a {simInicial.taxaMensal}% ao mês</em></span>
-              </p>
-              <p class="sim-assembleia">Grupo {grupoMotos.grupo} · {grupoMotos.prazo_restante_meses} meses · assembleias dia {grupoMotos.dia_assembleia}</p>
-              <button type="button" class="cta sim-cta" id="sim-enviar">Quero esta proposta</button>
-              <button type="button" class="sim-cta-sec" id="sim-dossie">
-                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v9.5"/><path d="m6.6 9.4 3.4 3.4 3.4-3.4"/><path d="M4 16.6h12"/></svg>
-                Baixar o dossiê do meu plano
-              </button>
-              <p class="sim-nota">
-                Simulação do plano de motos em vigor. Valores aproximados, sem
-                valor contratual; a proposta final vem do consultor.
-              </p>
+
+              <div class="sim-aguarde" id="sim-aguarde" hidden>
+                <p class="sim-aguarde-titulo">Grupos de <strong id="sim-seg-nome">carros</strong> em formação.</p>
+                <p>Deixe seu contato e receba as condições de abertura em primeira mão, com posição no início do grupo.</p>
+              </div>
+
+              <div class="sim-contato">
+                <p class="sim-passo">03 · Para um consultor te retornar</p>
+                <label class="sim-campo">
+                  <span>Nome</span>
+                  <input type="text" name="nome" required autocomplete="name" placeholder="Como podemos te chamar" />
+                </label>
+                <div class="sim-campo-dupla">
+                  <label class="sim-campo">
+                    <span>Telefone</span>
+                    <input type="tel" name="telefone" required autocomplete="tel" placeholder="(11) 90000-0000" />
+                  </label>
+                  <label class="sim-campo">
+                    <span>E-mail</span>
+                    <input type="email" name="email" required autocomplete="email" placeholder="voce@email.com" />
+                  </label>
+                </div>
+                <input type="text" name="confirme" class="sim-mel" tabindex="-1" autocomplete="off" aria-hidden="true" />
+                <button type="submit" class="cta sim-cta">Quero falar com um consultor</button>
+                <p class="sim-nota">
+                  Sem compromisso. Seus dados vão para um consultor da MI6, não são compartilhados com terceiros.
+                </p>
+              </div>
             </div>
 
-            <div class="sim-aguarde" id="sim-aguarde" hidden>
-              <p class="sim-aguarde-titulo">Grupos de <strong id="sim-seg-nome">carros</strong> em formação.</p>
+            <div class="sim-sucesso" id="sim-sucesso" hidden>
+              <span class="sim-check" aria-hidden="true"></span>
+              <h3>Recebemos o seu contato.</h3>
               <p>
-                Deixe seu contato e receba as condições de abertura em primeira
-                mão, com posição no início do grupo.
+                Um consultor da MI6 vai falar com você em breve sobre
+                <strong id="sim-sucesso-seg">motos</strong>. Enquanto isso,
+                conheça como o consórcio funciona.
               </p>
-              <button type="button" class="cta sim-cta" id="sim-avisar">Quero ser avisado da abertura</button>
+              <button type="button" class="cta cta-navy" data-folha="funciona">Como funciona</button>
             </div>
           </form>
         </div>
@@ -467,7 +481,6 @@ const guiaBarra = guiaInclinada(388);
           <h3>Atendimento</h3>
           <p>SAC 0800 000 5228</p>
           <p>Ouvidoria 0800 000 5267</p>
-          <p>WhatsApp (11) 98140-6486</p>
           <p>contato@mi6consorcio.com.br</p>
         </div>
         <div>
@@ -599,7 +612,7 @@ const guiaBarra = guiaInclinada(388);
       </p>
       <p class="folha-acao">
         <a class="cta cta-navy" href="https://mi6.evertecinc.com.br/autoatendimento">Área do Cliente</a>
-        <a class="sub link-navy" href="https://wa.me/5511981406486">Falar com a MI6 no WhatsApp</a>
+        <a class="sub link-navy" href="#contato">Simular um novo plano</a>
       </p>
     </section>
 
@@ -629,7 +642,7 @@ const guiaBarra = guiaInclinada(388);
       </ul>
       <p class="folha-nota">
         Atendimento humano: SAC 0800 000 5228 · Ouvidoria 0800 000 5267 ·
-        WhatsApp (11) 98140-6486 · contato@mi6consorcio.com.br
+        contato@mi6consorcio.com.br
       </p>
     </section>
 
@@ -823,7 +836,9 @@ const guiaBarra = guiaInclinada(388);
         servicos: 'serviços',
         eletro: 'eletro',
       };
+      let segAtual = 'motos';
       function escolherSegmento(id: string) {
+        segAtual = id;
         document.querySelectorAll('#sim-chips button').forEach((b) => {
           b.setAttribute('aria-pressed', (b as HTMLElement).dataset.segmento === id ? 'true' : 'false');
         });
@@ -846,158 +861,22 @@ const guiaBarra = guiaInclinada(388);
       document.querySelectorAll<HTMLAnchorElement>('a[data-segmento]').forEach((a) => {
         a.addEventListener('click', () => escolherSegmento(a.dataset.segmento ?? 'motos'));
       });
-      ['sim-enviar', 'sim-avisar'].forEach((id) => {
-        const b = document.getElementById(id);
-        b?.addEventListener('click', () => {
-          const original = b.textContent;
-          b.textContent = 'Aqui abre o Microsoft Forms preenchido';
-          b.setAttribute('disabled', '');
-          setTimeout(() => {
-            b.textContent = original;
-            b.removeAttribute('disabled');
-          }, 1800);
-        });
-      });
 
-      // Dossiê do Plano: o artefato que o lead leva. Desenhado em canvas com
-      // a identidade do site e os números da simulação atual; no celular vai
-      // direto para a folha de compartilhamento (WhatsApp), no desktop baixa.
-      const pctTexto = (v: number) => (v * 100).toLocaleString('pt-BR') + '%';
-      async function gerarDossie(): Promise<Blob | null> {
-        await Promise.all([
-          document.fonts.load('400 130px "Instrument Serif"'),
-          document.fonts.load('500 26px "IBM Plex Mono"'),
-          document.fonts.load('600 30px "Public Sans Variable"'),
-        ]).catch(() => {});
-        const W = 1080;
-        const H = 1350;
-        const cv = document.createElement('canvas');
-        cv.width = W;
-        cv.height = H;
-        const cx2 = cv.getContext('2d');
-        if (!cx2) return null;
-
-        const grad = cx2.createRadialGradient(W / 2, 0, 120, W / 2, 0, H * 1.1);
-        grad.addColorStop(0, '#022169');
-        grad.addColorStop(0.7, '#021a4f');
-        grad.addColorStop(1, '#01133a');
-        cx2.fillStyle = grad;
-        cx2.fillRect(0, 0, W, H);
-        cx2.lineWidth = 1;
-        cx2.strokeStyle = 'rgba(255,255,255,0.10)';
-        cx2.beginPath(); cx2.moveTo(0, 0); cx2.lineTo(W, H); cx2.stroke();
-        cx2.beginPath(); cx2.moveTo(W, 0); cx2.lineTo(0, H); cx2.stroke();
-        cx2.strokeStyle = 'rgba(200,16,46,0.35)';
-        cx2.beginPath(); cx2.moveTo(90, 0); cx2.lineTo(W + 90, H); cx2.stroke();
-        cx2.beginPath(); cx2.moveTo(W - 90, 0); cx2.lineTo(-90, H); cx2.stroke();
-
-        const logo = new Image();
-        logo.src = '/imgs/logo-mi6-branco.png';
-        await new Promise((res) => {
-          logo.onload = res;
-          logo.onerror = res;
-        });
-        if (logo.naturalWidth) cx2.drawImage(logo, 84, 78, 233, 50);
-
-        const mono = (px: number) => `500 ${px}px "IBM Plex Mono", monospace`;
-        const serif = (px: number) => `400 ${px}px "Instrument Serif", Georgia, serif`;
-        const sans = (px: number, w = 600) => `${w} ${px}px "Public Sans Variable", Arial, sans-serif`;
-
-        cx2.fillStyle = 'rgba(255,255,255,0.65)';
-        cx2.font = mono(24);
-        cx2.textAlign = 'right';
-        cx2.fillText('DOSSIÊ DO PLANO', W - 84, 104);
-        cx2.fillText(new Date().toLocaleDateString('pt-BR'), W - 84, 138);
-
-        cx2.textAlign = 'left';
-        cx2.fillStyle = 'rgba(255,255,255,0.6)';
-        cx2.font = mono(26);
-        cx2.fillText('CRÉDITO SIMULADO · MOTOS', 84, 318);
-        cx2.fillStyle = '#ffffff';
-        cx2.font = serif(130);
-        cx2.fillText('R$ ' + Math.round(exib.c).toLocaleString('pt-BR'), 78, 442);
-
-        cx2.fillStyle = 'rgba(255,255,255,0.5)';
-        cx2.fillRect(84, 502, W - 168, 2);
-        cx2.fillStyle = '#c8102e';
-        cx2.fillRect(84, 502, 96, 2);
-
-        const base = exib.c * (1 + TX_ADM + F_RES);
-        const txMes = ((TX_ADM / PRAZO) * 100).toFixed(2).replace('.', ',');
-        const linhas: Array<[string, string, boolean]> = [
-          ['Parcela mensal, sem juros', brl(base / PRAZO), true],
-          ['Com seguro prestamista (opcional)', brl(base / PRAZO + base * SEGURO), false],
-          ['Taxa de administração', pctTexto(TX_ADM) + '  ·  ' + txMes + '% ao mês', false],
-          ['Prazo', PRAZO + ' meses', false],
-        ];
-        let y = 596;
-        for (const [rotulo, valor, destaque] of linhas) {
-          cx2.textAlign = 'left';
-          cx2.fillStyle = destaque ? '#ffffff' : 'rgba(255,255,255,0.7)';
-          cx2.font = destaque ? sans(33, 700) : sans(29, 500);
-          cx2.fillText(rotulo, 84, y);
-          cx2.textAlign = 'right';
-          cx2.fillStyle = '#ffffff';
-          cx2.font = destaque ? serif(62) : sans(33, 600);
-          cx2.fillText(valor, W - 84, destaque ? y + 6 : y);
-          if (destaque) {
-            cx2.fillStyle = '#c8102e';
-            cx2.fillRect(W - 84 - 300, y + 28, 300, 3);
-          } else {
-            cx2.fillStyle = 'rgba(255,255,255,0.14)';
-            cx2.fillRect(84, y + 26, W - 168, 1);
-          }
-          y += destaque ? 112 : 84;
-        }
-
-        const grupoId = simCard?.dataset.grupo ?? 'M-01';
-        const diaAss = simCard?.dataset.dia ?? '20';
-        cx2.textAlign = 'left';
-        cx2.fillStyle = 'rgba(255,255,255,0.6)';
-        cx2.font = mono(24);
-        cx2.fillText('GRUPO ' + grupoId + ' · ' + PRAZO + ' MESES · ASSEMBLEIAS DIA ' + diaAss, 84, 1126);
-        cx2.fillStyle = 'rgba(255,255,255,0.45)';
-        cx2.font = sans(22, 500);
-        cx2.fillText('Valores aproximados, sem valor contratual. A proposta final vem do consultor.', 84, 1168);
-        cx2.fillStyle = '#c8102e';
-        cx2.fillRect(84, 1214, W - 168, 3);
-        cx2.fillStyle = 'rgba(255,255,255,0.82)';
-        cx2.font = sans(24, 600);
-        cx2.fillText('Autorizada pelo Banco Central do Brasil · Ofício nº 33.288/2024', 84, 1262);
-        cx2.textAlign = 'right';
-        cx2.fillText('mi6consorcio.com.br', W - 84, 1300);
-        return await new Promise((res) => cv.toBlob(res, 'image/png'));
-      }
-
-      const botaoDossie = document.getElementById('sim-dossie');
-      botaoDossie?.addEventListener('click', async () => {
-        if (botaoDossie.hasAttribute('disabled')) return;
-        const original = botaoDossie.innerHTML;
-        botaoDossie.setAttribute('disabled', '');
-        botaoDossie.textContent = 'Preparando seu dossiê...';
-        try {
-          const blob = await gerarDossie();
-          if (blob) {
-            const arquivo = new File([blob], 'dossie-mi6-motos.png', { type: 'image/png' });
-            const podeCompartilhar =
-              typeof navigator.canShare === 'function' && navigator.canShare({ files: [arquivo] });
-            if (podeCompartilhar) {
-              await navigator.share({ files: [arquivo], title: 'Meu plano MI6' }).catch(() => {});
-            } else {
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = 'dossie-mi6-motos.png';
-              a.click();
-              setTimeout(() => URL.revokeObjectURL(url), 4000);
-            }
-            botaoDossie.textContent = 'Dossiê gerado!';
-          }
-        } finally {
-          setTimeout(() => {
-            botaoDossie.innerHTML = original;
-            botaoDossie.removeAttribute('disabled');
-          }, 1800);
+      // Envio do lead qualificado: a interface é nossa; na fase 3 o submit
+      // posta num fluxo do Power Automate que grava na planilha de leads do
+      // Excel 365 (ver docs/arquitetura-dados.md). Aqui, confirma na hora.
+      simCard?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const mel = simCard.querySelector<HTMLInputElement>('.sim-mel');
+        if (mel && mel.value) return; // isca anti-robô preenchida: ignora
+        const corpo = document.getElementById('sim-corpo');
+        const sucesso = document.getElementById('sim-sucesso');
+        const seg = document.getElementById('sim-sucesso-seg');
+        if (seg) seg.textContent = nomesSeg[segAtual] ?? segAtual;
+        corpo?.setAttribute('hidden', '');
+        sucesso?.removeAttribute('hidden');
+        if (motionOk) {
+          gsap.from(sucesso, { autoAlpha: 0, y: 16, duration: 0.5, ease: 'power3.out' });
         }
       });
 
@@ -1120,24 +999,6 @@ const guiaBarra = guiaInclinada(388);
             ly(((e.clientY - r.top) / r.height - 0.5) * 12);
           });
         }
-
-        const track = document.querySelector<HTMLElement>('.galeria-track');
-        if (!track) return;
-        const distancia = () => track.scrollWidth - window.innerWidth + 96;
-        const anim = gsap.to(track, {
-          x: () => -distancia(),
-          ease: 'none',
-          scrollTrigger: {
-            trigger: '.galeria',
-            start: 'top top',
-            end: () => '+=' + distancia(),
-            scrub: 1,
-            pin: true,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-          },
-        });
-        return () => anim.scrollTrigger?.kill();
       });
     </script>
   </body>
@@ -1969,18 +1830,9 @@ const guiaBarra = guiaInclinada(388);
   .galeria {
     background: var(--navy-escuro);
     border-top: 1px solid var(--linha);
-  }
-  .galeria-pin {
-    min-height: 100svh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    overflow: hidden;
-    padding: 5rem 0 3.5rem;
-    position: relative;
+    padding: 5.5rem 2.5rem 6rem;
   }
   .galeria-cabeca {
-    padding: 0 2.5rem;
     max-width: 70rem;
     margin: 0 auto 3rem;
     width: 100%;
@@ -1990,25 +1842,14 @@ const guiaBarra = guiaInclinada(388);
     max-width: 38rem;
     margin: 0;
   }
-  .galeria-track {
-    display: flex;
-    gap: 2rem;
-    padding: 0 2.5rem;
-    width: max-content;
-  }
-  .galeria-dica {
-    position: absolute;
-    bottom: 1.6rem;
-    right: 2.5rem;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.66rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.4);
-    margin: 0;
+  .galeria-grade {
+    max-width: 70rem;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
   }
   .painel {
-    width: clamp(17rem, 26vw, 24rem);
     border: 1px solid var(--linha);
     padding: 1.25rem 1.25rem 1.5rem;
     background: rgba(255, 255, 255, 0.02);
@@ -2523,42 +2364,94 @@ const guiaBarra = guiaInclinada(388);
     opacity: 0.85;
     cursor: default;
   }
-  .sim-cta-sec {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    width: 100%;
-    margin-top: 0.6rem;
-    padding: 0.8rem 1.5rem;
-    border-radius: 999px;
-    border: 1.5px solid rgba(1, 33, 105, 0.4);
-    background: none;
-    color: var(--navy);
-    font: inherit;
+  /* Passo 3: contato. Campos sóbrios que viram lead na planilha do 365. */
+  .sim-contato {
+    margin-top: 1.6rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--linha-clara);
+  }
+  .sim-campo {
+    display: block;
+    margin-bottom: 0.7rem;
+  }
+  .sim-campo span {
+    display: block;
+    font-size: 0.74rem;
     font-weight: 600;
-    font-size: 0.92rem;
-    cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    letter-spacing: 0.04em;
+    color: var(--tinta-suave);
+    margin-bottom: 0.3rem;
   }
-  .sim-cta-sec:hover {
-    background: var(--navy);
-    color: var(--papel);
+  .sim-campo input {
+    width: 100%;
+    font: inherit;
+    font-size: 0.95rem;
+    color: var(--tinta);
+    padding: 0.7rem 0.85rem;
+    border: 1px solid rgba(1, 33, 105, 0.25);
+    border-radius: 12px;
+    background: var(--branco);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .sim-campo input::placeholder {
+    color: rgba(1, 33, 105, 0.32);
+  }
+  .sim-campo input:focus-visible {
+    outline: none;
     border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(1, 33, 105, 0.12);
   }
-  .sim-cta-sec svg {
-    width: 1.05rem;
-    height: 1.05rem;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.6;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    flex: none;
+  .sim-campo-dupla {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem;
   }
-  .sim-cta-sec[disabled] {
-    opacity: 0.7;
-    cursor: default;
+  .sim-mel {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+  .sim-contato .sim-cta {
+    margin-top: 1rem;
+    border-radius: 999px;
+    padding: 0.95rem 1.5rem;
+  }
+  /* Estado de sucesso após o envio do lead */
+  .sim-sucesso {
+    text-align: center;
+    padding: 1.5rem 0.5rem;
+  }
+  .sim-check {
+    display: grid;
+    place-items: center;
+    width: 3.4rem;
+    height: 3.4rem;
+    margin: 0 auto 1.1rem;
+    border-radius: 50%;
+    background: var(--navy);
+  }
+  .sim-check::after {
+    content: '';
+    width: 1.1rem;
+    height: 0.6rem;
+    border-left: 3px solid var(--branco);
+    border-bottom: 3px solid var(--branco);
+    transform: translateY(-2px) rotate(-45deg);
+  }
+  .sim-sucesso h3 {
+    color: var(--navy);
+    font-size: 1.8rem;
+    margin: 0 0 0.6rem;
+  }
+  .sim-sucesso p {
+    color: var(--tinta-suave);
+    max-width: 28rem;
+    margin: 0 auto 1.5rem;
+  }
+  .sim-sucesso strong {
+    color: var(--navy);
   }
   .sim-nota {
     font-size: 0.75rem;
@@ -2965,20 +2858,6 @@ const guiaBarra = guiaInclinada(388);
     font-weight: 700;
   }
 
-  @media (prefers-reduced-motion: reduce) and (min-width: 60rem) {
-    .galeria-pin {
-      min-height: auto;
-    }
-    .galeria-track {
-      width: auto;
-      overflow-x: auto;
-      padding-bottom: 1.5rem;
-    }
-    .painel {
-      flex: 0 0 clamp(17rem, 26vw, 24rem);
-    }
-  }
-
   @media (max-width: 60rem) {
     .topo {
       padding: 0.7rem 1rem;
@@ -3038,25 +2917,12 @@ const guiaBarra = guiaInclinada(388);
     .vantagens-lista li {
       transform: none;
     }
-    .galeria-pin {
-      min-height: auto;
+    .galeria {
+      padding: 4rem 1.25rem 4.5rem;
     }
-    .galeria-cabeca {
-      padding: 0 1.25rem;
-    }
-    .galeria-track {
-      width: auto;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      padding: 0 1.25rem 1.5rem;
-      -webkit-overflow-scrolling: touch;
-    }
-    .galeria-dica {
-      display: none;
-    }
-    .painel {
-      scroll-snap-align: start;
-      flex: 0 0 80vw;
+    .galeria-grade {
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
     }
     .metodo-lista li {
       grid-template-columns: 1fr;

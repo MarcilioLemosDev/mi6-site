@@ -76,12 +76,17 @@ site reflete na próxima publicação, sem tocar em código.
 
 ## Formulários com a cara do site (mesma filosofia)
 
-Em vez do iframe do Microsoft Forms, o formulário desenhado no site posta em
-um fluxo do Power Automate (gatilho "quando uma solicitação HTTP é
-recebida"), que grava o lead, dispara e-mail e abre tarefa, tudo no 365.
-Checkpoint de licenciamento: confirmar a disponibilidade desse gatilho no
-plano atual; havendo restrição, alternativas dentro do próprio 365 serão
-avaliadas. Proteções mínimas: campo isca contra robôs e validação no fluxo.
+O simulador é, ao mesmo tempo, calculadora e captador de lead qualificado:
+o cliente diz o bem (segmento), o valor do bem (crédito) e vê a parcela na
+hora; depois deixa nome, telefone e e-mail. Esses leads alimentam uma
+planilha receptora no Excel 365 (separada da tabela de grupos), via fluxo do
+Power Automate (gatilho "quando uma solicitação HTTP é recebida"), que ainda
+pode disparar e-mail ao consultor e abrir tarefa. A interface é do site; o
+365 é o motor invisível, coerente com a visão omnichannel: nenhum canal é
+privilegiado na página, o consultor retorna pelo meio que o cliente preferir.
+Checkpoint de licenciamento: confirmar o gatilho HTTP no plano atual; havendo
+restrição, alternativas dentro do próprio 365 serão avaliadas. Proteções
+mínimas: campo isca contra robôs (já no protótipo) e validação no fluxo.
 
 ## Acesso do assistente ao 365
 
