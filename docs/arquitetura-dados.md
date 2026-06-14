@@ -54,6 +54,26 @@ Credenciais envolvidas: nenhuma no site. O fluxo usa a conexão GitHub
 autorizada dentro do Power Automate (Marcílio autoriza uma vez ao criar o
 fluxo) e, opcionalmente, um Deploy Hook da Vercel.
 
+## Mostradores dinâmicos (confirmado na rodada 16)
+
+Tudo que mostra número de plano lê do mesmo banco, sem valor fixo no código:
+
+- O simulador usa o grupo ativo do segmento escolhido (prazo, taxa,
+  fundo de reserva, seguro, faixa de crédito). A conta foi enxugada para o
+  cliente: parcela mensal em destaque e a taxa de administração convertida
+  a taxa mensal equivalente (taxa total dividida pelo prazo), sem expor o
+  desmembramento interno (fundo comum, fundo de reserva).
+- O ticket "parcelas a partir de" do hero é calculado: a menor parcela
+  entre todos os grupos ativos, a partir do crédito mínimo de cada um. O
+  valor por dia é derivado da mesma parcela.
+- Multi-segmento: conforme cada novo grupo entra no Excel (uma linha por
+  grupo, com seu segmento e status), o simulador passa a oferecê-lo e o
+  ticket recalcula o destaque sozinho. Grupos com status diferente de
+  "ativo" aparecem como "em formação" no simulador, sem inventar números.
+
+Implicação prática: lançar um grupo é adicionar uma linha na planilha; o
+site reflete na próxima publicação, sem tocar em código.
+
 ## Formulários com a cara do site (mesma filosofia)
 
 Em vez do iframe do Microsoft Forms, o formulário desenhado no site posta em

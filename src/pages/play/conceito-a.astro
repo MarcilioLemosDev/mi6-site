@@ -123,15 +123,45 @@ const grupoMotos = dados.grupos.find((g) => g.segmento === 'motos' && g.status =
 const brlServidor = (v: number) =>
   'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const pct = (v: number) => (v * 100).toLocaleString('pt-BR');
-const baseSim = grupoMotos.credito_padrao * (1 + grupoMotos.taxa_administracao + grupoMotos.fundo_reserva);
+const numServidor = (v: number) =>
+  v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+// Conta enxuta: a parcela e a taxa de administração convertida a taxa mensal.
+// Tudo derivado do grupo no banco (grupos.json), sem números fixos no código.
+const calcParcela = (g: typeof grupoMotos, credito: number) =>
+  (credito * (1 + g.taxa_administracao + g.fundo_reserva)) / g.prazo_restante_meses;
+const calcComSeguro = (g: typeof grupoMotos, credito: number) => {
+  const base = credito * (1 + g.taxa_administracao + g.fundo_reserva);
+  return base / g.prazo_restante_meses + base * g.seguro_prestamista_mes;
+};
+const taxaMensal = (g: typeof grupoMotos) => (g.taxa_administracao / g.prazo_restante_meses) * 100;
+
 const simInicial = {
   credito: grupoMotos.credito_padrao.toLocaleString('pt-BR'),
-  fc: brlServidor(grupoMotos.credito_padrao / grupoMotos.prazo_restante_meses),
-  tx: brlServidor((grupoMotos.credito_padrao * grupoMotos.taxa_administracao) / grupoMotos.prazo_restante_meses),
-  fr: brlServidor((grupoMotos.credito_padrao * grupoMotos.fundo_reserva) / grupoMotos.prazo_restante_meses),
-  parcela: brlServidor(baseSim / grupoMotos.prazo_restante_meses),
-  seguro: brlServidor(baseSim / grupoMotos.prazo_restante_meses + baseSim * grupoMotos.seguro_prestamista_mes),
+  parcela: numServidor(calcParcela(grupoMotos, grupoMotos.credito_padrao)),
+  seguro: brlServidor(calcComSeguro(grupoMotos, grupoMotos.credito_padrao)),
+  taxaAdm: pct(grupoMotos.taxa_administracao),
+  taxaMensal: numServidor(taxaMensal(grupoMotos)),
 };
+
+// Ticket do hero "parcelas a partir de": menor parcela entre os grupos ativos,
+// calculada do crédito mínimo de cada um. Quando novos grupos/segmentos forem
+// conectados no banco, o ticket se atualiza sozinho.
+const nomeSeg: Record<string, string> = {
+  carros: 'Carros', pesados: 'Pesados', motos: 'Motos',
+  imoveis: 'Imóveis', servicos: 'Serviços', eletro: 'Eletro',
+};
+const grupoDestaque = dados.grupos
+  .filter((g) => g.status === 'ativo')
+  .map((g) => ({ g, p: calcParcela(g, g.credito_min) }))
+  .sort((a, b) => a.p - b.p)[0];
+const ticket = grupoDestaque
+  ? {
+      rotulo: `${nomeSeg[grupoDestaque.g.segmento] ?? grupoDestaque.g.segmento} · grupos ativos`,
+      valor: brlServidor(grupoDestaque.p),
+      dia: Math.ceil(grupoDestaque.p / 30),
+    }
+  : null;
 
 // Marca viva: guias de caligrafia no ângulo do talhe do logo (medido na
 // barra vermelha: dx/dy = -0,3345), prolongadas para fora da tela.
@@ -238,12 +268,14 @@ const guiaBarra = guiaInclinada(388);
               <span class="lente-anel-dash" aria-hidden="true"></span>
               <span class="lente-tick" aria-hidden="true"></span>
             </figure>
-            <aside class="ticket" data-intro aria-label="Plano de motos em destaque">
-              <p class="ticket-rotulo">Motos · grupos ativos</p>
-              <p class="ticket-valor">Parcelas a partir de <strong>R$ 200,00</strong></p>
-              <p class="ticket-dia">menos de R$ 7 por dia</p>
-              <a class="sub" href="#contato">Simule agora</a>
-            </aside>
+            {ticket && (
+              <aside class="ticket" data-intro aria-label={`Plano de ${ticket.rotulo}`}>
+                <p class="ticket-rotulo">{ticket.rotulo}</p>
+                <p class="ticket-valor">Parcelas a partir de <strong>{ticket.valor}</strong></p>
+                <p class="ticket-dia">menos de R$ {ticket.dia} por dia</p>
+                <a class="sub" href="#contato">Simule agora</a>
+              </aside>
+            )}
           </div>
         </div>
 
@@ -372,14 +404,18 @@ const guiaBarra = guiaInclinada(388);
                 <span>R$ {grupoMotos.credito_min.toLocaleString('pt-BR')}</span>
                 <span>R$ {grupoMotos.credito_max.toLocaleString('pt-BR')}</span>
               </div>
-              <dl class="sim-conta">
-                <div><dt>Fundo comum</dt><dd id="sim-fc">{simInicial.fc}</dd></div>
-                <div><dt>Taxa de administração · {pct(grupoMotos.taxa_administracao)}%</dt><dd id="sim-tx">{simInicial.tx}</dd></div>
-                <div><dt>Fundo de reserva · {pct(grupoMotos.fundo_reserva)}%</dt><dd id="sim-fr">{simInicial.fr}</dd></div>
-                <div class="sim-parcela"><dt>Parcela em {grupoMotos.prazo_restante_meses} meses</dt><dd id="sim-parcela">{simInicial.parcela}</dd></div>
-                <div><dt>Com seguro prestamista · {pct(grupoMotos.seguro_prestamista_mes)}%</dt><dd id="sim-seguro">{simInicial.seguro}</dd></div>
-              </dl>
-              <p class="sim-assembleia">Grupo {grupoMotos.grupo} · assembleias todo dia {grupoMotos.dia_assembleia}</p>
+              <div class="sim-resultado">
+                <p class="sim-res-rotulo">Sua parcela mensal, sem juros</p>
+                <p class="sim-res-valor">
+                  <span class="sim-moeda-sm">R$</span><span id="sim-parcela">{simInicial.parcela}</span><span class="sim-res-mes">por mês</span>
+                </p>
+                <p class="sim-res-seguro">com seguro prestamista opcional, <strong id="sim-seguro">{simInicial.seguro}</strong></p>
+              </div>
+              <p class="sim-taxa">
+                <span class="sim-taxa-rot">Taxa de administração</span>
+                <span class="sim-taxa-val">{simInicial.taxaAdm}%<em>equivale a {simInicial.taxaMensal}% ao mês</em></span>
+              </p>
+              <p class="sim-assembleia">Grupo {grupoMotos.grupo} · {grupoMotos.prazo_restante_meses} meses · assembleias dia {grupoMotos.dia_assembleia}</p>
               <button type="button" class="cta sim-cta" id="sim-enviar">Quero esta proposta</button>
               <button type="button" class="sim-cta-sec" id="sim-dossie">
                 <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v9.5"/><path d="m6.6 9.4 3.4 3.4 3.4-3.4"/><path d="M4 16.6h12"/></svg>
@@ -755,6 +791,8 @@ const guiaBarra = guiaInclinada(388);
       const brl = (v: number) =>
         'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       const exib = { c: parseInt(simCard?.dataset.creditoPadrao ?? '15000', 10) };
+      const num = (v: number) =>
+        v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       function pintarSim() {
         const c = exib.c;
         const base = c * (1 + TX_ADM + F_RES);
@@ -763,10 +801,7 @@ const guiaBarra = guiaInclinada(388);
           if (el) el.textContent = v;
         };
         por('sim-valor', Math.round(c).toLocaleString('pt-BR'));
-        por('sim-fc', brl(c / PRAZO));
-        por('sim-tx', brl((c * TX_ADM) / PRAZO));
-        por('sim-fr', brl((c * F_RES) / PRAZO));
-        por('sim-parcela', brl(base / PRAZO));
+        por('sim-parcela', num(base / PRAZO));
         por('sim-seguro', brl(base / PRAZO + base * SEGURO));
       }
       const credito = document.getElementById('sim-credito') as HTMLInputElement | null;
@@ -888,12 +923,12 @@ const guiaBarra = guiaInclinada(388);
         cx2.fillRect(84, 502, 96, 2);
 
         const base = exib.c * (1 + TX_ADM + F_RES);
+        const txMes = ((TX_ADM / PRAZO) * 100).toFixed(2).replace('.', ',');
         const linhas: Array<[string, string, boolean]> = [
-          ['Fundo comum', brl(exib.c / PRAZO), false],
-          ['Taxa de administração · ' + pctTexto(TX_ADM), brl((exib.c * TX_ADM) / PRAZO), false],
-          ['Fundo de reserva · ' + pctTexto(F_RES), brl((exib.c * F_RES) / PRAZO), false],
-          ['Parcela em ' + PRAZO + ' meses', brl(base / PRAZO), true],
-          ['Com seguro prestamista · ' + pctTexto(SEGURO), brl(base / PRAZO + base * SEGURO), false],
+          ['Parcela mensal, sem juros', brl(base / PRAZO), true],
+          ['Com seguro prestamista (opcional)', brl(base / PRAZO + base * SEGURO), false],
+          ['Taxa de administração', pctTexto(TX_ADM) + '  ·  ' + txMes + '% ao mês', false],
+          ['Prazo', PRAZO + ' meses', false],
         ];
         let y = 596;
         for (const [rotulo, valor, destaque] of linhas) {
@@ -2274,12 +2309,40 @@ const guiaBarra = guiaInclinada(388);
 
   /* Cartão do simulador: a conta inteira, em papel sobre o vermelho */
   .sim-card {
+    position: relative;
+    overflow: hidden;
     background: var(--papel);
     color: var(--tinta);
-    border-top: 4px solid var(--navy);
-    padding: 1.9rem;
+    border-radius: 28px;
+    padding: 2rem;
     margin: 0;
     box-shadow: 0 34px 64px -32px rgba(1, 19, 58, 0.6);
+  }
+  /* Movimento sutil, no espírito do caderno de caligrafia da home: pauta
+     inclinada que escorre devagar atrás do conteúdo do card. */
+  .sim-card::before {
+    content: '';
+    position: absolute;
+    inset: -40%;
+    background: repeating-linear-gradient(
+      108.5deg,
+      transparent 0 46px,
+      rgba(1, 33, 105, 0.045) 46px 48px
+    );
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .sim-card::before {
+      animation: simDrift 14s linear infinite;
+    }
+  }
+  @keyframes simDrift {
+    to {
+      transform: translateY(48px);
+    }
+  }
+  .sim-card > * {
+    position: relative;
   }
   .sim-passo {
     font-family: 'IBM Plex Mono', monospace;
@@ -2367,35 +2430,77 @@ const guiaBarra = guiaInclinada(388);
     color: var(--tinta-suave);
     margin-bottom: 1.4rem;
   }
-  .sim-conta {
-    margin: 0 0 1.5rem;
+  /* Resultado enxuto: a parcela é a estrela */
+  .sim-resultado {
+    margin: 0.4rem 0 1.25rem;
   }
-  .sim-conta div {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 1rem;
-    padding: 0.55rem 0;
-    border-bottom: 1px dotted rgba(1, 33, 105, 0.28);
-  }
-  .sim-conta dt {
+  .sim-res-rotulo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
     color: var(--tinta-suave);
-    font-size: 0.88rem;
+    margin: 0 0 0.2rem;
   }
-  .sim-conta dd {
+  .sim-res-valor {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
     margin: 0;
-    font-variant-numeric: tabular-nums;
+    color: var(--navy);
+  }
+  .sim-moeda-sm {
     font-weight: 600;
+    color: var(--tinta-suave);
+    font-size: 1.1rem;
   }
-  .sim-parcela dt {
-    color: var(--navy);
-    font-weight: 700;
-  }
-  .sim-parcela dd {
+  .sim-res-valor #sim-parcela {
     font-family: 'Instrument Serif', Georgia, serif;
-    font-size: 1.55rem;
-    font-weight: 400;
+    font-size: clamp(2.8rem, 5vw, 3.8rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .sim-res-mes {
+    color: var(--tinta-suave);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .sim-res-seguro {
+    margin: 0.5rem 0 0;
+    font-size: 0.82rem;
+    color: var(--tinta-suave);
+  }
+  .sim-res-seguro strong {
     color: var(--navy);
+    font-variant-numeric: tabular-nums;
+  }
+  .sim-taxa {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0 0 1.4rem;
+    padding: 0.75rem 1rem;
+    border-radius: 14px;
+    background: rgba(1, 33, 105, 0.05);
+  }
+  .sim-taxa-rot {
+    font-size: 0.85rem;
+    color: var(--tinta-suave);
+  }
+  .sim-taxa-val {
+    text-align: right;
+    font-weight: 700;
+    color: var(--navy);
+    font-variant-numeric: tabular-nums;
+  }
+  .sim-taxa-val em {
+    display: block;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--tinta-suave);
   }
   .sim-assembleia {
     font-family: 'IBM Plex Mono', monospace;
