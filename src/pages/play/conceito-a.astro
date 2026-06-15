@@ -2308,26 +2308,26 @@ const guiaBarra = guiaInclinada(388);
     content: '';
     position: absolute;
     inset: 0;
-    padding: 1.5px;
+    padding: 3px;
     border-radius: inherit;
     background: conic-gradient(
       from var(--sim-ang),
-      #012169,
-      #c8102e 25%,
-      #ffffff 50%,
-      #012169 75%,
-      #c8102e
+      #012169 0deg 80deg,
+      #c8102e 100deg 170deg,
+      #ffffff 190deg 260deg,
+      #012169 280deg 360deg
     );
     -webkit-mask:
       linear-gradient(#000 0 0) content-box,
       linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.18));
     pointer-events: none;
   }
   @media (prefers-reduced-motion: no-preference) {
     .sim-card {
-      animation: simBorda 14s linear infinite;
+      animation: simBorda 9s linear infinite;
     }
   }
   @keyframes simBorda {
