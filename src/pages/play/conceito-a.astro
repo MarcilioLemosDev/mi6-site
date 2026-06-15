@@ -138,8 +138,8 @@ const taxaMensal = (g: typeof grupoMotos) => (g.taxa_administracao / g.prazo_res
 
 const simInicial = {
   credito: grupoMotos.credito_padrao.toLocaleString('pt-BR'),
-  parcela: numServidor(calcParcela(grupoMotos, grupoMotos.credito_padrao)),
-  seguro: brlServidor(calcComSeguro(grupoMotos, grupoMotos.credito_padrao)),
+  // Parcela exibida sempre com seguro prestamista (regra do produto: obrigatório).
+  parcela: numServidor(calcComSeguro(grupoMotos, grupoMotos.credito_padrao)),
   taxaMensal: numServidor(taxaMensal(grupoMotos)),
 };
 
@@ -152,7 +152,7 @@ const nomeSeg: Record<string, string> = {
 };
 const grupoDestaque = dados.grupos
   .filter((g) => g.status === 'ativo')
-  .map((g) => ({ g, p: calcParcela(g, g.credito_min) }))
+  .map((g) => ({ g, p: calcComSeguro(g, g.credito_min) }))
   .sort((a, b) => a.p - b.p)[0];
 const ticket = grupoDestaque
   ? {
@@ -399,7 +399,6 @@ const guiaBarra = guiaInclinada(388);
                   <p class="sim-res-valor">
                     <span class="sim-moeda-sm">R$</span><span id="sim-parcela">{simInicial.parcela}</span><span class="sim-res-mes">por mês</span>
                   </p>
-                  <p class="sim-res-seguro">com seguro prestamista opcional, <strong id="sim-seguro">{simInicial.seguro}</strong></p>
                 </div>
                 <p class="sim-taxa">
                   <span class="sim-taxa-rot">Taxa de administração</span>
@@ -810,8 +809,8 @@ const guiaBarra = guiaInclinada(388);
           if (el) el.textContent = v;
         };
         por('sim-valor', Math.round(c).toLocaleString('pt-BR'));
-        por('sim-parcela', num(base / PRAZO));
-        por('sim-seguro', brl(base / PRAZO + base * SEGURO));
+        // Parcela com seguro embutido (obrigatório).
+        por('sim-parcela', num(base / PRAZO + base * SEGURO));
       }
       const credito = document.getElementById('sim-credito') as HTMLInputElement | null;
       credito?.addEventListener('input', () => {
@@ -2301,15 +2300,6 @@ const guiaBarra = guiaInclinada(388);
     color: var(--tinta-suave);
     font-weight: 600;
     font-size: 0.9rem;
-  }
-  .sim-res-seguro {
-    margin: 0.5rem 0 0;
-    font-size: 0.82rem;
-    color: var(--tinta-suave);
-  }
-  .sim-res-seguro strong {
-    color: var(--navy);
-    font-variant-numeric: tabular-nums;
   }
   .sim-taxa {
     display: flex;
