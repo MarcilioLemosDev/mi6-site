@@ -1,5 +1,5 @@
 {
-  "descricao": "Espelho local da tabela de grupos. Fonte de verdade: T.I_Marcilio/04_Areas/Desenvolvimento/Automacoes/001_Processos/003_Site_Mi6_v.1/001_Bases_Site/001_Grupos_Simulador.xlsx (Excel 365). Na fase 3 este arquivo passa a ser gerado pelo Power Automate; ate la, sincronizacao manual com a planilha.",
+  "descricao": "Espelho local da tabela de grupos. Fonte de verdade: T.I_Marcilio/04_Areas/Desenvolvimento/Automacoes/001_Processos/003_Site_Mi6_v.1/001_Bases_Site/001_Grupos_Simulador.xlsx (Excel 365). A casa foi organizada em 15/06/2026 seguindo o padrao das automacoes do CRM e do BACEN. Na fase 3 este JSON passa a ser gerado pelo Power Automate a partir do arquivo oficial; ate la, sincronizacao manual com a planilha.",
   "atualizado_em": "2026-06-15",
   "grupos": [
     {

@@ -54,29 +54,33 @@ Credenciais envolvidas: nenhuma no site. O fluxo usa a conexão GitHub
 autorizada dentro do Power Automate (Marcílio autoriza uma vez ao criar o
 fluxo) e, opcionalmente, um Deploy Hook da Vercel.
 
-## Onde vivem as planilhas (estrutura oficial, rodada 19)
+## Onde vivem as planilhas (estrutura oficial, criada em 15/06/2026)
 
 A casa segue o padrão de `Automacoes/001_Processos/` (CRM_v.1 e
-Comunicados_BACEN_v.1). O site é a terceira automação:
+Comunicados_BACEN_v.1). O site é a terceira automação, criada e populada por
+Marcílio diretamente no SharePoint:
 
 ```
 T.I_Marcilio/04_Areas/Desenvolvimento/Automacoes/001_Processos/
    003_Site_Mi6_v.1/
        001_Bases_Site/
-           001_Grupos_Simulador.xlsx     (renomeado de 001_Excel_Calculo_Valores_Simulador.v1)
-           002_Leads_Captados.xlsx       (recebe o formulário, fase 3)
-       002_Conteudo_Site/                (futuro)
+           001_Grupos_Simulador.xlsx     (banco que alimenta os mostradores)
+           002_Leads_Captados.xlsx       (receptora dos leads do formulário)
+       002_Conteudo_Site/
        003_Logs/
        004_Estado/
        005_Fluxograma/
 ```
 
 A planilha `001_Grupos_Simulador.xlsx` é o banco que alimenta o site. Hoje
-ela tem o grupo de motos com: prazo 97 meses, taxa de administração 14%,
-fundo de reserva 4%, seguro 0,08% sobre o total. O espelho local
-`src/dados/grupos.json` foi atualizado a partir do arquivo real em
-15/06/2026; a partir da fase 3, a sincronização passa a ser feita pelo
-Power Automate (ver receita acima).
+tem o grupo de motos com: prazo 97 meses, taxa de administração 14%, fundo
+de reserva 4%, seguro 0,08% sobre o total. O espelho local
+`src/dados/grupos.json` foi sincronizado a partir do arquivo no novo
+caminho oficial em 15/06/2026; a partir da fase 3, o Power Automate
+publica o JSON a partir dela e o site reflete a cada commit.
+
+A planilha `002_Leads_Captados.xlsx` existe pronta para receber, na fase
+3, os leads vindos do formulário do simulador (uma linha por envio).
 
 ## Mostradores dinâmicos (confirmado na rodada 16)
 
