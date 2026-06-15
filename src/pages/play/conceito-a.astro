@@ -345,10 +345,10 @@ const guiaBarra = guiaInclinada(388);
           </g>
         </svg>
         <div class="sim-grade">
-          <div class="sim-texto">
+          <header class="sim-cabeca">
             <h2 data-reveal>Sua conquista <em>começa</em> aqui</h2>
             <p data-reveal>Escolha, veja a parcela, fale com um consultor.</p>
-          </div>
+          </header>
 
           <form
             class="sim-card"
@@ -2269,21 +2269,20 @@ const guiaBarra = guiaInclinada(388);
   }
   .sim-grade {
     position: relative;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-    gap: 3.5rem;
-    max-width: 72rem;
+    max-width: 38rem;
     margin: 0 auto;
-    align-items: start;
+    display: grid;
+    gap: 2.5rem;
   }
-  .contato h2 {
-    font-size: clamp(2rem, 4.2vw, 3.4rem);
-    margin: 0 0 1.25rem;
+  .sim-cabeca {
+    text-align: center;
   }
-  .sim-texto > p {
-    max-width: 30rem;
-    margin: 0 0 1.75rem;
-    color: rgba(255, 255, 255, 0.88);
+  .sim-cabeca h2 {
+    margin: 0 0 0.85rem;
+  }
+  .sim-cabeca p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.78);
   }
 
   /* Cartão do simulador: a conta inteira, em papel sobre o vermelho */
@@ -3233,10 +3232,9 @@ const guiaBarra = guiaInclinada(388);
       right: 0.5rem;
     }
     .sim-grade {
-      grid-template-columns: 1fr;
       gap: 1.5rem;
     }
-    .sim-texto {
+    .sim-cabeca {
       display: none;
     }
     .sim-card {
