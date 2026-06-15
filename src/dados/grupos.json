@@ -1,16 +1,16 @@
 {
-  "descricao": "Espelho local da tabela de grupos. Fonte de verdade futura: Excel no Microsoft 365 (ver docs/arquitetura-dados.md). Na fase 3 este arquivo passa a ser gerado pelo Power Automate; por enquanto, edicao manual.",
-  "atualizado_em": "2026-06-12",
+  "descricao": "Espelho local da tabela de grupos. Fonte de verdade: T.I_Marcilio/04_Areas/Desenvolvimento/Automacoes/001_Processos/003_Site_Mi6_v.1/001_Bases_Site/001_Grupos_Simulador.xlsx (Excel 365). Na fase 3 este arquivo passa a ser gerado pelo Power Automate; ate la, sincronizacao manual com a planilha.",
+  "atualizado_em": "2026-06-15",
   "grupos": [
     {
       "grupo": "M-01",
       "segmento": "motos",
       "status": "ativo",
-      "prazo_total_meses": 98,
-      "prazo_restante_meses": 98,
+      "prazo_total_meses": 97,
+      "prazo_restante_meses": 97,
       "primeira_assembleia": "2026-06-20",
       "dia_assembleia": 20,
-      "taxa_administracao": 0.2,
+      "taxa_administracao": 0.14,
       "fundo_reserva": 0.04,
       "seguro_prestamista_mes": 0.0008,
       "credito_min": 8000,
