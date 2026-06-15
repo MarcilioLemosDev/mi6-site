@@ -309,19 +309,27 @@ const guiaBarra = guiaInclinada(388);
             simples e termina com a sua carta de crédito.
           </p>
         </header>
-        <div class="galeria-grade">
-          {
-            segmentos.map((s) => (
-              <article class="painel" data-reveal>
-                <div class="painel-foto">
-                  <img src={s.img} alt={s.alt} loading="lazy" />
-                </div>
-                <p class="painel-num" aria-hidden="true">{s.n}</p>
-                <h3>{s.nome}</h3>
-                <a class="sub" href="#contato" data-segmento={s.id}>Simular</a>
-              </article>
-            ))
-          }
+        <div class="galeria-palco">
+          <button type="button" class="galeria-seta galeria-seta-esq" data-rolar="-1" aria-label="Ver segmentos anteriores">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg>
+          </button>
+          <div class="galeria-fila" id="galeria-fila">
+            {
+              segmentos.map((s) => (
+                <article class="painel">
+                  <div class="painel-foto">
+                    <img src={s.img} alt={s.alt} loading="lazy" />
+                  </div>
+                  <p class="painel-num" aria-hidden="true">{s.n}</p>
+                  <h3>{s.nome}</h3>
+                  <a class="sub" href="#contato" data-segmento={s.id}>Simular</a>
+                </article>
+              ))
+            }
+          </div>
+          <button type="button" class="galeria-seta galeria-seta-dir" data-rolar="1" aria-label="Ver próximos segmentos">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+          </button>
         </div>
       </section>
 
@@ -451,46 +459,76 @@ const guiaBarra = guiaInclinada(388);
     </main>
 
     <footer class="rodape">
-      <div class="rodape-topo">
+      <div class="rodape-manifesto">
         <img src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
-        <p class="rodape-frase">O melhor investimento, 6 soluções para tirar seu sonho do papel.</p>
+        <p class="rodape-frase">O melhor investimento. <em>Seis</em> soluções para tirar seu sonho do papel.</p>
+        <ul class="rodape-redes" aria-label="Redes sociais">
+          <li>
+            <a href="https://www.instagram.com/mi6.consorcio/" aria-label="Instagram da MI6" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>
+            </a>
+          </li>
+          <li>
+            <a href="https://www.facebook.com/61584214719614/" aria-label="Facebook da MI6" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 21v-7.5h2.5l.4-3.1H14.5V8.5c0-.9.3-1.5 1.6-1.5h1.7V4.2c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.4-4 4v2.3H8.7v3.1h2.7V21z"/></svg>
+            </a>
+          </li>
+          <li>
+            <a href="https://www.linkedin.com/company/110370080/" aria-label="LinkedIn da MI6" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="2"/><path d="M7.6 9.8v7.2M7.6 7.2v.05M11 17V10m0 2.6c0-1.6 1-2.6 2.4-2.6S16 11 16 12.7V17"/></svg>
+            </a>
+          </li>
+        </ul>
       </div>
-      <div class="rodape-colunas">
-        <nav aria-label="Institucional">
-          <h3>Institucional</h3>
+
+      <div class="rodape-grade">
+        <nav class="rodape-bloco" aria-label="Atendimento">
+          <h3>Atendimento</h3>
+          <p class="rodape-canal">
+            <span class="rodape-rotulo">SAC</span>
+            <a href="tel:08000005228">0800 000 5228</a>
+          </p>
+          <p class="rodape-canal">
+            <span class="rodape-rotulo">Ouvidoria</span>
+            <a href="tel:08000005267">0800 000 5267</a>
+          </p>
+          <p class="rodape-canal">
+            <span class="rodape-rotulo">E-mail</span>
+            <a href="mailto:contato@mi6consorcio.com.br">contato@mi6consorcio.com.br</a>
+          </p>
+        </nav>
+
+        <nav class="rodape-bloco" aria-label="Consórcio">
+          <h3>Consórcio</h3>
           <button type="button" class="sub" data-folha="funciona">Como funciona</button>
           <button type="button" class="sub" data-folha="contemplacao">Contemplação</button>
           <button type="button" class="sub" data-folha="duvidas">Perguntas frequentes</button>
+          <a class="sub" href="#solucoes">Seis caminhos</a>
+        </nav>
+
+        <nav class="rodape-bloco" aria-label="Acesso rápido">
+          <h3>Acesso rápido</h3>
+          <a class="sub" href="https://mi6.evertecinc.com.br/autoatendimento" rel="noopener">Área do cliente</a>
+          <a class="sub" href="https://mi6.evertecinc.com.br/newcon.web/frmCorCCCnsLogin.aspx?applicationKey=3M9zL0+WaLYAeBQwijSQEkhjyy42CGuQj8DXZNFUeAoW7bdn/JfcNmUNbNUgQJqaufUv7kqAamOQCRrx6B2F7w==" rel="noopener">Canal do parceiro</a>
+          <a class="sub" href="#contato">Simular agora</a>
           <a class="sub" href="#">Política de privacidade</a>
-          <button type="button" class="sub" data-trocar-perfil>Trocar perfil de navegação</button>
         </nav>
-        <nav aria-label="Consórcios">
-          <h3>Consórcios</h3>
-          <a class="sub" href="#solucoes">Carros</a>
-          <a class="sub" href="#solucoes">Motos</a>
-          <a class="sub" href="#solucoes">Pesados</a>
-          <a class="sub" href="#solucoes">Imóveis</a>
-          <a class="sub" href="#solucoes">Serviços</a>
-          <a class="sub" href="#solucoes">Eletro</a>
-        </nav>
-        <div>
-          <h3>Atendimento</h3>
-          <p>SAC 0800 000 5228</p>
-          <p>Ouvidoria 0800 000 5267</p>
-          <p>contato@mi6consorcio.com.br</p>
-        </div>
-        <div>
-          <h3>Acesso</h3>
-          <a class="sub" href="https://mi6.evertecinc.com.br/autoatendimento">Área do cliente</a>
-          <a class="sub" href="https://mi6.evertecinc.com.br/newcon.web/frmCorCCCnsLogin.aspx?applicationKey=3M9zL0+WaLYAeBQwijSQEkhjyy42CGuQj8DXZNFUeAoW7bdn/JfcNmUNbNUgQJqaufUv7kqAamOQCRrx6B2F7w==">Canal do parceiro</a>
-          <a class="sub" href="https://www.instagram.com/mi6.consorcio/">Instagram</a>
-          <a class="sub" href="https://www.facebook.com/61584214719614/">Facebook</a>
+
+        <div class="rodape-bloco rodape-credenciais">
+          <h3>Regulação</h3>
+          <p>
+            <img src="/imgs/abac.svg" alt="ABAC" width="100" height="32" />
+          </p>
+          <p class="rodape-cred-frase">Autorizada pelo Banco Central do Brasil</p>
+          <p class="rodape-cred-oficio">Ofício nº 33.288/2024</p>
+          <button type="button" class="rodape-perfil" data-trocar-perfil>Trocar perfil de navegação</button>
         </div>
       </div>
+
       <p class="rodape-legal">
         © Todos os direitos reservados. Administradora de consórcios autorizada
-        e fiscalizada pelo Banco Central do Brasil, Ofício nº 33.288/2024,
-        Lei nº 11.795/2008. Filiada à ABAC.
+        e fiscalizada pelo Banco Central do Brasil, Lei nº 11.795/2008.
+        Filiada à ABAC.
       </p>
     </footer>
 
@@ -875,6 +913,41 @@ const guiaBarra = guiaInclinada(388);
           gsap.from(sucesso, { autoAlpha: 0, y: 16, duration: 0.5, ease: 'power3.out' });
         }
       });
+
+      // Galeria horizontal: setas rolam por um painel + gap, e marcam a si
+      // mesmas como disabled quando chegam ao limite.
+      const fila = document.getElementById('galeria-fila');
+      const setas = document.querySelectorAll<HTMLButtonElement>('.galeria-seta');
+      if (fila) {
+        const passoFila = () => {
+          const p = fila.querySelector<HTMLElement>('.painel');
+          if (!p) return fila.clientWidth;
+          const estilo = getComputedStyle(fila);
+          const gap = parseFloat(estilo.gap || '0');
+          return p.offsetWidth + gap;
+        };
+        const atualizarSetas = () => {
+          const ini = fila.scrollLeft <= 4;
+          const fim = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 4;
+          setas.forEach((s) => {
+            const dir = s.dataset.rolar === '1';
+            if (dir) {
+              fim ? s.setAttribute('disabled', '') : s.removeAttribute('disabled');
+            } else {
+              ini ? s.setAttribute('disabled', '') : s.removeAttribute('disabled');
+            }
+          });
+        };
+        setas.forEach((s) => {
+          s.addEventListener('click', () => {
+            const sentido = s.dataset.rolar === '1' ? 1 : -1;
+            fila.scrollBy({ left: sentido * passoFila(), behavior: 'smooth' });
+          });
+        });
+        fila.addEventListener('scroll', atualizarSetas, { passive: true });
+        window.addEventListener('resize', atualizarSetas);
+        atualizarSetas();
+      }
 
       const mm = gsap.matchMedia();
 
@@ -1838,16 +1911,90 @@ const guiaBarra = guiaInclinada(388);
     max-width: 38rem;
     margin: 0;
   }
-  .galeria-grade {
-    max-width: 70rem;
+  /* Palco com setas nas extremidades: o usuario pode rolar com seta, com
+     o dedo (touch) ou com a roda do mouse. Sombras nas pontas avisam que ha
+     mais conteudo escondido. */
+  .galeria-palco {
+    position: relative;
+    max-width: 80rem;
     margin: 0 auto;
+  }
+  .galeria-palco::before,
+  .galeria-palco::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 3rem;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .galeria-palco::before {
+    left: 0;
+    background: linear-gradient(to right, var(--navy-escuro), transparent);
+  }
+  .galeria-palco::after {
+    right: 0;
+    background: linear-gradient(to left, var(--navy-escuro), transparent);
+  }
+  .galeria-fila {
+    display: flex;
+    gap: 1.25rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 0.25rem 1rem 1.5rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .galeria-fila::-webkit-scrollbar {
+    display: none;
+  }
+  .galeria-seta {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: 50%;
+    border: 1px solid var(--linha);
+    background: rgba(1, 16, 47, 0.85);
+    backdrop-filter: blur(8px);
+    color: var(--branco);
+    cursor: pointer;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    place-items: center;
+    transition: background 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+  }
+  .galeria-seta:hover {
+    background: var(--vermelho);
+    border-color: var(--vermelho);
+  }
+  .galeria-seta[disabled] {
+    opacity: 0.25;
+    cursor: default;
+  }
+  .galeria-seta svg {
+    width: 1.3rem;
+    height: 1.3rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .galeria-seta-esq {
+    left: -1.2rem;
+  }
+  .galeria-seta-dir {
+    right: -1.2rem;
   }
   .painel {
+    flex: 0 0 clamp(14rem, 22vw, 17rem);
+    scroll-snap-align: start;
     border: 1px solid var(--linha);
-    padding: 1.25rem 1.25rem 1.5rem;
+    padding: 1rem 1rem 1.2rem;
     background: rgba(255, 255, 255, 0.02);
     position: relative;
     transition: border-color 0.3s ease, transform 0.3s ease;
@@ -2492,64 +2639,188 @@ const guiaBarra = guiaInclinada(388);
   }
 
   /* Rodapé */
+  /* Rodapé: manifesto à esquerda com redes sociais, grade de quatro blocos
+     à direita, faixa legal embaixo. No mobile vira coluna única limpa. */
   .rodape {
     background: var(--navy-escuro);
-    padding: 4rem 2.5rem 7rem;
+    padding: 4.5rem 2.5rem 7rem;
     border-top: 1px solid var(--linha);
+    position: relative;
+    overflow: hidden;
   }
-  .rodape-topo {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-    flex-wrap: wrap;
-    max-width: 70rem;
-    margin: 0 auto 3rem;
+  .rodape::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--vermelho) 30%, var(--vermelho) 70%, transparent);
+    opacity: 0.4;
   }
-  .rodape-topo img {
-    height: 2rem;
+  .rodape-manifesto {
+    max-width: 78rem;
+    margin: 0 auto 3.5rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 2.5rem;
+    align-items: end;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--linha);
+  }
+  .rodape-manifesto img {
+    height: 2.4rem;
     width: auto;
+    margin-bottom: 1.1rem;
+    grid-column: 1;
+    align-self: start;
+    justify-self: start;
   }
   .rodape-frase {
     font-family: 'Instrument Serif', Georgia, serif;
-    font-size: 1.3rem;
+    font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+    line-height: 1.2;
     margin: 0;
-    color: var(--gelo);
+    color: var(--branco);
+    max-width: 22ch;
+    grid-column: 1;
   }
-  .rodape-colunas {
-    max-width: 70rem;
+  .rodape-frase em {
+    color: var(--vermelho);
+    font-style: italic;
+  }
+  .rodape-redes {
+    list-style: none;
+    display: flex;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    grid-column: 2;
+    justify-self: end;
+    align-self: end;
+  }
+  .rodape-redes a {
+    display: grid;
+    place-items: center;
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: 50%;
+    border: 1px solid var(--linha);
+    color: var(--gelo);
+    transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+  }
+  .rodape-redes a:hover {
+    background: var(--vermelho);
+    border-color: var(--vermelho);
+    color: var(--branco);
+    transform: translateY(-2px);
+  }
+  .rodape-redes svg {
+    width: 1.2rem;
+    height: 1.2rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .rodape-redes svg path[d^="M14.5"] {
+    fill: currentColor;
+    stroke: none;
+  }
+  .rodape-grade {
+    max-width: 78rem;
     margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
+    gap: 2.5rem;
   }
-  .rodape h3 {
+  .rodape-bloco h3 {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.68rem;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.5);
-    margin: 0 0 1rem;
+    color: var(--vermelho);
+    margin: 0 0 1.1rem;
   }
-  .rodape a,
-  .rodape p {
+  .rodape-bloco a,
+  .rodape-bloco > button,
+  .rodape-bloco > p {
     display: block;
-    width: fit-content;
     color: var(--gelo);
+    text-decoration: none;
     font-size: 0.92rem;
     margin: 0 0 0.55rem;
+    background: none;
+    border: 0;
+    padding: 0;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
   }
-  .rodape a:hover {
+  .rodape-bloco a:hover,
+  .rodape-bloco > button:hover {
     color: var(--branco);
   }
+  .rodape-canal {
+    display: grid;
+    gap: 0.15rem;
+    margin: 0 0 0.85rem !important;
+  }
+  .rodape-rotulo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+  }
+  .rodape-canal a {
+    color: var(--branco) !important;
+    font-weight: 600;
+    margin: 0 !important;
+  }
+  .rodape-credenciais p {
+    margin: 0 0 0.8rem !important;
+  }
+  .rodape-credenciais img {
+    height: 2rem;
+    width: auto;
+    filter: brightness(0) invert(1);
+    opacity: 0.85;
+  }
+  .rodape-cred-frase {
+    color: var(--branco) !important;
+    font-weight: 600;
+    font-size: 0.88rem !important;
+  }
+  .rodape-cred-oficio {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem !important;
+    letter-spacing: 0.12em;
+    color: rgba(255, 255, 255, 0.55) !important;
+  }
+  .rodape-perfil {
+    margin-top: 0.75rem !important;
+    border: 1px solid var(--linha) !important;
+    padding: 0.45rem 0.85rem !important;
+    border-radius: 999px !important;
+    font-size: 0.78rem !important;
+    color: var(--gelo) !important;
+    text-align: center !important;
+    transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  }
+  .rodape-perfil:hover {
+    background: var(--branco);
+    color: var(--navy-escuro) !important;
+    border-color: var(--branco) !important;
+  }
   .rodape-legal {
-    max-width: 70rem;
-    margin: 3rem auto 0 !important;
+    max-width: 78rem;
+    margin: 3rem auto 0;
     border-top: 1px solid var(--linha);
     padding-top: 1.25rem;
-    font-size: 0.78rem !important;
-    color: rgba(255, 255, 255, 0.5) !important;
-    width: auto !important;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.5);
   }
 
   /* Dock flutuante: a navegação mora na zona do polegar. Colunas de largura
@@ -2899,9 +3170,25 @@ const guiaBarra = guiaInclinada(388);
     .galeria {
       padding: 4rem 1.25rem 4.5rem;
     }
-    .galeria-grade {
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+    .galeria-palco {
+      max-width: 100%;
+    }
+    .galeria-seta {
+      width: 2.4rem;
+      height: 2.4rem;
+    }
+    .galeria-seta-esq {
+      left: 0.2rem;
+    }
+    .galeria-seta-dir {
+      right: 0.2rem;
+    }
+    .galeria-fila {
+      padding-left: 3.4rem;
+      padding-right: 3.4rem;
+    }
+    .painel {
+      flex: 0 0 70vw;
     }
     .metodo-lista li {
       grid-template-columns: 1fr;
@@ -2962,8 +3249,27 @@ const guiaBarra = guiaInclinada(388);
       grid-template-columns: 1fr;
       gap: 0.6rem;
     }
-    .rodape-colunas {
+    .rodape {
+      padding: 3.5rem 1.25rem 7rem;
+    }
+    .rodape-manifesto {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      padding-bottom: 2rem;
+      margin-bottom: 2.5rem;
+    }
+    .rodape-redes {
+      grid-column: 1;
+      justify-self: start;
+    }
+    .rodape-grade {
       grid-template-columns: 1fr 1fr;
+      gap: 2rem 1.5rem;
+    }
+    .rodape-credenciais {
+      grid-column: 1 / -1;
+      border-top: 1px solid var(--linha);
+      padding-top: 1.5rem;
     }
   }
 </style>
