@@ -140,7 +140,6 @@ const simInicial = {
   credito: grupoMotos.credito_padrao.toLocaleString('pt-BR'),
   parcela: numServidor(calcParcela(grupoMotos, grupoMotos.credito_padrao)),
   seguro: brlServidor(calcComSeguro(grupoMotos, grupoMotos.credito_padrao)),
-  taxaAdm: pct(grupoMotos.taxa_administracao),
   taxaMensal: numServidor(taxaMensal(grupoMotos)),
 };
 
@@ -341,9 +340,8 @@ const guiaBarra = guiaInclinada(388);
           <div class="sim-texto">
             <h2 data-reveal>Simule e <em>fale</em> com um consultor</h2>
             <p data-reveal>
-              Diga o que você quer conquistar e o valor do bem. A parcela
-              aparece na hora, sem juros. Um consultor confirma as condições
-              e tira suas dúvidas pelo canal que você preferir.
+              Escolha o segmento, simule e fale com um consultor de consórcios
+              especialista no seu investimento.
             </p>
             <ul class="contato-garantias" data-reveal>
               <li>Sem compromisso</li>
@@ -405,9 +403,8 @@ const guiaBarra = guiaInclinada(388);
                 </div>
                 <p class="sim-taxa">
                   <span class="sim-taxa-rot">Taxa de administração</span>
-                  <span class="sim-taxa-val">{simInicial.taxaAdm}%<em>equivale a {simInicial.taxaMensal}% ao mês</em></span>
+                  <span class="sim-taxa-val">{simInicial.taxaMensal}% ao mês</span>
                 </p>
-                <p class="sim-assembleia">Grupo {grupoMotos.grupo} · {grupoMotos.prazo_restante_meses} meses · assembleias dia {grupoMotos.dia_assembleia}</p>
               </div>
 
               <div class="sim-aguarde" id="sim-aguarde" hidden>
@@ -416,7 +413,6 @@ const guiaBarra = guiaInclinada(388);
               </div>
 
               <div class="sim-contato">
-                <p class="sim-passo">03 · Para um consultor te retornar</p>
                 <label class="sim-campo">
                   <span>Nome</span>
                   <input type="text" name="nome" required autocomplete="name" placeholder="Como podemos te chamar" />
@@ -2342,14 +2338,6 @@ const guiaBarra = guiaInclinada(388);
     font-size: 0.7rem;
     letter-spacing: 0.04em;
     color: var(--tinta-suave);
-  }
-  .sim-assembleia {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.66rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--tinta-suave);
-    margin: 0 0 1.1rem;
   }
   .sim-cta {
     display: block;
