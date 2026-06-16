@@ -392,6 +392,7 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
         </svg>
         <div class="sim-grade">
           <header class="sim-cabeca">
+            <p class="sim-kicker" data-reveal>Último passo da jornada</p>
             <h2 data-reveal>Sua conquista <em>começa</em> aqui</h2>
             <p data-reveal>Escolha, veja a parcela, fale com um consultor.</p>
           </header>
@@ -1480,7 +1481,7 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     background: var(--vermelho);
   }
   .jornada-cabeca h2 {
-    border-top-color: rgba(255, 255, 255, 0.55);
+    border-top-color: var(--navy);
   }
 
   .indice {
@@ -1688,8 +1689,8 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     margin: 0 auto;
     width: 100%;
     display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: 3rem;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: 2.5rem;
     align-items: center;
   }
   .hero-kicker {
@@ -1765,7 +1766,7 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
   .hero-visual {
     position: relative;
     display: grid;
-    justify-items: stretch;
+    justify-items: center;
     gap: 0.5rem;
   }
   /* A carta de crédito materializada: cartão sóbrio Union Jack, sem clichê
@@ -2095,7 +2096,8 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
 
   /* Jornada: trilha viva do primeiro passo à carta de crédito */
   .jornada {
-    background: linear-gradient(165deg, #c8102e 0%, #9c0c22 55%, #7a0c1e 100%);
+    background: var(--papel);
+    border-top: 1px solid rgba(1, 33, 105, 0.1);
     padding: 5.5rem 2.5rem 6.5rem;
   }
   .jornada-cabeca {
@@ -2104,10 +2106,10 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     width: 100%;
   }
   .jornada-cabeca h2 {
-    color: var(--branco);
+    color: var(--navy);
   }
   .jornada-cabeca p {
-    color: var(--gelo);
+    color: var(--tinta-suave);
     max-width: 42rem;
     margin: 0;
   }
@@ -2127,7 +2129,7 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     left: 6%;
     right: 6%;
     height: 2px;
-    background: rgba(255, 255, 255, 0.28);
+    background: rgba(1, 33, 105, 0.14);
     overflow: hidden;
     z-index: 0;
   }
@@ -2135,7 +2137,7 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     display: block;
     height: 100%;
     width: 100%;
-    background: #fff;
+    background: var(--vermelho);
     transform: scaleX(0);
     transform-origin: left center;
   }
@@ -2156,35 +2158,37 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     height: 2.3rem;
     border-radius: 50%;
     background: #fff;
-    color: #c8102e;
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: var(--navy);
+    border: 1px solid rgba(1, 33, 105, 0.3);
     display: grid;
     place-items: center;
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.7rem;
     z-index: 1;
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
   }
   .estacao.aceso .estacao-marco {
-    box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.18);
+    border-color: var(--vermelho);
+    box-shadow: 0 0 0 5px rgba(200, 16, 46, 0.12);
   }
   .estacao-marco-fim {
-    background: #fff;
+    background: var(--vermelho);
+    border-color: var(--vermelho);
   }
   .estacao-marco-fim::after {
     content: '';
     width: 0.8rem;
     height: 0.8rem;
     border-radius: 50%;
-    background: #c8102e;
+    background: #fff;
   }
   .estacao h3 {
-    color: var(--branco);
+    color: var(--navy);
     font-size: 1.2rem;
     margin: 0;
   }
   .estacao p {
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--tinta-suave);
     font-size: 0.9rem;
     margin: 0;
     max-width: 15rem;
@@ -2202,20 +2206,19 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     font-weight: 600;
     padding: 0.4rem 0.85rem;
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(1, 33, 105, 0.18);
+    background: #fff;
+    color: var(--navy);
     cursor: pointer;
     transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   }
   .estacao-segs button:hover {
-    border-color: #fff;
-    background: rgba(255, 255, 255, 0.18);
+    border-color: var(--navy);
   }
   .estacao-segs button[aria-pressed='true'] {
-    background: var(--branco);
-    border-color: var(--branco);
-    color: var(--navy);
+    background: var(--navy);
+    border-color: var(--navy);
+    color: var(--branco);
   }
   .jornada-cartao {
     display: grid;
@@ -2486,6 +2489,14 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
   }
   .sim-cabeca {
     text-align: center;
+  }
+  .sim-kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--vermelho);
+    margin: 0 0 0.6rem;
   }
   .sim-cabeca h2 {
     color: var(--navy);
