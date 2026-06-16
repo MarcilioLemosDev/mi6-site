@@ -174,19 +174,34 @@ const guiaInclinada = (xBase: number) => ({
 const guiasInclinadas = [60, 250, 640].map(guiaInclinada);
 const guiaBarra = guiaInclinada(388);
 
-// Cartões por segmento para o cartão do hero ciclar. Mostra a faixa de
-// crédito (mínimo a máximo) do grupo ativo; segmento sem grupo aparece como
-// "Em breve", sem inventar valor.
+// Cartões por segmento, navegáveis por setas. Cada segmento tem um tom
+// próprio dentro da paleta da marca (azul, preto, vermelho da bandeira),
+// sóbrio. A faixa de crédito (mínimo a máximo) vem do grupo ativo; segmento
+// sem grupo aparece como "Em breve", sem inventar valor.
+const temas: Record<string, [string, string]> = {
+  carros: ['#0a2c66', '#02112e'],
+  pesados: ['#2a2f3a', '#0b0e14'],
+  motos: ['#06204e', '#4e0f1c'],
+  imoveis: ['#103a72', '#05152f'],
+  servicos: ['#1a2740', '#080d18'],
+  eletro: ['#07265a', '#020a18'],
+};
 const cartoes = segmentos.map((s) => {
   const g = dados.grupos.find((x) => x.segmento === s.id && x.status === 'ativo');
+  const [c1, c2] = temas[s.id] ?? ['#012169', '#01112f'];
   return {
+    seg: s.id,
     nome: s.nome.replace('Consórcio de ', ''),
     valor: g
       ? `R$ ${g.credito_min.toLocaleString('pt-BR')} a ${g.credito_max.toLocaleString('pt-BR')}`
       : 'Em breve',
+    ativo: !!g,
+    c1,
+    c2,
   };
 });
-const cartaoInicial = cartoes.find((c) => c.valor !== 'Em breve') ?? cartoes[0];
+const idxInicial = Math.max(0, cartoes.findIndex((c) => c.ativo));
+const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
 ---
 
 <!doctype html>
@@ -235,22 +250,6 @@ const cartaoInicial = cartoes.find((c) => c.valor !== 'Em breve') ?? cartoes[0];
 
     <main>
       <section class="hero" id="inicio">
-        <svg class="hero-marca" aria-hidden="true" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
-          <g class="marca-grupo">
-            <line class="guia" x1="-2600" y1="4" x2="3400" y2="4" pathLength="100"></line>
-            <line class="guia" x1="-2600" y1="188" x2="3400" y2="188" pathLength="100"></line>
-            <line class="guia" x1="-2600" y1="372" x2="3400" y2="372" pathLength="100"></line>
-            {
-              guiasInclinadas.map((g) => (
-                <line class="guia" x1={g.x1} y1={g.y1} x2={g.x2} y2={g.y2} pathLength="100" />
-              ))
-            }
-            <line class="guia" x1={guiaBarra.x1} y1={guiaBarra.y1} x2={guiaBarra.x2} y2={guiaBarra.y2} pathLength="100"></line>
-            {marca.letras.map((d) => <path class="traco traco-letras" d={d} pathLength="100" />)}
-            {marca.barra.map((d) => <path class="traco traco-barra" d={d} pathLength="100" />)}
-          </g>
-        </svg>
-
         <p class="hero-coord" aria-hidden="true">30°02′S 51°13′W · PORTO ALEGRE · BRASIL</p>
 
         <div class="hero-grade">
@@ -275,20 +274,28 @@ const cartaoInicial = cartoes.find((c) => c.valor !== 'Em breve') ?? cartoes[0];
           </div>
 
           <div class="hero-visual">
-            <div class="cartao" data-intro aria-label="Carta de crédito MI6 materializada como cartão">
-              <span class="cartao-brilho" aria-hidden="true"></span>
-              <div class="cartao-topo">
-                <img class="cartao-logo" src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
-                <span class="cartao-bandeira" aria-hidden="true"></span>
-              </div>
-              <span class="cartao-chip" aria-hidden="true"></span>
-              <p class="cartao-rotulo">Carta de Crédito</p>
-              <p class="cartao-valor" id="cartao-valor">{cartaoInicial.valor}</p>
-              <div class="cartao-rodape">
-                <span class="cartao-tag">Poder de compra à vista</span>
-                <span class="cartao-seg" id="cartao-seg">{cartaoInicial.nome.toUpperCase()}</span>
-              </div>
+            <div class="cartao-palco" data-intro>
+              <button type="button" class="cartao-seta" id="cartao-prev" aria-label="Segmento anterior">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg>
+              </button>
+              <a class="cartao" id="cartao" href="#contato" style={`--c1:${cartaoInicial.c1};--c2:${cartaoInicial.c2}`} aria-label={`Simular ${cartaoInicial.nome}`}>
+                <span class="cartao-brilho" aria-hidden="true"></span>
+                <div class="cartao-topo">
+                  <img class="cartao-logo" src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
+                  <span class="cartao-chip" aria-hidden="true"></span>
+                </div>
+                <p class="cartao-rotulo">Carta de Crédito</p>
+                <p class="cartao-valor" id="cartao-valor">{cartaoInicial.valor}</p>
+                <div class="cartao-rodape">
+                  <span class="cartao-tag">Poder de compra à vista</span>
+                  <span class="cartao-seg" id="cartao-seg">{cartaoInicial.nome.toUpperCase()}</span>
+                </div>
+              </a>
+              <button type="button" class="cartao-seta" id="cartao-next" aria-label="Próximo segmento">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+              </button>
             </div>
+            <p class="cartao-dica" aria-hidden="true">Navegue pelos segmentos e toque para simular</p>
             <p class="cartao-nota" data-intro>Crédito liberado ao ser contemplado. Use lance, inclusive o embutido, para antecipar.</p>
             <script type="application/json" id="cartoes-dados" set:html={JSON.stringify(cartoes)}></script>
           </div>
@@ -950,38 +957,59 @@ const cartaoInicial = cartoes.find((c) => c.valor !== 'Em breve') ?? cartoes[0];
         atualizarSetas();
       }
 
-      // Ciclo do cartão do hero: troca segmento e faixa a cada 3s, com fade.
-      function cicloCartao() {
+      // Cartão do hero: o cliente navega pelos segmentos com as setas; cada
+      // segmento tem seu tom, e tocar no cartão leva ao simulador já naquele
+      // segmento.
+      type Cartao = { seg: string; nome: string; valor: string; ativo: boolean; c1: string; c2: string };
+      function montarCartao() {
+        const cartao = document.getElementById('cartao') as HTMLAnchorElement | null;
         const elV = document.getElementById('cartao-valor');
         const elS = document.getElementById('cartao-seg');
         const fonte = document.getElementById('cartoes-dados');
-        if (!elV || !elS || !fonte) return;
-        let lista: Array<{ nome: string; valor: string }> = [];
+        const prev = document.getElementById('cartao-prev');
+        const next = document.getElementById('cartao-next');
+        if (!cartao || !elV || !elS || !fonte) return;
+        let lista: Cartao[] = [];
         try {
           lista = JSON.parse(fonte.textContent || '[]');
         } catch {
           return;
         }
-        if (lista.length < 2) return;
-        let i = Math.max(
-          0,
-          lista.findIndex((c) => c.nome.toUpperCase() === (elS.textContent || '').trim()),
-        );
-        setInterval(() => {
-          i = (i + 1) % lista.length;
+        if (!lista.length) return;
+        let i = Math.max(0, lista.findIndex((c) => c.seg === segAtual) );
+        if (i < 0) i = 0;
+
+        const aplicar = (dir: number) => {
           const c = lista[i];
-          gsap.to([elV, elS], {
-            autoAlpha: 0,
-            duration: 0.3,
-            ease: 'power1.in',
-            onComplete: () => {
-              elV.textContent = c.valor;
-              elS.textContent = c.nome.toUpperCase();
-              gsap.to([elV, elS], { autoAlpha: 1, duration: 0.45, ease: 'power1.out' });
-            },
-          });
-        }, 3000);
+          cartao.style.setProperty('--c1', c.c1);
+          cartao.style.setProperty('--c2', c.c2);
+          cartao.setAttribute('aria-label', `Simular ${c.nome}`);
+          const trocar = () => {
+            elV.textContent = c.valor;
+            elS.textContent = c.nome.toUpperCase();
+          };
+          if (motionOk && dir !== 0) {
+            gsap.fromTo(
+              [elV, elS],
+              { autoAlpha: 0, x: dir * 18 },
+              { autoAlpha: 1, x: 0, duration: 0.4, ease: 'power2.out', onStart: trocar },
+            );
+          } else {
+            trocar();
+          }
+        };
+        const ir = (passo: number) => {
+          i = (i + passo + lista.length) % lista.length;
+          segAtual = lista[i].seg;
+          aplicar(passo);
+        };
+        prev?.addEventListener('click', () => ir(-1));
+        next?.addEventListener('click', () => ir(1));
+        // tocar no cartão seleciona o segmento no simulador antes de rolar
+        cartao.addEventListener('click', () => escolherSegmento(lista[i].seg));
+        aplicar(0);
       }
+      montarCartao();
 
       const mm = gsap.matchMedia();
 
@@ -995,7 +1023,6 @@ const cartaoInicial = cartoes.find((c) => c.valor !== 'Em breve') ?? cartoes[0];
           }, 0.15)
           .from(split.lines, { yPercent: 115, duration: 1.1, stagger: 0.14 }, 0.4)
           .from('[data-intro]', { y: 28, autoAlpha: 0, duration: 0.9, stagger: 0.14 }, '-=0.55')
-          .from('.hero-marca', { autoAlpha: 0, duration: 1.4, ease: 'power2.out' }, 0.2)
           .from('.hero-coord, .hero-scroll', { autoAlpha: 0, duration: 0.8 }, '-=0.8')
           .from('.dock', { y: 90, autoAlpha: 0, duration: 0.8, ease: 'power3.out' }, '-=0.9');
 
@@ -1046,36 +1073,9 @@ const cartaoInicial = cartoes.find((c) => c.valor !== 'Em breve') ?? cartoes[0];
 
         // O cartão flutua de leve com o scroll.
         gsap.to('.cartao', {
-          y: -34,
+          y: -28,
           ease: 'none',
           scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
-        });
-
-        // O cartão cicla pelos seis segmentos, trocando segmento e faixa.
-        cicloCartao();
-        gsap.to('.hero-marca', {
-          yPercent: -6,
-          ease: 'none',
-          scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
-        });
-
-        // A caneta percorre o caderno: primeiro o contorno das letras, depois
-        // a barra, e então escapa pelas guias até fora da tela; segura e
-        // recolhe (yoyo), repetindo a dança.
-        const caneta = [
-          ...gsap.utils.toArray<SVGPathElement>('.traco-letras'),
-          ...gsap.utils.toArray<SVGPathElement>('.traco-barra'),
-          ...gsap.utils.toArray<SVGLineElement>('.guia'),
-        ];
-        gsap.set(caneta, { strokeDashoffset: 100 });
-        gsap.to(caneta, {
-          strokeDashoffset: 0,
-          duration: 2.6,
-          ease: 'sine.inOut',
-          stagger: 0.3,
-          repeat: -1,
-          yoyo: true,
-          repeatDelay: 1.1,
         });
 
         gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((el) => {
@@ -1688,51 +1688,87 @@ const cartaoInicial = cartoes.find((c) => c.valor !== 'Em breve') ?? cartoes[0];
   .hero-visual {
     position: relative;
     display: grid;
-    justify-items: end;
-    gap: 1.5rem;
+    justify-items: stretch;
+    gap: 0.5rem;
   }
   /* A carta de crédito materializada: cartão sóbrio Union Jack, sem clichê
      de fintech. Navy profundo, filete vermelho da bandeira, brilho que cruza. */
+  /* Palco do cartão: setas finas nas laterais, cartão no centro */
+  .cartao-palco {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+  .cartao-seta {
+    flex: none;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: transparent;
+    color: var(--branco);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
+  .cartao-seta:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.06);
+  }
+  .cartao-seta svg {
+    width: 1.2rem;
+    height: 1.2rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  /* O cartão: sóbrio, fino, tom próprio por segmento (var --c1/--c2) */
   .cartao {
     position: relative;
-    width: clamp(19rem, 30vw, 25rem);
+    width: clamp(18rem, 27vw, 23rem);
     aspect-ratio: 1.586;
-    border-radius: 1.1rem;
-    padding: 1.5rem 1.6rem;
+    border-radius: 1rem;
+    padding: 1.4rem 1.5rem;
     color: var(--branco);
+    text-decoration: none;
     background:
-      radial-gradient(130% 120% at 80% -10%, #033089, transparent 55%),
-      linear-gradient(150deg, #012169 0%, #021a4f 60%, #01112f 100%);
+      radial-gradient(120% 120% at 82% -10%, rgba(255, 255, 255, 0.1), transparent 55%),
+      linear-gradient(150deg, var(--c1, #012169), var(--c2, #01112f));
     box-shadow:
-      0 30px 60px -28px rgba(1, 10, 30, 0.85),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+      0 26px 54px -30px rgba(1, 10, 30, 0.9),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.07);
     overflow: hidden;
     display: grid;
-    grid-template-rows: auto auto 1fr auto;
-    transform: rotate(-4deg);
-    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    grid-template-rows: auto 1fr auto;
+    transform: rotate(-2deg);
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease, background 0.6s ease;
   }
   .cartao:hover {
-    transform: rotate(0deg) translateY(-4px);
+    transform: rotate(0deg) translateY(-5px);
+    box-shadow: 0 34px 64px -28px rgba(1, 10, 30, 0.95), inset 0 0 0 1px rgba(255, 255, 255, 0.12);
   }
   .cartao-brilho {
     position: absolute;
     top: -60%;
     left: -30%;
-    width: 50%;
+    width: 45%;
     height: 220%;
-    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.12), transparent);
     transform: rotate(18deg);
     pointer-events: none;
   }
   @media (prefers-reduced-motion: no-preference) {
     .cartao-brilho {
-      animation: cartaoBrilho 6.5s ease-in-out infinite;
+      animation: cartaoBrilho 7.5s ease-in-out infinite;
     }
   }
   @keyframes cartaoBrilho {
     0%, 100% { transform: translateX(-60%) rotate(18deg); }
-    50% { transform: translateX(360%) rotate(18deg); }
+    55% { transform: translateX(420%) rotate(18deg); }
   }
   .cartao-topo {
     display: flex;
@@ -1741,48 +1777,39 @@ const cartaoInicial = cartoes.find((c) => c.valor !== 'Em breve') ?? cartoes[0];
     gap: 1rem;
   }
   .cartao-logo {
-    height: 1.5rem;
+    height: 1.35rem;
     width: auto;
   }
-  .cartao-bandeira {
-    width: 2.4rem;
-    height: 1rem;
-    border-radius: 2px;
-    background:
-      linear-gradient(var(--vermelho), var(--vermelho)) center/100% 33% no-repeat,
-      linear-gradient(90deg, var(--vermelho) 0 33%, transparent 33%) center/100% 100% no-repeat,
-      rgba(255, 255, 255, 0.14);
-  }
+  /* Chip fino e discreto, sem brilho caricato */
   .cartao-chip {
-    width: 2.6rem;
-    height: 1.9rem;
-    margin-top: 0.5rem;
-    border-radius: 0.35rem;
-    background: linear-gradient(135deg, #ecdca6, #c2a04a);
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+    width: 2rem;
+    height: 1.5rem;
+    border-radius: 0.28rem;
+    background: linear-gradient(135deg, rgba(220, 210, 180, 0.85), rgba(150, 140, 110, 0.7));
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
     position: relative;
   }
   .cartao-chip::before {
     content: '';
     position: absolute;
-    inset: 28% 0;
-    border-top: 1px solid rgba(0, 0, 0, 0.25);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    inset: 30% 18%;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 1px;
   }
   .cartao-rotulo {
     align-self: end;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.66rem;
-    letter-spacing: 0.22em;
+    font-size: 0.62rem;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
-    color: var(--gelo);
+    color: rgba(255, 255, 255, 0.6);
     margin: 0;
   }
   .cartao-valor {
     font-family: 'Instrument Serif', Georgia, serif;
-    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-size: clamp(1.7rem, 3.2vw, 2.3rem);
     line-height: 1;
-    margin: 0.1rem 0 0;
+    margin: 0.15rem 0 0;
     font-variant-numeric: tabular-nums;
   }
   .cartao-rodape {
@@ -1793,27 +1820,38 @@ const cartaoInicial = cartoes.find((c) => c.valor !== 'Em breve') ?? cartoes[0];
     margin-top: 0.6rem;
   }
   .cartao-tag {
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     font-weight: 600;
-    color: #ff8095;
+    color: rgba(255, 255, 255, 0.92);
   }
   .cartao-seg {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
+    font-size: 0.66rem;
     letter-spacing: 0.18em;
     color: var(--branco);
-    border: 1px solid var(--linha);
+    border: 1px solid rgba(255, 255, 255, 0.28);
     border-radius: 999px;
     padding: 0.2rem 0.7rem;
+    white-space: nowrap;
+  }
+  .cartao-dica {
+    text-align: center;
+    margin: 1.25rem 0 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
   }
   .cartao-nota {
-    max-width: 22rem;
-    margin: 1.5rem 0 0;
+    max-width: 24rem;
+    margin: 0.6rem auto 0;
+    text-align: center;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.66rem;
-    letter-spacing: 0.06em;
+    font-size: 0.64rem;
+    letter-spacing: 0.04em;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.45);
   }
 
   .hero-scroll {
@@ -3265,12 +3303,16 @@ const cartaoInicial = cartoes.find((c) => c.valor !== 'Em breve') ?? cartoes[0];
       justify-items: center;
       grid-template-columns: 1fr;
     }
-    .cartao {
-      width: min(86vw, 22rem);
-      transform: rotate(-3deg);
+    .cartao-palco {
+      gap: 0.4rem;
     }
-    .cartao-nota {
-      text-align: center;
+    .cartao {
+      width: min(68vw, 20rem);
+      transform: rotate(-2deg);
+    }
+    .cartao-seta {
+      width: 2.2rem;
+      height: 2.2rem;
     }
     .hero-scroll {
       display: none;
