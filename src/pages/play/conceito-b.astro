@@ -322,38 +322,61 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
         </div>
       </div>
 
-      <section class="galeria" id="solucoes">
-        <header class="galeria-cabeca">
-          <p class="indice" data-reveal>SEIS CAMINHOS</p>
-          <h2 data-reveal>Seis caminhos, uma conquista</h2>
-          <p class="galeria-apoio" data-reveal>
-            A MI6 atua em seis segmentos do mercado, com planos flexíveis e
-            atendimento consultivo. Cada caminho começa com uma simulação
-            simples e termina com a sua carta de crédito.
+      <section class="jornada" id="solucoes">
+        <header class="jornada-cabeca">
+          <p class="indice" data-reveal>A JORNADA</p>
+          <h2 data-reveal>Do primeiro passo à <em>carta de crédito</em></h2>
+          <p data-reveal>
+            Escolha seu caminho e veja como a MI6 transforma parcela em poder
+            de compra à vista. O mesmo percurso vale para os seis segmentos.
           </p>
         </header>
-        <div class="galeria-palco">
-          <button type="button" class="galeria-seta galeria-seta-esq" data-rolar="-1" aria-label="Ver segmentos anteriores">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg>
-          </button>
-          <div class="galeria-fila" id="galeria-fila">
-            {
-              segmentos.map((s) => (
-                <article class="painel">
-                  <div class="painel-foto">
-                    <img src={s.img} alt={s.alt} loading="lazy" />
-                  </div>
-                  <p class="painel-num" aria-hidden="true">{s.n}</p>
-                  <h3>{s.nome}</h3>
-                  <a class="sub" href="#contato" data-segmento={s.id}>Simular</a>
-                </article>
-              ))
-            }
-          </div>
-          <button type="button" class="galeria-seta galeria-seta-dir" data-rolar="1" aria-label="Ver próximos segmentos">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
-          </button>
-        </div>
+
+        <ol class="trilha">
+          <span class="trilha-fio" aria-hidden="true"><i></i></span>
+
+          <li class="estacao estacao-inicio" data-estacao>
+            <span class="estacao-marco" aria-hidden="true">01</span>
+            <h3>Escolha seu caminho</h3>
+            <div class="estacao-segs" id="jornada-segs" role="group" aria-label="Segmentos">
+              {
+                segmentos.map((s) => (
+                  <button type="button" data-segmento={s.id} aria-pressed={s.id === cartaoInicial.seg ? 'true' : 'false'}>
+                    {s.nome.replace('Consórcio de ', '')}
+                  </button>
+                ))
+              }
+            </div>
+          </li>
+
+          <li class="estacao" data-estacao>
+            <span class="estacao-marco" aria-hidden="true">02</span>
+            <h3>Entre no grupo</h3>
+            <p>Você passa a contribuir com parcelas mensais, sem entrada e sem juros.</p>
+          </li>
+
+          <li class="estacao" data-estacao>
+            <span class="estacao-marco" aria-hidden="true">03</span>
+            <h3>Assembleia todo mês</h3>
+            <p>Sorteio e lance, inclusive o embutido, ampliam suas chances de ser contemplado.</p>
+          </li>
+
+          <li class="estacao" data-estacao>
+            <span class="estacao-marco" aria-hidden="true">04</span>
+            <h3>Contemplação</h3>
+            <p>Chega a sua vez: o crédito é liberado para a compra.</p>
+          </li>
+
+          <li class="estacao estacao-fim" data-estacao>
+            <span class="estacao-marco estacao-marco-fim" aria-hidden="true"></span>
+            <h3>Sua carta de crédito</h3>
+            <a class="jornada-cartao" id="jornada-cartao" href="#contato" style={`--c1:${cartaoInicial.c1};--c2:${cartaoInicial.c2}`} aria-label={`Simular ${cartaoInicial.nome}`}>
+              <span class="jornada-cartao-rotulo">Carta de Crédito</span>
+              <span class="jornada-cartao-valor" id="jornada-valor">{cartaoInicial.valor}</span>
+              <span class="jornada-cartao-tag">Poder de compra à vista · <strong id="jornada-seg">{cartaoInicial.nome}</strong></span>
+            </a>
+          </li>
+        </ol>
       </section>
 
       <section class="contato" id="contato">
@@ -922,45 +945,50 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
         }
       });
 
-      // Galeria horizontal: setas rolam por um painel + gap, e marcam a si
-      // mesmas como disabled quando chegam ao limite.
-      const fila = document.getElementById('galeria-fila');
-      const setas = document.querySelectorAll<HTMLButtonElement>('.galeria-seta');
-      if (fila) {
-        const passoFila = () => {
-          const p = fila.querySelector<HTMLElement>('.painel');
-          if (!p) return fila.clientWidth;
-          const estilo = getComputedStyle(fila);
-          const gap = parseFloat(estilo.gap || '0');
-          return p.offsetWidth + gap;
+      type Cartao = { seg: string; nome: string; valor: string; ativo: boolean; c1: string; c2: string };
+
+      // Jornada: a estação de partida escolhe o segmento; a estação final (a
+      // carta de crédito) assume a cor, a faixa e o nome do segmento, e leva
+      // ao simulador já selecionado.
+      function montarJornada() {
+        const segs = document.getElementById('jornada-segs');
+        const cartao = document.getElementById('jornada-cartao') as HTMLAnchorElement | null;
+        const elV = document.getElementById('jornada-valor');
+        const elS = document.getElementById('jornada-seg');
+        const fonte = document.getElementById('cartoes-dados');
+        if (!segs || !cartao || !elV || !elS || !fonte) return;
+        let lista: Cartao[] = [];
+        try {
+          lista = JSON.parse(fonte.textContent || '[]');
+        } catch {
+          return;
+        }
+        const aplicar = (seg: string) => {
+          const c = lista.find((x) => x.seg === seg);
+          if (!c) return;
+          cartao.style.setProperty('--c1', c.c1);
+          cartao.style.setProperty('--c2', c.c2);
+          cartao.setAttribute('aria-label', `Simular ${c.nome}`);
+          elV.textContent = c.valor;
+          elS.textContent = c.nome;
+          segs.querySelectorAll('button').forEach((b) =>
+            b.setAttribute('aria-pressed', (b as HTMLElement).dataset.segmento === seg ? 'true' : 'false'),
+          );
         };
-        const atualizarSetas = () => {
-          const ini = fila.scrollLeft <= 4;
-          const fim = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 4;
-          setas.forEach((s) => {
-            const dir = s.dataset.rolar === '1';
-            if (dir) {
-              fim ? s.setAttribute('disabled', '') : s.removeAttribute('disabled');
-            } else {
-              ini ? s.setAttribute('disabled', '') : s.removeAttribute('disabled');
-            }
-          });
-        };
-        setas.forEach((s) => {
-          s.addEventListener('click', () => {
-            const sentido = s.dataset.rolar === '1' ? 1 : -1;
-            fila.scrollBy({ left: sentido * passoFila(), behavior: 'smooth' });
-          });
+        segs.addEventListener('click', (e) => {
+          const b = (e.target as HTMLElement).closest('button');
+          if (b?.dataset.segmento) aplicar(b.dataset.segmento);
         });
-        fila.addEventListener('scroll', atualizarSetas, { passive: true });
-        window.addEventListener('resize', atualizarSetas);
-        atualizarSetas();
+        cartao.addEventListener('click', () => {
+          const ativo = segs.querySelector('button[aria-pressed="true"]') as HTMLElement | null;
+          escolherSegmento(ativo?.dataset.segmento ?? 'motos');
+        });
       }
+      montarJornada();
 
       // Cartão do hero: o cliente navega pelos segmentos com as setas; cada
       // segmento tem seu tom, e tocar no cartão leva ao simulador já naquele
       // segmento.
-      type Cartao = { seg: string; nome: string; valor: string; ativo: boolean; c1: string; c2: string };
       function montarCartao() {
         const cartao = document.getElementById('cartao') as HTMLAnchorElement | null;
         const elV = document.getElementById('cartao-valor');
@@ -1087,6 +1115,34 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
             scrollTrigger: { trigger: el, start: 'top 86%' },
           });
         });
+
+        // Jornada: o fio se preenche e as estações acendem em sequência.
+        const trilha = document.querySelector('.trilha');
+        if (trilha) {
+          const estacoes = gsap.utils.toArray<HTMLElement>('[data-estacao]');
+          gsap.to('.trilha-fio i', {
+            scaleX: 1,
+            scaleY: 1,
+            ease: 'none',
+            scrollTrigger: { trigger: trilha, start: 'top 70%', end: 'bottom 70%', scrub: 0.6 },
+          });
+          gsap.from(estacoes, {
+            autoAlpha: 0,
+            y: 24,
+            duration: 0.6,
+            stagger: 0.18,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: trilha, start: 'top 75%' },
+          });
+          estacoes.forEach((el) => {
+            ScrollTrigger.create({
+              trigger: el,
+              start: 'top 72%',
+              once: true,
+              onEnter: () => el.classList.add('aceso'),
+            });
+          });
+        }
 
         return () => split.revert();
       });
@@ -1387,13 +1443,13 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
 
   /* Régua dupla, abstração da Union Jack: navy contínuo, vermelho no arranque */
   .claro h2,
-  .galeria h2 {
+  .jornada-cabeca h2 {
     position: relative;
     border-top: 2px solid var(--navy);
     padding-top: 1.1rem;
   }
   .claro h2::before,
-  .galeria h2::before {
+  .jornada-cabeca h2::before {
     content: '';
     position: absolute;
     top: -2px;
@@ -1402,7 +1458,7 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     height: 2px;
     background: var(--vermelho);
   }
-  .galeria h2 {
+  .jornada-cabeca h2 {
     border-top-color: rgba(255, 255, 255, 0.55);
   }
 
@@ -2016,161 +2072,169 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     font-size: 0.97rem;
   }
 
-  /* Galeria horizontal */
-  .galeria {
+  /* Jornada: trilha viva do primeiro passo à carta de crédito */
+  .jornada {
     background: var(--navy-escuro);
     border-top: 1px solid var(--linha);
-    padding: 5.5rem 2.5rem 6rem;
+    padding: 5.5rem 2.5rem 6.5rem;
   }
-  .galeria-cabeca {
+  .jornada-cabeca {
     max-width: 70rem;
-    margin: 0 auto 3rem;
+    margin: 0 auto 4rem;
     width: 100%;
   }
-  .galeria-apoio {
+  .jornada-cabeca h2 {
+    color: var(--branco);
+  }
+  .jornada-cabeca p {
     color: var(--gelo);
-    max-width: 38rem;
+    max-width: 42rem;
     margin: 0;
   }
-  /* Palco com setas nas extremidades: o usuario pode rolar com seta, com
-     o dedo (touch) ou com a roda do mouse. Sombras nas pontas avisam que ha
-     mais conteudo escondido. */
-  .galeria-palco {
+  .trilha {
     position: relative;
-    max-width: 80rem;
+    list-style: none;
     margin: 0 auto;
+    padding: 0;
+    max-width: 78rem;
+    display: grid;
+    grid-template-columns: 1.35fr 1fr 1fr 1fr 1.35fr;
+    gap: 1.5rem;
   }
-  .galeria-palco::before,
-  .galeria-palco::after {
-    content: '';
+  .trilha-fio {
+    position: absolute;
+    top: 1.15rem;
+    left: 6%;
+    right: 6%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.14);
+    overflow: hidden;
+    z-index: 0;
+  }
+  .trilha-fio i {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: var(--vermelho);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  .estacao {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 0.55rem;
+    padding-top: 3.4rem;
+  }
+  .estacao-marco {
     position: absolute;
     top: 0;
-    bottom: 0;
-    width: 3rem;
-    pointer-events: none;
-    z-index: 2;
-  }
-  .galeria-palco::before {
-    left: 0;
-    background: linear-gradient(to right, var(--navy-escuro), transparent);
-  }
-  .galeria-palco::after {
-    right: 0;
-    background: linear-gradient(to left, var(--navy-escuro), transparent);
-  }
-  .galeria-fila {
-    display: flex;
-    gap: 1.25rem;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    padding: 0.25rem 1rem 1.5rem;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .galeria-fila::-webkit-scrollbar {
-    display: none;
-  }
-  .galeria-seta {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 3;
-    width: 2.8rem;
-    height: 2.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2.3rem;
+    height: 2.3rem;
     border-radius: 50%;
-    border: 1px solid var(--linha);
-    background: rgba(1, 16, 47, 0.85);
-    backdrop-filter: blur(8px);
+    background: var(--navy);
     color: var(--branco);
-    cursor: pointer;
+    border: 1px solid var(--linha);
     display: grid;
     place-items: center;
-    transition: background 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    z-index: 1;
+    transition: background 0.4s ease, border-color 0.4s ease, transform 0.4s ease;
   }
-  .galeria-seta:hover {
+  .estacao.aceso .estacao-marco {
+    border-color: var(--vermelho);
+  }
+  .estacao-marco-fim {
     background: var(--vermelho);
     border-color: var(--vermelho);
   }
-  .galeria-seta[disabled] {
-    opacity: 0.25;
-    cursor: default;
-  }
-  .galeria-seta svg {
-    width: 1.3rem;
-    height: 1.3rem;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .galeria-seta-esq {
-    left: -1.2rem;
-  }
-  .galeria-seta-dir {
-    right: -1.2rem;
-  }
-  .painel {
-    flex: 0 0 clamp(14rem, 22vw, 17rem);
-    scroll-snap-align: start;
-    border: 1px solid var(--linha);
-    padding: 1rem 1rem 1.2rem;
-    background: rgba(255, 255, 255, 0.02);
-    position: relative;
-    transition: border-color 0.3s ease, transform 0.3s ease;
-  }
-  .painel:hover {
-    border-color: rgba(255, 255, 255, 0.45);
-    transform: translateY(-6px);
-  }
-  .painel-foto {
-    position: relative;
-    overflow: hidden;
-    aspect-ratio: 4 / 3;
-    margin-bottom: 1.1rem;
-  }
-  .painel-foto img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: grayscale(0.95) contrast(1.03);
-    transition: filter 0.55s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .painel-foto::after {
+  .estacao-marco-fim::after {
     content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(160deg, rgba(1, 33, 105, 0.5), rgba(1, 19, 58, 0.68));
-    mix-blend-mode: multiply;
-    transition: opacity 0.55s ease;
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    background: var(--branco);
   }
-  .painel:hover .painel-foto img {
-    filter: none;
-    transform: scale(1.05);
-  }
-  .painel:hover .painel-foto::after {
-    opacity: 0.12;
-  }
-  .painel-num {
-    position: absolute;
-    top: 0.4rem;
-    right: 0.9rem;
-    font-family: 'Instrument Serif', Georgia, serif;
-    font-size: 3.2rem;
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.35);
-    margin: 0;
-    pointer-events: none;
-  }
-  .painel h3 {
-    font-size: 1.55rem;
-    margin: 0 0 1rem;
-  }
-  .painel a {
+  .estacao h3 {
     color: var(--branco);
+    font-size: 1.2rem;
+    margin: 0;
+  }
+  .estacao p {
+    color: var(--gelo);
     font-size: 0.9rem;
+    margin: 0;
+    max-width: 15rem;
+  }
+  .estacao-segs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-top: 0.3rem;
+  }
+  .estacao-segs button {
+    font: inherit;
+    font-size: 0.8rem;
     font-weight: 600;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: transparent;
+    color: var(--gelo);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .estacao-segs button:hover {
+    border-color: rgba(255, 255, 255, 0.55);
+    color: var(--branco);
+  }
+  .estacao-segs button[aria-pressed='true'] {
+    background: var(--branco);
+    border-color: var(--branco);
+    color: var(--navy);
+  }
+  .jornada-cartao {
+    display: grid;
+    gap: 0.25rem;
+    width: 100%;
+    max-width: 13.5rem;
+    padding: 0.95rem 1.05rem;
+    border-radius: 0.8rem;
+    text-decoration: none;
+    text-align: left;
+    color: var(--branco);
+    background: linear-gradient(150deg, var(--c1, #012169), var(--c2, #01112f));
+    box-shadow: 0 18px 36px -22px rgba(1, 10, 30, 0.9), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    transition: transform 0.3s ease, background 0.6s ease;
+  }
+  .jornada-cartao:hover {
+    transform: translateY(-4px);
+  }
+  .jornada-cartao-rotulo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .jornada-cartao-valor {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 1.45rem;
+    line-height: 1.05;
+    font-variant-numeric: tabular-nums;
+  }
+  .jornada-cartao-tag {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 0.15rem;
+  }
+  .jornada-cartao-tag strong {
+    color: var(--branco);
   }
 
   /* Método (claro) */
@@ -3327,28 +3391,52 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     .vantagens-lista li {
       transform: none;
     }
-    .galeria {
+    .jornada {
       padding: 4rem 1.25rem 4.5rem;
     }
-    .galeria-palco {
-      max-width: 100%;
+    .jornada-cabeca {
+      margin-bottom: 2.5rem;
     }
-    .galeria-seta {
-      width: 2.4rem;
-      height: 2.4rem;
+    /* Trilha vira timeline vertical: linha à esquerda, marcos sobre ela */
+    .trilha {
+      grid-template-columns: 1fr;
+      gap: 2.25rem;
+      padding-left: 3.2rem;
+      max-width: 30rem;
     }
-    .galeria-seta-esq {
-      left: 0.2rem;
+    .trilha-fio {
+      top: 1rem;
+      bottom: 1rem;
+      left: 1.15rem;
+      right: auto;
+      width: 2px;
+      height: auto;
     }
-    .galeria-seta-dir {
-      right: 0.2rem;
+    .trilha-fio i {
+      width: 100%;
+      height: 100%;
+      transform: scaleY(0);
+      transform-origin: center top;
     }
-    .galeria-fila {
-      padding-left: 3.4rem;
-      padding-right: 3.4rem;
+    .estacao {
+      justify-items: start;
+      text-align: left;
+      padding-top: 0;
+      padding-left: 0;
+      gap: 0.4rem;
+      min-height: 2.3rem;
     }
-    .painel {
-      flex: 0 0 70vw;
+    .estacao-marco {
+      left: -3.2rem;
+      top: 0;
+      transform: none;
+    }
+    .estacao p,
+    .estacao-segs {
+      justify-content: flex-start;
+    }
+    .estacao p {
+      max-width: none;
     }
     .metodo-lista li {
       grid-template-columns: 1fr;
