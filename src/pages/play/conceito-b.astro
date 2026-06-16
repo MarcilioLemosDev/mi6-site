@@ -173,6 +173,20 @@ const guiaInclinada = (xBase: number) => ({
 });
 const guiasInclinadas = [60, 250, 640].map(guiaInclinada);
 const guiaBarra = guiaInclinada(388);
+
+// Cartões por segmento para o cartão do hero ciclar. Mostra a faixa de
+// crédito (mínimo a máximo) do grupo ativo; segmento sem grupo aparece como
+// "Em breve", sem inventar valor.
+const cartoes = segmentos.map((s) => {
+  const g = dados.grupos.find((x) => x.segmento === s.id && x.status === 'ativo');
+  return {
+    nome: s.nome.replace('Consórcio de ', ''),
+    valor: g
+      ? `R$ ${g.credito_min.toLocaleString('pt-BR')} a ${g.credito_max.toLocaleString('pt-BR')}`
+      : 'Em breve',
+  };
+});
+const cartaoInicial = cartoes.find((c) => c.valor !== 'Em breve') ?? cartoes[0];
 ---
 
 <!doctype html>
@@ -241,21 +255,17 @@ const guiaBarra = guiaInclinada(388);
 
         <div class="hero-grade">
           <div class="hero-conteudo">
-            <p class="hero-kicker"><span id="scramble">A sua carta de crédito</span></p>
+            <p class="hero-kicker"><span id="scramble">O Melhor Investimento:</span></p>
             <h1 id="titulo">
-              <span class="linha">O dinheiro</span>
-              <span class="linha">para comprar</span>
-              <span class="linha"><em>à vista</em></span>
+              <span class="linha">6 caminhos para</span>
+              <span class="linha">transformar <em>sonhos</em></span>
+              <span class="linha">em conquistas</span>
             </h1>
-            <p class="hero-frase" data-intro>
-              A carta de crédito MI6 é poder de compra à vista. Você escolhe o
-              carro, a casa, a moto, e paga como quem paga à vista, negociando
-              preço, sem juros.
-            </p>
+            <p class="hero-frase" data-intro>Você está perto de realizar o seu projeto de vida</p>
             <div class="hero-acoes" data-intro>
-              <a class="cta so-novo" href="#contato">Quero a minha carta</a>
+              <a class="cta so-novo" href="#contato">Simule agora</a>
               <a class="cta so-cliente" href="https://mi6.evertecinc.com.br/autoatendimento">Área do Cliente</a>
-              <button type="button" class="link-claro sub so-novo" data-folha="funciona">Como funciona?</button>
+              <button type="button" class="link-claro sub so-novo" data-folha="funciona">O que é consórcio?</button>
               <button type="button" class="link-claro sub so-cliente" data-folha="contemplacao">Fui contemplado, e agora?</button>
             </div>
             <p class="hero-prova" data-intro>
@@ -273,13 +283,14 @@ const guiaBarra = guiaInclinada(388);
               </div>
               <span class="cartao-chip" aria-hidden="true"></span>
               <p class="cartao-rotulo">Carta de Crédito</p>
-              <p class="cartao-valor">R$ <span id="cartao-valor">15.000</span></p>
+              <p class="cartao-valor" id="cartao-valor">{cartaoInicial.valor}</p>
               <div class="cartao-rodape">
                 <span class="cartao-tag">Poder de compra à vista</span>
-                <span class="cartao-seg" id="cartao-seg">MOTOS</span>
+                <span class="cartao-seg" id="cartao-seg">{cartaoInicial.nome.toUpperCase()}</span>
               </div>
             </div>
             <p class="cartao-nota" data-intro>Crédito liberado ao ser contemplado. Use lance, inclusive o embutido, para antecipar.</p>
+            <script type="application/json" id="cartoes-dados" set:html={JSON.stringify(cartoes)}></script>
           </div>
         </div>
 
@@ -840,8 +851,6 @@ const guiaBarra = guiaInclinada(388);
         por('sim-valor', Math.round(c).toLocaleString('pt-BR'));
         // Parcela com seguro embutido (obrigatório).
         por('sim-parcela', num(base / PRAZO + base * SEGURO));
-        // O cartão materializado do hero reflete o mesmo crédito simulado.
-        por('cartao-valor', Math.round(c).toLocaleString('pt-BR'));
       }
       const credito = document.getElementById('sim-credito') as HTMLInputElement | null;
       credito?.addEventListener('input', () => {
@@ -868,8 +877,6 @@ const guiaBarra = guiaInclinada(388);
         document.querySelectorAll('#sim-chips button').forEach((b) => {
           b.setAttribute('aria-pressed', (b as HTMLElement).dataset.segmento === id ? 'true' : 'false');
         });
-        const cartaoSeg = document.getElementById('cartao-seg');
-        if (cartaoSeg) cartaoSeg.textContent = (nomesSeg[id] ?? id).toUpperCase();
         const vivo = document.getElementById('sim-vivo');
         const aguarde = document.getElementById('sim-aguarde');
         const nome = document.getElementById('sim-seg-nome');
@@ -943,6 +950,39 @@ const guiaBarra = guiaInclinada(388);
         atualizarSetas();
       }
 
+      // Ciclo do cartão do hero: troca segmento e faixa a cada 3s, com fade.
+      function cicloCartao() {
+        const elV = document.getElementById('cartao-valor');
+        const elS = document.getElementById('cartao-seg');
+        const fonte = document.getElementById('cartoes-dados');
+        if (!elV || !elS || !fonte) return;
+        let lista: Array<{ nome: string; valor: string }> = [];
+        try {
+          lista = JSON.parse(fonte.textContent || '[]');
+        } catch {
+          return;
+        }
+        if (lista.length < 2) return;
+        let i = Math.max(
+          0,
+          lista.findIndex((c) => c.nome.toUpperCase() === (elS.textContent || '').trim()),
+        );
+        setInterval(() => {
+          i = (i + 1) % lista.length;
+          const c = lista[i];
+          gsap.to([elV, elS], {
+            autoAlpha: 0,
+            duration: 0.3,
+            ease: 'power1.in',
+            onComplete: () => {
+              elV.textContent = c.valor;
+              elS.textContent = c.nome.toUpperCase();
+              gsap.to([elV, elS], { autoAlpha: 1, duration: 0.45, ease: 'power1.out' });
+            },
+          });
+        }, 3000);
+      }
+
       const mm = gsap.matchMedia();
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
@@ -951,7 +991,7 @@ const guiaBarra = guiaInclinada(388);
         tl.from('.topo', { yPercent: -100, duration: 0.8, ease: 'power2.out' })
           .to('#scramble', {
             duration: 1.4,
-            scrambleText: { text: 'A sua carta de crédito', chars: 'MI6·01/', speed: 0.4 },
+            scrambleText: { text: 'O Melhor Investimento:', chars: 'MI6·01/', speed: 0.4 },
           }, 0.15)
           .from(split.lines, { yPercent: 115, duration: 1.1, stagger: 0.14 }, 0.4)
           .from('[data-intro]', { y: 28, autoAlpha: 0, duration: 0.9, stagger: 0.14 }, '-=0.55')
@@ -1010,6 +1050,9 @@ const guiaBarra = guiaInclinada(388);
           ease: 'none',
           scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
         });
+
+        // O cartão cicla pelos seis segmentos, trocando segmento e faixa.
+        cicloCartao();
         gsap.to('.hero-marca', {
           yPercent: -6,
           ease: 'none',
@@ -2469,37 +2512,58 @@ const guiaBarra = guiaInclinada(388);
     margin-bottom: 1.4rem;
   }
   /* Resultado enxuto: a parcela é a estrela */
+  /* O resultado da simulação ganha a pele da carta de crédito: bloco navy
+     com chip, fixando o conceito sem aumentar a altura do simulador. */
   .sim-resultado {
+    position: relative;
     margin: 0.4rem 0 1.25rem;
+    padding: 1rem 1.15rem;
+    border-radius: 0.9rem;
+    color: var(--branco);
+    background:
+      radial-gradient(130% 140% at 85% -20%, #033089, transparent 55%),
+      linear-gradient(150deg, #012169, #01112f);
+    overflow: hidden;
+  }
+  .sim-resultado::after {
+    content: '';
+    position: absolute;
+    top: 1rem;
+    right: 1.15rem;
+    width: 1.7rem;
+    height: 1.25rem;
+    border-radius: 0.25rem;
+    background: linear-gradient(135deg, #ecdca6, #c2a04a);
+    opacity: 0.9;
   }
   .sim-res-rotulo {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.66rem;
-    letter-spacing: 0.16em;
+    font-size: 0.64rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--tinta-suave);
-    margin: 0 0 0.2rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0 0 0.25rem;
   }
   .sim-res-valor {
     display: flex;
     align-items: baseline;
     gap: 0.4rem;
     margin: 0;
-    color: var(--navy);
+    color: var(--branco);
   }
   .sim-moeda-sm {
     font-weight: 600;
-    color: var(--tinta-suave);
+    color: rgba(255, 255, 255, 0.7);
     font-size: 1.1rem;
   }
   .sim-res-valor #sim-parcela {
     font-family: 'Instrument Serif', Georgia, serif;
-    font-size: clamp(2.8rem, 5vw, 3.8rem);
+    font-size: clamp(2.6rem, 5vw, 3.4rem);
     line-height: 1;
     font-variant-numeric: tabular-nums;
   }
   .sim-res-mes {
-    color: var(--tinta-suave);
+    color: rgba(255, 255, 255, 0.6);
     font-weight: 600;
     font-size: 0.9rem;
   }
