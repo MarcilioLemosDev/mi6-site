@@ -295,20 +295,30 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
               <button type="button" class="cartao-seta" id="cartao-prev" aria-label="Segmento anterior">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg>
               </button>
-              <a class="cartao" id="cartao" href="#contato" style={`--c1:${cartaoInicial.c1};--c2:${cartaoInicial.c2}`} aria-label={`Simular ${cartaoInicial.nome}`}>
-                <span class="cartao-brilho" aria-hidden="true"></span>
-                <svg class="cartao-bem" id="cartao-bem" viewBox="0 0 64 64" aria-hidden="true" set:html={cartaoInicial.bem}></svg>
-                <div class="cartao-topo">
-                  <img class="cartao-logo" src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
-                  <span class="cartao-chip" aria-hidden="true"></span>
-                </div>
-                <p class="cartao-rotulo">Carta de Crédito</p>
-                <p class="cartao-valor" id="cartao-valor">{cartaoInicial.valor}</p>
-                <div class="cartao-rodape">
-                  <span class="cartao-tag">Poder de compra à vista</span>
-                  <span class="cartao-seg" id="cartao-seg">{cartaoInicial.nome.toUpperCase()}</span>
-                </div>
-              </a>
+              <div class="cartao-carrossel" id="cartao-carrossel" role="group" aria-roledescription="carrossel de cartões" aria-label="Cartas de crédito por segmento">
+                <ul class="cartao-pista" id="cartao-pista">
+                  {
+                    cartoes.map((c, i) => (
+                      <li class="cartao-slot" data-i={i}>
+                        <a class="cartao" href="#contato" style={`--c1:${c.c1};--c2:${c.c2}`} aria-label={`Simular ${c.nome}`}>
+                          <span class="cartao-brilho" aria-hidden="true"></span>
+                          <svg class="cartao-bem" viewBox="0 0 64 64" aria-hidden="true" set:html={c.bem} />
+                          <div class="cartao-topo">
+                            <img class="cartao-logo" src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
+                            <span class="cartao-chip" aria-hidden="true" />
+                          </div>
+                          <p class="cartao-rotulo">Carta de Crédito</p>
+                          <p class="cartao-valor">{c.valor}</p>
+                          <div class="cartao-rodape">
+                            <span class="cartao-tag">Poder de compra à vista</span>
+                            <span class="cartao-seg">{c.nome.toUpperCase()}</span>
+                          </div>
+                        </a>
+                      </li>
+                    ))
+                  }
+                </ul>
+              </div>
               <button type="button" class="cartao-seta" id="cartao-next" aria-label="Próximo segmento">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
               </button>
@@ -1025,58 +1035,111 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
       }
       montarJornada();
 
-      // Cartão do hero: o cliente navega pelos segmentos com as setas; cada
-      // segmento tem seu tom, e tocar no cartão leva ao simulador já naquele
-      // segmento.
+      // Cartão do hero como porta giratória: os seis cartões ficam empilhados
+      // em 3D; o central fica de frente e os vizinhos giram em perspectiva,
+      // esmaecidos, dos dois lados. As setas (ou arrastar, ou clicar num
+      // vizinho) trazem outro segmento ao centro; tocar no central leva ao
+      // simulador já naquele segmento.
       function montarCartao() {
-        const cartao = document.getElementById('cartao') as HTMLAnchorElement | null;
-        const elV = document.getElementById('cartao-valor');
-        const elS = document.getElementById('cartao-seg');
-        const fonte = document.getElementById('cartoes-dados');
+        const pista = document.getElementById('cartao-pista');
         const prev = document.getElementById('cartao-prev');
         const next = document.getElementById('cartao-next');
-        if (!cartao || !elV || !elS || !fonte) return;
+        const carrossel = document.getElementById('cartao-carrossel');
+        const fonte = document.getElementById('cartoes-dados');
+        if (!pista) return;
+        const slots = Array.from(pista.querySelectorAll<HTMLElement>('.cartao-slot'));
+        if (!slots.length) return;
         let lista: Cartao[] = [];
         try {
-          lista = JSON.parse(fonte.textContent || '[]');
+          lista = JSON.parse(fonte?.textContent || '[]');
         } catch {
-          return;
+          lista = [];
         }
-        if (!lista.length) return;
-        let i = Math.max(0, lista.findIndex((c) => c.seg === segAtual) );
-        if (i < 0) i = 0;
+        const N = slots.length;
+        let ativo = Math.max(0, lista.findIndex((c) => c.seg === segAtual));
+        if (ativo < 0) ativo = 0;
 
-        const bemEl = document.getElementById('cartao-bem');
-        const aplicar = (dir: number) => {
-          const c = lista[i];
-          cartao.style.setProperty('--c1', c.c1);
-          cartao.style.setProperty('--c2', c.c2);
-          cartao.setAttribute('aria-label', `Simular ${c.nome}`);
-          const trocar = () => {
-            elV.textContent = c.valor;
-            elS.textContent = c.nome.toUpperCase();
-            if (bemEl && c.bem) bemEl.innerHTML = c.bem;
-          };
-          if (motionOk && dir !== 0) {
-            gsap.fromTo(
-              [elV, elS],
-              { autoAlpha: 0, x: dir * 18 },
-              { autoAlpha: 1, x: 0, duration: 0.4, ease: 'power2.out', onStart: trocar },
-            );
-          } else {
-            trocar();
-          }
+        // Geometria de cada anel da "porta": deslocamento (em % da largura do
+        // cartão), profundidade, giro, escala e opacidade por distância.
+        const aneis = [
+          { disp: 0, z: 0, ry: 0, sc: 1, op: 1, zi: 30 },
+          { disp: 54, z: -120, ry: 40, sc: 0.82, op: 0.5, zi: 20 },
+          { disp: 86, z: -280, ry: 48, sc: 0.62, op: 0.16, zi: 10 },
+        ];
+        const oculto = { disp: 100, z: -340, ry: 50, sc: 0.5, op: 0, zi: 0 };
+
+        const pintar = () => {
+          slots.forEach((slot, i) => {
+            let off = i - ativo;
+            if (off > N / 2) off -= N;
+            if (off < -N / 2) off += N;
+            const dist = Math.abs(off);
+            const dir = Math.sign(off) || 1;
+            const a = aneis[dist] ?? oculto;
+            const visivel = dist < aneis.length;
+            slot.style.transform = `translateX(calc(-50% + ${dir * a.disp * (dist === 0 ? 0 : 1)}%)) translateZ(${a.z}px) rotateY(${-dir * a.ry}deg) scale(${a.sc})`;
+            slot.style.opacity = String(a.op);
+            slot.style.zIndex = String(a.zi);
+            slot.style.pointerEvents = visivel ? 'auto' : 'none';
+            slot.classList.toggle('is-active', dist === 0);
+            const card = slot.querySelector('.cartao');
+            card?.setAttribute('tabindex', dist === 0 ? '0' : '-1');
+            card?.setAttribute('aria-hidden', dist === 0 ? 'false' : 'true');
+          });
+          segAtual = lista[ativo]?.seg ?? segAtual;
         };
+
         const ir = (passo: number) => {
-          i = (i + passo + lista.length) % lista.length;
-          segAtual = lista[i].seg;
-          aplicar(passo);
+          ativo = (ativo + passo + N) % N;
+          pintar();
         };
         prev?.addEventListener('click', () => ir(-1));
         next?.addEventListener('click', () => ir(1));
-        // tocar no cartão seleciona o segmento no simulador antes de rolar
-        cartao.addEventListener('click', () => escolherSegmento(lista[i].seg));
-        aplicar(0);
+
+        let arrastou = false;
+        slots.forEach((slot, i) => {
+          const card = slot.querySelector<HTMLAnchorElement>('.cartao');
+          card?.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (arrastou) { arrastou = false; return; }
+            if (i === ativo) {
+              // o central leva ao simulador, já com o segmento selecionado
+              escolherSegmento(lista[i]?.seg ?? 'motos');
+              if (lenis) lenis.scrollTo('#contato', { offset: -72 });
+              else document.getElementById('contato')?.scrollIntoView({ behavior: motionOk ? 'smooth' : 'auto' });
+            } else {
+              // um vizinho gira para o centro
+              ativo = i;
+              pintar();
+            }
+          });
+        });
+
+        // Arrastar no toque/mouse gira a porta
+        let x0: number | null = null;
+        carrossel?.addEventListener('pointerdown', (e) => {
+          x0 = e.clientX;
+          arrastou = false;
+        });
+        carrossel?.addEventListener('pointerup', (e) => {
+          if (x0 === null) return;
+          const dx = e.clientX - x0;
+          x0 = null;
+          if (Math.abs(dx) > 40) {
+            arrastou = true;
+            ir(dx < 0 ? 1 : -1);
+          }
+        });
+
+        // Setas do teclado quando o carrossel está em foco
+        carrossel?.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowLeft') { e.preventDefault(); ir(-1); }
+          if (e.key === 'ArrowRight') { e.preventDefault(); ir(1); }
+        });
+
+        pintar();
+        // primeira pintura sem transição; depois liga a animação da porta
+        requestAnimationFrame(() => pista.classList.add('pronto'));
       }
       montarCartao();
 
@@ -1448,6 +1511,9 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     .geo-viaja line {
       animation: none;
     }
+    .cartao-slot {
+      transition: opacity 0.2s ease;
+    }
     .geo-viaja {
       display: none;
     }
@@ -1795,15 +1861,54 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.6rem;
+    gap: 0.4rem;
+    width: 100%;
+  }
+  /* Carrossel "porta giratória": o cartão central de frente, os vizinhos
+     girados em perspectiva e esmaecidos dos dois lados. */
+  .cartao-carrossel {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+    height: calc(clamp(16rem, 23vw, 21rem) / 1.586);
+    perspective: 1500px;
+  }
+  .cartao-pista {
+    position: absolute;
+    inset: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    transform-style: preserve-3d;
+  }
+  .cartao-slot {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: clamp(16rem, 23vw, 21rem);
+    transform-origin: center center;
+    transform: translateX(-50%);
+    transition: transform 0.62s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+  }
+  .cartao-pista:not(.pronto) .cartao-slot {
+    transition: none;
+  }
+  /* O brilho que cruza só corre no cartão em foco, sem seis animações juntas */
+  .cartao-slot:not(.is-active) .cartao-brilho {
+    display: none;
   }
   .cartao-seta {
     flex: none;
+    position: relative;
+    z-index: 40;
     width: 2.6rem;
     height: 2.6rem;
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.22);
-    background: transparent;
+    background: rgba(1, 17, 47, 0.45);
+    backdrop-filter: blur(2px);
     color: var(--branco);
     cursor: pointer;
     display: grid;
@@ -1826,7 +1931,7 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
   /* O cartão: sóbrio, fino, tom próprio por segmento (var --c1/--c2) */
   .cartao {
     position: relative;
-    width: clamp(18rem, 27vw, 23rem);
+    width: 100%;
     aspect-ratio: 1.586;
     border-radius: 1rem;
     padding: 1.4rem 1.5rem;
@@ -1841,11 +1946,9 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     overflow: hidden;
     display: grid;
     grid-template-rows: auto 1fr auto;
-    transform: rotate(-2deg);
-    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease, background 0.6s ease;
+    transition: box-shadow 0.4s ease, background 0.6s ease;
   }
-  .cartao:hover {
-    transform: rotate(0deg) translateY(-5px);
+  .cartao-slot.is-active .cartao:hover {
     box-shadow: 0 34px 64px -28px rgba(1, 10, 30, 0.95), inset 0 0 0 1px rgba(255, 255, 255, 0.12);
   }
   .cartao-brilho {
@@ -3454,11 +3557,13 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
       grid-template-columns: 1fr;
     }
     .cartao-palco {
-      gap: 0.4rem;
+      gap: 0.2rem;
     }
-    .cartao {
-      width: min(68vw, 20rem);
-      transform: rotate(-2deg);
+    .cartao-carrossel {
+      height: calc(min(70vw, 19rem) / 1.586);
+    }
+    .cartao-slot {
+      width: min(70vw, 19rem);
     }
     .cartao-seta {
       width: 2.2rem;
