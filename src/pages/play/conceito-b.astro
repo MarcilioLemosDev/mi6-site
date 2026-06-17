@@ -205,9 +205,19 @@ const bens: Record<string, string> = {
 const cartoes = segmentos.map((s) => {
   const g = dados.grupos.find((x) => x.segmento === s.id && x.status === 'ativo');
   const [c1, c2] = temas[s.id] ?? ['#012169', '#01112f'];
+  // O cartão materializa o bem: "Sua moto", "Seu imóvel". Posse por segmento.
+  const posses: Record<string, string> = {
+    carros: 'Seu carro',
+    pesados: 'Seu caminhão',
+    motos: 'Sua moto',
+    imoveis: 'Seu imóvel',
+    servicos: 'Seu serviço',
+    eletro: 'Seu eletro',
+  };
   return {
     seg: s.id,
     nome: s.nome.replace('Consórcio de ', ''),
+    posse: posses[s.id] ?? 'Seu bem',
     valor: g
       ? `R$ ${g.credito_min.toLocaleString('pt-BR')} a ${g.credito_max.toLocaleString('pt-BR')}`
       : 'Em breve',
@@ -305,14 +315,13 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
                           <svg class="cartao-bem" viewBox="0 0 64 64" aria-hidden="true" set:html={c.bem} />
                           <div class="cartao-topo">
                             <img class="cartao-logo" src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
-                            <span class="cartao-chip" aria-hidden="true" />
+                            <span class="cartao-barras" aria-hidden="true"><i /><i /><i /></span>
                           </div>
-                          <p class="cartao-rotulo">Carta de Crédito</p>
-                          <p class="cartao-valor">{c.valor}</p>
-                          <div class="cartao-rodape">
-                            <span class="cartao-tag">Poder de compra à vista</span>
-                            <span class="cartao-seg">{c.nome.toUpperCase()}</span>
+                          <div class="cartao-corpo">
+                            <p class="cartao-posse">{c.ativo ? `${c.posse} de` : c.posse}</p>
+                            <p class="cartao-valor">{c.valor}</p>
                           </div>
+                          <p class="cartao-legenda">Ao ser contemplado, você paga à vista com a carta de crédito.</p>
                         </a>
                       </li>
                     ))
@@ -994,7 +1003,7 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
         }
       });
 
-      type Cartao = { seg: string; nome: string; valor: string; ativo: boolean; c1: string; c2: string; bem: string };
+      type Cartao = { seg: string; nome: string; posse: string; valor: string; ativo: boolean; c1: string; c2: string; bem: string };
 
       // Jornada: a estação de partida escolhe o segmento; a estação final (a
       // carta de crédito) assume a cor, a faixa e o nome do segmento, e leva
@@ -1995,59 +2004,61 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     height: 1.35rem;
     width: auto;
   }
-  /* Chip fino e discreto, sem brilho caricato */
-  .cartao-chip {
-    width: 2rem;
-    height: 1.5rem;
-    border-radius: 0.28rem;
-    background: linear-gradient(135deg, rgba(220, 210, 180, 0.85), rgba(150, 140, 110, 0.7));
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
-    position: relative;
+  /* No lugar do chip, as três barras da marca MI6, em branco, com um pulso
+     discreto que percorre as barras só no cartão em foco. */
+  .cartao-barras {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.2rem;
+    height: 1.4rem;
   }
-  .cartao-chip::before {
-    content: '';
-    position: absolute;
-    inset: 30% 18%;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+  .cartao-barras i {
+    display: block;
+    width: 0.26rem;
+    background: var(--branco);
     border-radius: 1px;
+    transform: skewX(-16deg);
+    opacity: 0.85;
   }
-  .cartao-rotulo {
+  .cartao-barras i:nth-child(1) { height: 58%; }
+  .cartao-barras i:nth-child(2) { height: 78%; }
+  .cartao-barras i:nth-child(3) { height: 100%; }
+  @media (prefers-reduced-motion: no-preference) {
+    .cartao-slot.is-active .cartao-barras i {
+      animation: barraPulso 2.6s ease-in-out infinite;
+    }
+    .cartao-slot.is-active .cartao-barras i:nth-child(2) { animation-delay: 0.18s; }
+    .cartao-slot.is-active .cartao-barras i:nth-child(3) { animation-delay: 0.36s; }
+  }
+  @keyframes barraPulso {
+    0%, 100% { opacity: 0.32; }
+    50% { opacity: 1; }
+  }
+  /* Manchete do cartão: posse + valor numa só unidade tipográfica em serifa */
+  .cartao-corpo {
     align-self: end;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.6);
-    margin: 0;
+  }
+  .cartao-posse {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.82);
+    margin: 0 0 0.12rem;
   }
   .cartao-valor {
     font-family: 'Instrument Serif', Georgia, serif;
     font-size: clamp(1.7rem, 3.2vw, 2.3rem);
     line-height: 1;
-    margin: 0.15rem 0 0;
+    margin: 0;
     font-variant-numeric: tabular-nums;
   }
-  .cartao-rodape {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-top: 0.6rem;
-  }
-  .cartao-tag {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.92);
-  }
-  .cartao-seg {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.66rem;
-    letter-spacing: 0.18em;
-    color: var(--branco);
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    border-radius: 999px;
-    padding: 0.2rem 0.7rem;
-    white-space: nowrap;
+  .cartao-legenda {
+    margin: 0.7rem 0 0;
+    font-size: 0.64rem;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.58);
+    max-width: 15rem;
   }
   .cartao-dica {
     text-align: center;
