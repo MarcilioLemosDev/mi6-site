@@ -315,7 +315,7 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
                           <svg class="cartao-bem" viewBox="0 0 64 64" aria-hidden="true" set:html={c.bem} />
                           <div class="cartao-topo">
                             <img class="cartao-logo" src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
-                            <span class="cartao-barras" aria-hidden="true"><i /><i /><i /></span>
+                            <span class="cartao-spin" aria-hidden="true" />
                           </div>
                           <div class="cartao-corpo">
                             <p class="cartao-posse">{c.ativo ? `${c.posse} de` : c.posse}</p>
@@ -2004,35 +2004,23 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     height: 1.35rem;
     width: auto;
   }
-  /* No lugar do chip, as três barras da marca MI6, em branco, com um pulso
-     discreto que percorre as barras só no cartão em foco. */
-  .cartao-barras {
-    display: flex;
-    align-items: flex-end;
-    gap: 0.2rem;
-    height: 1.4rem;
+  /* No lugar do chip, um anel de loading que gira em looping no cartão em
+     foco, no vermelho da marca sobre trilho branco translúcido. */
+  .cartao-spin {
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.22);
+    border-top-color: var(--vermelho);
+    border-right-color: var(--vermelho);
   }
-  .cartao-barras i {
-    display: block;
-    width: 0.26rem;
-    background: var(--branco);
-    border-radius: 1px;
-    transform: skewX(-16deg);
-    opacity: 0.85;
-  }
-  .cartao-barras i:nth-child(1) { height: 58%; }
-  .cartao-barras i:nth-child(2) { height: 78%; }
-  .cartao-barras i:nth-child(3) { height: 100%; }
   @media (prefers-reduced-motion: no-preference) {
-    .cartao-slot.is-active .cartao-barras i {
-      animation: barraPulso 2.6s ease-in-out infinite;
+    .cartao-slot.is-active .cartao-spin {
+      animation: cartaoGira 0.9s linear infinite;
     }
-    .cartao-slot.is-active .cartao-barras i:nth-child(2) { animation-delay: 0.18s; }
-    .cartao-slot.is-active .cartao-barras i:nth-child(3) { animation-delay: 0.36s; }
   }
-  @keyframes barraPulso {
-    0%, 100% { opacity: 0.32; }
-    50% { opacity: 1; }
+  @keyframes cartaoGira {
+    to { transform: rotate(360deg); }
   }
   /* Manchete do cartão: posse + valor numa só unidade tipográfica em serifa */
   .cartao-corpo {
