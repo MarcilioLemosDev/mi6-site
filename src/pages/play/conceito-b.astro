@@ -618,27 +618,36 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
       </p>
     </footer>
 
-    <nav class="dock" aria-label="Menu flutuante">
-      <button type="button" data-folha="funciona">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5 12 4l8 3.5v9L12 20l-8-3.5z"/><path d="M4 7.5 12 11l8-3.5"/><path d="M12 11v9"/></svg>
-        <span>Consórcio</span>
+    <nav class="dock" id="dock" aria-label="Menu flutuante">
+      <button type="button" class="dock-toggle" id="dock-toggle" aria-expanded="false" aria-controls="dock-itens" aria-label="Abrir menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <span class="dock-toggle-label">Menu</span>
+        <span class="dock-mao" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M9 12.5V6a1.6 1.6 0 0 1 3.2 0v4.6m0-1.5a1.6 1.6 0 0 1 3.2 0v1.9m0-1.3a1.6 1.6 0 0 1 3.2 0v3.6a5.6 5.6 0 0 1-5.6 5.6h-1.6a4.6 4.6 0 0 1-3.5-1.6l-3-3.6a1.5 1.5 0 0 1 2.2-2L9 14z"/></svg>
+        </span>
       </button>
-      <button type="button" data-folha="contemplacao">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v4.5a4 4 0 0 1-8 0z"/><path d="M16 5h2.5v1.5A2.5 2.5 0 0 1 16 9"/><path d="M8 5H5.5v1.5A2.5 2.5 0 0 0 8 9"/><path d="M10 13h4l-.5 3h-3z"/><path d="M9 20h6"/></svg>
-        <span>Contemplação</span>
-      </button>
-      <a class="dock-cta" href="#contato" aria-label="Simular agora">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18 9 13l3 3 7-7"/><path d="M14 9h5v5"/></svg>
-        <span>Simular</span>
-      </a>
-      <button type="button" data-folha="duvidas">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.3 2.4c-.6.2-1 .7-1 1.4v.4"/><circle cx="11.85" cy="16.5" r="0.5" fill="currentColor" stroke="none"/></svg>
-        <span>Dúvidas</span>
-      </button>
-      <button type="button" data-folha="cliente">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-3.6 3.7-5.5 7-5.5s6 1.9 7 5.5"/></svg>
-        <span>Cliente</span>
-      </button>
+      <div class="dock-itens" id="dock-itens">
+        <button type="button" data-folha="funciona">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5 12 4l8 3.5v9L12 20l-8-3.5z"/><path d="M4 7.5 12 11l8-3.5"/><path d="M12 11v9"/></svg>
+          <span>Consórcio</span>
+        </button>
+        <button type="button" data-folha="contemplacao">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v4.5a4 4 0 0 1-8 0z"/><path d="M16 5h2.5v1.5A2.5 2.5 0 0 1 16 9"/><path d="M8 5H5.5v1.5A2.5 2.5 0 0 0 8 9"/><path d="M10 13h4l-.5 3h-3z"/><path d="M9 20h6"/></svg>
+          <span>Contemplação</span>
+        </button>
+        <a class="dock-cta" href="#contato" aria-label="Simular agora">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18 9 13l3 3 7-7"/><path d="M14 9h5v5"/></svg>
+          <span>Simular</span>
+        </a>
+        <button type="button" data-folha="duvidas">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.3 2.4c-.6.2-1 .7-1 1.4v.4"/><circle cx="11.85" cy="16.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+          <span>Dúvidas</span>
+        </button>
+        <button type="button" data-folha="cliente">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-3.6 3.7-5.5 7-5.5s6 1.9 7 5.5"/></svg>
+          <span>Cliente</span>
+        </button>
+      </div>
     </nav>
 
     <div class="folha-fundo" id="folha-fundo" hidden></div>
@@ -899,6 +908,16 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
           encerrar();
         }
       }
+      // Dock recolhível: guardado como "Menu" e expandido no clique.
+      const dock = document.getElementById('dock');
+      const dockToggle = document.getElementById('dock-toggle');
+      dockToggle?.addEventListener('click', () => {
+        dock?.classList.add('dock-usado'); // a dica para de aparecer após o 1o uso
+        const aberto = dock?.classList.toggle('aberto') ?? false;
+        dockToggle.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+        dockToggle.setAttribute('aria-label', aberto ? 'Fechar menu' : 'Abrir menu');
+      });
+
       document.querySelectorAll<HTMLElement>('[data-folha]').forEach((el) => {
         el.addEventListener('click', () => abrirFolha(el.dataset.folha ?? ''));
       });
@@ -3349,25 +3368,105 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
 
   /* Dock flutuante: a navegação mora na zona do polegar. Colunas de largura
      igual (flex-basis 0) dão ritmo regular, independente do tamanho da palavra. */
+  /* Dock recolhível: por padrão guardado, só "Menu" com três pauzinhos, bem
+     translúcido; ao clicar, expande para a barra completa. */
   .dock {
     position: fixed;
     left: 50%;
     bottom: 1.1rem;
     transform: translateX(-50%);
     z-index: 70;
-    width: min(35rem, calc(100% - 2rem));
+    max-width: calc(100% - 2rem);
     display: flex;
     align-items: stretch;
-    background: rgba(1, 16, 47, 0.62);
+    background: rgba(1, 16, 47, 0.42);
     backdrop-filter: blur(18px) saturate(120%);
     -webkit-backdrop-filter: blur(18px) saturate(120%);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 999px;
     padding: 0.4rem 0.45rem;
     box-shadow: 0 24px 60px -20px rgba(1, 10, 30, 0.7);
+    transition: background 0.3s ease;
   }
-  .dock > button,
-  .dock > a {
+  .dock.aberto {
+    background: rgba(1, 16, 47, 0.62);
+  }
+  .dock-toggle {
+    position: relative;
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    color: var(--gelo);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 0.65rem 0.85rem;
+    border-radius: 999px;
+    transition: color 0.2s ease, background 0.2s ease, padding 0.3s ease;
+  }
+  .dock-toggle:hover {
+    color: var(--branco);
+    background: rgba(255, 255, 255, 0.09);
+  }
+  .dock.aberto .dock-toggle {
+    padding: 0.55rem 0.55rem;
+  }
+  .dock.aberto .dock-toggle-label {
+    display: none;
+  }
+  /* Autoexplicação discreta: uma mãozinha dá um toque suave em looping no
+     "Menu", ensinando que é só clicar; some quando abre ou após o 1o uso. */
+  .dock-mao {
+    position: absolute;
+    right: 0.15rem;
+    bottom: -0.35rem;
+    width: 0.95rem;
+    height: 0.95rem;
+    color: var(--branco);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .dock-mao svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+  }
+  .dock.aberto .dock-mao,
+  .dock.dock-usado .dock-mao {
+    display: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .dock:not(.aberto):not(.dock-usado) .dock-mao {
+      animation: dockTap 3.2s ease-in-out infinite;
+    }
+  }
+  @keyframes dockTap {
+    0%, 58%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+    70% { transform: translateY(2px) scale(0.84); opacity: 1; }
+    82% { transform: translateY(0) scale(1); opacity: 0.75; }
+  }
+  .dock-itens {
+    display: flex;
+    align-items: stretch;
+    min-width: 0;
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-width 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+  }
+  .dock.aberto .dock-itens {
+    max-width: 32rem;
+    opacity: 1;
+  }
+  .dock-itens > button,
+  .dock-itens > a {
     flex: 1 1 0;
     min-width: 0;
     display: flex;
@@ -3385,12 +3484,12 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     letter-spacing: 0.1em;
     text-transform: uppercase;
     white-space: nowrap;
-    padding: 0.55rem 0.2rem;
+    padding: 0.55rem 0.7rem;
     border-radius: 999px;
     transition: color 0.2s ease, background 0.2s ease;
   }
-  .dock > button:hover,
-  .dock > a:not(.dock-cta):hover {
+  .dock-itens > button:hover,
+  .dock-itens > a:not(.dock-cta):hover {
     color: var(--branco);
     background: rgba(255, 255, 255, 0.09);
   }
@@ -3405,11 +3504,11 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
   }
   /* Simular: mesma coluna dos demais, destacado por cor, sem saltar para fora;
      assim o dock não cria um eixo central que o site assimétrico não tem. */
-  .dock > .dock-cta {
+  .dock-itens > .dock-cta {
     background: var(--vermelho);
     color: var(--branco);
   }
-  .dock > .dock-cta:hover {
+  .dock-itens > .dock-cta:hover {
     background: #e21236;
     color: var(--branco);
   }
@@ -3754,11 +3853,14 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     .dock {
       bottom: 0.75rem;
       padding: 0.35rem 0.35rem;
-      width: calc(100% - 0.9rem);
+      max-width: calc(100% - 0.9rem);
     }
-    .dock > button,
-    .dock > a {
-      padding: 0.5rem 0.1rem;
+    .dock.aberto .dock-itens {
+      max-width: calc(100vw - 4rem);
+    }
+    .dock-itens > button,
+    .dock-itens > a {
+      padding: 0.5rem 0.35rem;
       gap: 0.28rem;
       font-size: 0.5rem;
       letter-spacing: 0.04em;
