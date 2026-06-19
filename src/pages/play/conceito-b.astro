@@ -187,23 +187,6 @@ const temas: Record<string, [string, string]> = {
   servicos: ['#1a2740', '#080d18'],
   eletro: ['#07265a', '#020a18'],
 };
-// Silhueta preenchida do bem de cada segmento, em perfil (viewBox 0 0 64 64):
-// só o formato, sem cor. Serve de marca d'água no cartão e de ícone nos
-// segmentos. Passaporte para serviços. Sóbrio, sem nada infantil.
-const bens: Record<string, string> = {
-  carros:
-    '<path d="M2 43 L2 41 Q2 38 6 37 L12 36 L16 31 Q17 30 19 30 L34 30 Q37 30 39 31 L49 37 Q60 38 61 42 L61 43 Z"/><circle cx="17" cy="44" r="6"/><circle cx="47" cy="44" r="6"/>',
-  pesados:
-    '<path d="M2 40 L2 30 L9 30 L12 24 L19 24 L19 40 Z"/><path d="M21 40 L21 24 L25 20 L58 20 L58 40 Z"/><circle cx="10" cy="42" r="5"/><circle cx="44" cy="42" r="5"/><circle cx="53" cy="42" r="5"/>',
-  motos:
-    '<circle cx="14" cy="45" r="8.5"/><circle cx="50" cy="45" r="8.5"/><path d="M12 44 L17 33 Q18 30 22 30 L26 31 L25 28 L32 28 L34 31 L42 31 L47 25 L52 26 L52 33 L49 37 L46 33 L34 34 L22 34 L18 37 Z"/>',
-  imoveis:
-    '<path fill-rule="evenodd" d="M2 52 L2 34 L12 34 L12 28 L21 28 L21 23 L19 23 L32 16 L45 23 L43 23 L43 28 L52 28 L52 34 L62 34 L62 52 Z M29 43 H35 V52 H29 Z M5 39 H10 V46 H5 Z M54 39 H59 V46 H54 Z M25 31 H27.5 V41 H25 Z M30.5 31 H33.5 V41 H30.5 Z M36.5 31 H39 V41 H36.5 Z"/>',
-  servicos:
-    '<path fill-rule="evenodd" d="M14 11a3 3 0 0 1 3-3h27a3 3 0 0 1 3 3v42a3 3 0 0 1-3 3H17a3 3 0 0 1-3-3zm19 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18zm0 3a6 6 0 1 1 0 12 6 6 0 1 1 0-12zM24 44h18v2.6H24zM24 49h12v2.4H24z"/>',
-  eletro:
-    '<path fill-rule="evenodd" d="M15 12 H49 V38 H56 L60 45 H4 L8 38 H15 Z M18 15 H46 V35 H18 Z"/>',
-};
 const cartoes = segmentos.map((s) => {
   const g = dados.grupos.find((x) => x.segmento === s.id && x.status === 'ativo');
   const [c1, c2] = temas[s.id] ?? ['#012169', '#01112f'];
@@ -226,7 +209,6 @@ const cartoes = segmentos.map((s) => {
     ativo: !!g,
     c1,
     c2,
-    bem: bens[s.id] ?? '',
   };
 });
 const idxInicial = Math.max(0, cartoes.findIndex((c) => c.ativo));
@@ -314,16 +296,18 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
                       <li class="cartao-slot" data-i={i}>
                         <a class="cartao" href="#contato" style={`--c1:${c.c1};--c2:${c.c2}`} aria-label={`Simular ${c.nome}`}>
                           <span class="cartao-brilho" aria-hidden="true"></span>
-                          <svg class="cartao-bem" viewBox="0 0 64 64" aria-hidden="true" set:html={c.bem} />
                           <div class="cartao-topo">
                             <img class="cartao-logo" src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
-                            <span class="cartao-spin" aria-hidden="true" />
+                            <svg class="cartao-lampada" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 17.5h5" /><path d="M10.2 20.5h3.6" /><path d="M12 3.5a6 6 0 0 0-3.8 10.6c.8.7 1.1 1.3 1.2 2.4h5.2c.1-1.1.4-1.7 1.2-2.4A6 6 0 0 0 12 3.5z" /><path d="M10.2 9.6l1.8 2 1.8-2" /></svg>
                           </div>
                           <div class="cartao-corpo">
                             <p class="cartao-posse">{c.ativo ? `${c.posse} de` : c.posse}</p>
                             <p class="cartao-valor">{c.valor}</p>
                           </div>
-                          <p class="cartao-legenda">Ao ser contemplado, você compra à vista com a carta de crédito.</p>
+                          <div class="cartao-rodape">
+                            <p class="cartao-legenda">Ao ser contemplado, você compra à vista com a carta de crédito.</p>
+                            <span class="cartao-seg">{c.nome.toUpperCase()}</span>
+                          </div>
                         </a>
                       </li>
                     ))
@@ -390,11 +374,17 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
             <span class="estacao-marco" aria-hidden="true"></span>
             <span class="estacao-quem">Você escolhe</span>
             <h3>O seu caminho</h3>
+            <div class="caminho-lente" id="caminho-lente" aria-hidden="true">
+              {
+                segmentos.map((s, i) => (
+                  <img src={s.img} alt="" loading="lazy" class:list={['caminho-foto', { ativo: s.id === cartaoInicial.seg }]} data-seg={s.id} />
+                ))
+              }
+            </div>
             <div class="estacao-segs" id="jornada-segs" role="group" aria-label="Segmentos">
               {
                 segmentos.map((s) => (
                   <button type="button" data-segmento={s.id} aria-pressed={s.id === cartaoInicial.seg ? 'true' : 'false'}>
-                    <svg class="seg-icone" viewBox="0 0 64 64" aria-hidden="true" set:html={bens[s.id] ?? ''} />
                     <span>{s.nome.replace('Consórcio de ', '')}</span>
                   </button>
                 ))
@@ -1077,7 +1067,7 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
         if (motionOk) gsap.from(sucesso, { autoAlpha: 0, y: 16, duration: 0.5, ease: 'power3.out' });
       });
 
-      type Cartao = { seg: string; nome: string; posse: string; valor: string; ativo: boolean; c1: string; c2: string; bem: string };
+      type Cartao = { seg: string; nome: string; posse: string; valor: string; ativo: boolean; c1: string; c2: string };
 
       // Jornada: a estação de partida escolhe o segmento; a estação final (a
       // carta de crédito) assume a cor, a faixa e o nome do segmento, e leva
@@ -1088,6 +1078,7 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
         const elV = document.getElementById('jornada-valor');
         const elS = document.getElementById('jornada-seg');
         const fonte = document.getElementById('cartoes-dados');
+        const lente = document.getElementById('caminho-lente');
         if (!segs || !cartao || !elV || !elS || !fonte) return;
         let lista: Cartao[] = [];
         try {
@@ -1095,6 +1086,8 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
         } catch {
           return;
         }
+        const fotos = lente ? Array.from(lente.querySelectorAll<HTMLElement>('.caminho-foto')) : [];
+        const ordem = lista.map((c) => c.seg);
         const aplicar = (seg: string) => {
           const c = lista.find((x) => x.seg === seg);
           if (!c) return;
@@ -1106,15 +1099,46 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
           segs.querySelectorAll('button').forEach((b) =>
             b.setAttribute('aria-pressed', (b as HTMLElement).dataset.segmento === seg ? 'true' : 'false'),
           );
+          fotos.forEach((f) => f.classList.toggle('ativo', f.dataset.seg === seg));
+        };
+
+        // Carrossel automático: a lente passa pelos segmentos (foto + chip +
+        // carta final em sincronia) até o usuário escolher um.
+        let i = Math.max(0, ordem.indexOf(segAtual));
+        let timer: number | undefined;
+        let escolheu = false;
+        const avancar = () => {
+          i = (i + 1) % ordem.length;
+          aplicar(ordem[i]);
+        };
+        const iniciar = () => {
+          if (motionOk && !escolheu && timer === undefined && ordem.length > 1) {
+            timer = window.setInterval(avancar, 3400);
+          }
+        };
+        const parar = () => {
+          if (timer !== undefined) {
+            clearInterval(timer);
+            timer = undefined;
+          }
         };
         segs.addEventListener('click', (e) => {
           const b = (e.target as HTMLElement).closest('button');
-          if (b?.dataset.segmento) aplicar(b.dataset.segmento);
+          if (b?.dataset.segmento) {
+            escolheu = true;
+            parar();
+            i = ordem.indexOf(b.dataset.segmento);
+            aplicar(b.dataset.segmento);
+          }
         });
         cartao.addEventListener('click', () => {
           const ativo = segs.querySelector('button[aria-pressed="true"]') as HTMLElement | null;
           escolherSegmento(ativo?.dataset.segmento ?? 'motos');
         });
+        const estacao = lente?.closest('.estacao');
+        estacao?.addEventListener('mouseenter', parar);
+        estacao?.addEventListener('mouseleave', iniciar);
+        iniciar();
       }
       montarJornada();
 
@@ -2037,6 +2061,7 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     overflow: hidden;
     display: grid;
     grid-template-rows: auto 1fr auto;
+    row-gap: 0.55rem;
     transition: box-shadow 0.4s ease, background 0.6s ease;
   }
   .cartao-slot.is-active .cartao:hover {
@@ -2061,19 +2086,6 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     0%, 100% { transform: translateX(-60%) rotate(18deg); }
     55% { transform: translateX(420%) rotate(18deg); }
   }
-  /* Ilustração do bem: silhueta preenchida, marca d'água branca discreta no
-     canto, sobre o vidro do cartão. */
-  .cartao-bem {
-    position: absolute;
-    right: 0.6rem;
-    bottom: 0.5rem;
-    width: 9.5rem;
-    height: 9.5rem;
-    fill: #fff;
-    stroke: none;
-    opacity: 0.26;
-    pointer-events: none;
-  }
   .cartao-topo {
     display: flex;
     align-items: center;
@@ -2084,23 +2096,39 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     height: 1.35rem;
     width: auto;
   }
-  /* No lugar do chip, um anel de loading que gira em looping no cartão em
-     foco, no vermelho da marca sobre trilho branco translúcido. */
-  .cartao-spin {
-    width: 1.35rem;
-    height: 1.35rem;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.22);
-    border-top-color: var(--vermelho);
-    border-right-color: var(--vermelho);
+  /* No lugar do chip, uma lâmpada (a boa ideia): no cartão em foco ela
+     "acende" como uma luz fluorescente piscando e firma o brilho puxando
+     para o vermelho da marca. */
+  .cartao-lampada {
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.5);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
   @media (prefers-reduced-motion: no-preference) {
-    .cartao-slot.is-active .cartao-spin {
-      animation: cartaoGira 0.9s linear infinite;
+    .cartao-slot.is-active .cartao-lampada {
+      animation: lampadaAcende 4.5s ease-in-out infinite;
     }
   }
-  @keyframes cartaoGira {
-    to { transform: rotate(360deg); }
+  @media (prefers-reduced-motion: reduce) {
+    .cartao-slot.is-active .cartao-lampada {
+      stroke: #ff5a6e;
+      filter: drop-shadow(0 0 4px rgba(200, 16, 46, 0.85));
+    }
+  }
+  @keyframes lampadaAcende {
+    0% { opacity: 0.35; stroke: rgba(255, 255, 255, 0.5); filter: none; }
+    4% { opacity: 1; }
+    7% { opacity: 0.4; }
+    10% { opacity: 1; }
+    13% { opacity: 0.55; }
+    18% { opacity: 1; stroke: #ff5a6e; filter: drop-shadow(0 0 5px rgba(200, 16, 46, 0.9)); }
+    88% { opacity: 1; stroke: #ff5a6e; filter: drop-shadow(0 0 6px rgba(200, 16, 46, 0.85)); }
+    93% { opacity: 0.82; }
+    100% { opacity: 1; stroke: #ff5a6e; filter: drop-shadow(0 0 5px rgba(200, 16, 46, 0.9)); }
   }
   /* Manchete do cartão: posse + valor em Archivo, moderna e legível sobre o
      wireframe e o vidro do conceito blueprint. */
@@ -2128,12 +2156,30 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
+  .cartao-rodape {
+    align-self: end;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.8rem;
+  }
   .cartao-legenda {
-    margin: 1rem 0 0;
+    margin: 0;
     font-size: 0.62rem;
     line-height: 1.5;
     color: rgba(255, 255, 255, 0.6);
-    max-width: 14rem;
+    max-width: 12.5rem;
+  }
+  .cartao-seg {
+    flex: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    color: var(--branco);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 999px;
+    padding: 0.2rem 0.6rem;
+    white-space: nowrap;
   }
   /* Instrução de navegação visual: miniatura do carrossel com um cursor que
      vira mãozinha e clica em looping, mostrando como navegar pelos cartões. */
@@ -2530,6 +2576,32 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     margin: 0;
     max-width: 16rem;
   }
+  /* Lente circular com as fotos reais dos segmentos, passando em carrossel,
+     como a imagem do home nas primeiras etapas. */
+  .caminho-lente {
+    position: relative;
+    width: clamp(8rem, 13vw, 10.5rem);
+    aspect-ratio: 1;
+    margin: 0.4rem auto 0.9rem;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--navy);
+    box-shadow: 0 18px 40px -22px rgba(1, 19, 58, 0.6), inset 0 0 0 1px rgba(1, 33, 105, 0.12);
+  }
+  .caminho-foto {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.04);
+    transition: opacity 0.8s ease, transform 6s ease;
+  }
+  .caminho-foto.ativo {
+    opacity: 1;
+    transform: scale(1);
+  }
   .estacao-segs {
     display: flex;
     flex-wrap: wrap;
@@ -2538,26 +2610,16 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     margin-top: 0.3rem;
   }
   .estacao-segs button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
     font: inherit;
     font-size: 0.78rem;
     font-weight: 600;
-    padding: 0.35rem 0.7rem 0.35rem 0.5rem;
+    padding: 0.35rem 0.8rem;
     border-radius: 999px;
     border: 1px solid rgba(1, 33, 105, 0.18);
     background: #fff;
     color: var(--navy);
     cursor: pointer;
     transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-  }
-  .seg-icone {
-    width: 1.2rem;
-    height: 1.2rem;
-    fill: currentColor;
-    stroke: none;
-    flex: none;
   }
   .estacao-segs button:hover {
     border-color: var(--navy);
