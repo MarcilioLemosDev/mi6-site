@@ -288,7 +288,7 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
               <span class="linha">transformar <em>sonhos</em></span>
               <span class="linha">em conquistas</span>
             </h1>
-            <p class="hero-frase" data-intro>Você está perto de realizar o seu projeto de vida</p>
+            <p class="hero-frase" data-intro>Dê agora o primeiro passo para a conquista dos seus sonhos</p>
             <div class="hero-acoes" data-intro>
               <a class="cta so-novo" href="#contato">Simule agora</a>
               <a class="cta so-cliente" href="https://mi6.evertecinc.com.br/autoatendimento">Área do Cliente</a>
@@ -1758,7 +1758,12 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     align-content: center;
     padding: 7.5rem 2.5rem 5rem;
     overflow: hidden;
-    background: radial-gradient(120% 90% at 50% 0%, rgba(2, 33, 105, 0.9), rgba(1, 19, 58, 1) 70%);
+    background:
+      repeating-linear-gradient(0deg, transparent 0 31px, rgba(130, 175, 255, 0.06) 31px 32px),
+      repeating-linear-gradient(90deg, transparent 0 31px, rgba(130, 175, 255, 0.06) 31px 32px),
+      repeating-linear-gradient(0deg, transparent 0 159px, rgba(130, 175, 255, 0.09) 159px 160px),
+      repeating-linear-gradient(90deg, transparent 0 159px, rgba(130, 175, 255, 0.09) 159px 160px),
+      radial-gradient(120% 90% at 50% 0%, rgba(2, 33, 105, 0.9), rgba(1, 19, 58, 1) 70%);
   }
   /* Marca viva, caderno de caligrafia: o logo menor ao centro e as guias,
      no ângulo do próprio talhe, prolongadas até fora da tela. Sem brilho. */
@@ -1969,7 +1974,8 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-  /* O cartão: sóbrio, fino, tom próprio por segmento (var --c1/--c2) */
+  /* O cartão, no conceito blueprint: vidro fosco com tinta translúcida do
+     segmento, deixando a grade técnica aparecer por trás. */
   .cartao {
     position: relative;
     width: 100%;
@@ -1979,18 +1985,20 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     color: var(--branco);
     text-decoration: none;
     background:
-      radial-gradient(120% 120% at 82% -10%, rgba(255, 255, 255, 0.1), transparent 55%),
-      linear-gradient(150deg, var(--c1, #012169), var(--c2, #01112f));
+      linear-gradient(150deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04)),
+      linear-gradient(150deg, color-mix(in srgb, var(--c1, #012169) 60%, transparent), color-mix(in srgb, var(--c2, #01112f) 38%, transparent));
+    backdrop-filter: blur(12px) saturate(135%);
+    -webkit-backdrop-filter: blur(12px) saturate(135%);
     box-shadow:
       0 26px 54px -30px rgba(1, 10, 30, 0.9),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+      inset 0 0 0 1px rgba(255, 255, 255, 0.28);
     overflow: hidden;
     display: grid;
     grid-template-rows: auto 1fr auto;
     transition: box-shadow 0.4s ease, background 0.6s ease;
   }
   .cartao-slot.is-active .cartao:hover {
-    box-shadow: 0 34px 64px -28px rgba(1, 10, 30, 0.95), inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+    box-shadow: 0 34px 64px -28px rgba(1, 10, 30, 0.95), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
   }
   .cartao-brilho {
     position: absolute;
@@ -2011,16 +2019,20 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     0%, 100% { transform: translateX(-60%) rotate(18deg); }
     55% { transform: translateX(420%) rotate(18deg); }
   }
-  /* Marca d'água do bem: silhueta preenchida, transparente, não rouba a atenção */
+  /* Ilustração do bem em wireframe (blueprint): linha técnica branca, maior
+     e mais presente, como um desenho de engenharia sobre o vidro. */
   .cartao-bem {
     position: absolute;
-    right: -0.5rem;
-    bottom: -0.6rem;
-    width: 10.5rem;
-    height: 10.5rem;
-    fill: #fff;
-    stroke: none;
-    opacity: 0.12;
+    right: -0.6rem;
+    bottom: -0.4rem;
+    width: 12rem;
+    height: 12rem;
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.5);
+    stroke-width: 0.9;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    opacity: 1;
     pointer-events: none;
   }
   .cartao-topo {
