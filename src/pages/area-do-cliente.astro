@@ -1,7 +1,7 @@
 ---
 import '@fontsource/instrument-serif';
 import '@fontsource/instrument-serif/400-italic.css';
-import '@fontsource-variable/manrope';
+import '@fontsource-variable/archivo';
 import '@fontsource/ibm-plex-mono';
 
 // Antessala da Área do Cliente: tela com a identidade da MI6 que apresenta o
@@ -10,9 +10,9 @@ import '@fontsource/ibm-plex-mono';
 // o login acontece do lado da Evertec.
 const LOGIN_EVERTEC = 'https://mi6.evertecinc.com.br/autoatendimento';
 const recursos = [
-  'Segunda via de boletos e pagamentos',
-  'Acompanhar a sua contemplação',
-  'Ofertar lances, inclusive o lance embutido',
+  'Ofertar lances, inclusive o embutido',
+  'Ampliar suas chances de contemplação',
+  'Pagar suas parcelas e tirar a segunda via',
   'Contratos, extrato e atualização de dados',
 ];
 ---
@@ -39,8 +39,9 @@ const recursos = [
         <p class="kicker">Área do Cliente</p>
         <h1>Bem-vindo de volta</h1>
         <p class="lead">
-          Sua conta MI6 está a um login de distância. Boletos, lances,
-          contemplação e seus contratos, tudo em um só lugar.
+          Na sua Área do Cliente você oferta lances, com opção de embutido,
+          amplia suas chances de contemplação, paga a parcela mês a mês e
+          muito mais.
         </p>
 
         <ul class="recursos">
@@ -56,18 +57,8 @@ const recursos = [
           Ir para a tela de login
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
         </a>
-
-        <p class="seguro">
-          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.4l6 2.2v4.5c0 4.2-2.6 7-6 8.4-3.4-1.4-6-4.2-6-8.4V4.6z" /><path d="M7.2 10.1l2 2 3.6-3.8" /></svg>
-          Você será direcionado ao ambiente seguro de autoatendimento da Evertec,
-          parceira de tecnologia da MI6, onde informa seu CPF e senha.
-        </p>
       </section>
 
-      <p class="ajuda">
-        Precisa de ajuda? SAC <a href="tel:08000005228">0800 000 5228</a> ·
-        Ouvidoria <a href="tel:08000005267">0800 000 5267</a>
-      </p>
       <a class="voltar" href="/play/conceito-b/">Voltar ao site</a>
     </main>
 
@@ -86,7 +77,7 @@ const recursos = [
     margin: 0;
     min-height: 100svh;
     color: var(--branco);
-    font-family: 'Manrope Variable', -apple-system, 'Segoe UI', Arial, sans-serif;
+    font-family: 'Archivo Variable', -apple-system, 'Segoe UI', Arial, sans-serif;
     line-height: 1.6;
     position: relative;
     overflow-x: hidden;
@@ -188,29 +179,6 @@ const recursos = [
   }
   .entrar:hover { background: #e21236; }
   .entrar:hover svg { transform: translateX(3px); }
-  .seguro {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-    margin: 1.1rem 0 0;
-    font-size: 0.78rem;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.6);
-  }
-  .seguro svg {
-    flex: none;
-    width: 1rem; height: 1rem; margin-top: 0.15rem;
-    fill: none; stroke: #6fe0a0; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
-  }
-  .ajuda {
-    margin: 0;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.74rem;
-    letter-spacing: 0.04em;
-    color: rgba(255, 255, 255, 0.55);
-    text-align: center;
-  }
-  .ajuda a, .voltar { color: var(--branco); }
   .voltar { font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); }
   .coord {
     position: fixed;
