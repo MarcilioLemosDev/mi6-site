@@ -1,68 +1,20 @@
 ---
-import '../styles/tokens.css';
+// Por ora, a entrada do site cai direto no conceito B (sem telas internas
+// de FASE 2). A e C seguem acessíveis pelas URLs diretas, sem link.
+const destino = '/play/conceito-b/';
 ---
 
 <!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>MI6 Consórcio Nacional, remodelagem em andamento</title>
+    <meta http-equiv="refresh" content={`0; url=${destino}`} />
+    <link rel="canonical" href={destino} />
+    <title>MI6 Consórcio Nacional</title>
+    <script is:inline>window.location.replace('/play/conceito-b/');</script>
   </head>
   <body>
-    <main>
-      <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="60" />
-      <h1>Remodelagem do site institucional</h1>
-      <p>
-        Ambiente de trabalho da FASE 2. Os protótipos de direção visual da
-        homepage ficam na área de exploração.
-      </p>
-      <a href="/play/">Ver protótipos da FASE 2</a>
-    </main>
+    <p>Redirecionando para o site, <a href={destino}>entrar agora</a>.</p>
   </body>
 </html>
-
-<style>
-  body {
-    margin: 0;
-    min-height: 100vh;
-    display: grid;
-    place-items: center;
-    background: var(--branco);
-    color: var(--cinza-950);
-    font-family: var(--fonte-sans);
-  }
-  main {
-    max-width: 36rem;
-    padding: 2rem;
-  }
-  img {
-    height: 3rem;
-    width: auto;
-  }
-  h1 {
-    font-family: var(--fonte-serif);
-    color: var(--azul);
-    font-size: 2rem;
-    line-height: 1.2;
-    margin: 2rem 0 0.75rem;
-  }
-  p {
-    color: var(--cinza-700);
-    line-height: 1.6;
-    margin: 0 0 2rem;
-  }
-  a {
-    display: inline-block;
-    background: var(--vermelho);
-    color: var(--branco);
-    text-decoration: none;
-    font-weight: 600;
-    padding: 0.75rem 1.5rem;
-  }
-  a:hover {
-    background: #a50d26;
-  }
-</style>
