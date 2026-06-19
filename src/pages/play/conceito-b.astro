@@ -1067,12 +1067,16 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
         const rotulo = btn?.textContent ?? '';
         if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
         try {
-          const r = await fetch(LEAD_ENDPOINT, {
+          // text/plain + no-cors: requisição "simples", sem preflight CORS, que
+          // o gatilho HTTP do Power Automate aceita direto do navegador. A
+          // resposta vem opaca; a entrega (linha gravada) é assumida quando o
+          // fetch resolve sem erro de rede.
+          await fetch(LEAD_ENDPOINT, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
             body: JSON.stringify(lead),
           });
-          if (!r.ok) throw new Error('HTTP ' + r.status);
           mostrarSucesso();
         } catch (err) {
           console.error('[MI6] Falha ao enviar lead:', err);
