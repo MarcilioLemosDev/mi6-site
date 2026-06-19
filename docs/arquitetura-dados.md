@@ -144,3 +144,32 @@ fluxo no Power Automate pelo time, seguindo a receita acima.
   site, sem tocar em código.
 - Passo 2 (fase 3): criar a tabela oficial no Excel e o fluxo do Power
   Automate conforme a receita.
+
+## Captação de leads: front-end pronto (rodada 49)
+
+O formulário do simulador (conceito B) já está ligado em definitivo. No
+envio ele monta o lead e faz `POST` JSON para o endereço do fluxo, lido da
+variável de ambiente `PUBLIC_LEAD_ENDPOINT`. Enquanto a variável está
+vazia, roda em modo demonstração (confirma na hora, sem enviar). Trata
+estado de carregando, sucesso e erro; mantém a isca anti-robô.
+
+Contrato do JSON enviado (uma chave por coluna sugerida da tabela):
+
+```
+{ data_hora, nome, telefone, email, segmento, credito, parcela, origem }
+```
+
+Para o teste de fogo passar ponta a ponta, faltam dois passos (conta do
+Marcílio; o acesso do assistente ao 365 é só leitura):
+
+1. Em `002_Leads_Captados.xlsx`, formatar a aba como Tabela nomeada com as
+   colunas acima.
+2. No Power Automate, fluxo com gatilho "Quando uma solicitação HTTP é
+   recebida" (esquema JSON acima) e ação "Adicionar uma linha em uma
+   tabela" apontando para essa planilha; responder 200. Copiar a URL HTTP
+   gerada e defini-la na Vercel como `PUBLIC_LEAD_ENDPOINT` (ou me passar a
+   URL para fixar). Checkpoint de licença: confirmar o gatilho HTTP no
+   plano; se faltar, alternativa é o Microsoft Forms incorporado.
+
+Verificação: enviar um lead real e ler a linha de volta na planilha pelo
+acesso de leitura ao 365.
