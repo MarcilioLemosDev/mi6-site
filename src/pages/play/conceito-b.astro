@@ -333,8 +333,20 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
               </button>
             </div>
-            <p class="cartao-dica" aria-hidden="true">Navegue pelos segmentos e toque para simular</p>
-            <p class="cartao-nota" data-intro>Crédito liberado ao ser contemplado. Use lance, inclusive o embutido, para antecipar.</p>
+            <div class="cartao-demo" role="img" aria-label="Navegue pelos cartões e toque para simular">
+              <div class="demo-pista" aria-hidden="true">
+                <span class="demo-card dc-esq"></span>
+                <span class="demo-card dc-dir"></span>
+                <span class="demo-card dc-centro"></span>
+              </div>
+              <span class="demo-cursor" aria-hidden="true">
+                <span class="demo-toque"></span>
+                <svg class="cur cur-seta" viewBox="0 0 24 24"><path d="M4 1.8 4 19.5 8.7 15l2.7 6 2.7-1.2-2.7-5.9 6.4-.2z"/></svg>
+                <svg class="cur cur-mao" viewBox="0 0 24 24"><path d="M9 12.5V6a1.6 1.6 0 0 1 3.2 0v4.6m0-1.5a1.6 1.6 0 0 1 3.2 0v1.9m0-1.3a1.6 1.6 0 0 1 3.2 0v3.6a5.6 5.6 0 0 1-5.6 5.6h-1.6a4.6 4.6 0 0 1-3.5-1.6l-3-3.6a1.5 1.5 0 0 1 2.2-2L9 14z"/></svg>
+              </span>
+              <span class="demo-fallback">Navegue pelos cartões e toque para simular</span>
+            </div>
+            <p class="cartao-nota" data-intro>Com o Consórcio Inteligente da MI6, você paga a primeira parcela e já começa sua jornada rumo à carta de crédito. Rápido e prático, para transformar seu sonho em realidade.</p>
             <script type="application/json" id="cartoes-dados" set:html={JSON.stringify(cartoes)}></script>
           </div>
         </div>
@@ -2046,14 +2058,123 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     color: rgba(255, 255, 255, 0.58);
     max-width: 15rem;
   }
-  .cartao-dica {
+  /* Instrução de navegação visual: miniatura do carrossel com um cursor que
+     vira mãozinha e clica em looping, mostrando como navegar pelos cartões. */
+  .cartao-demo {
+    position: relative;
+    width: 12rem;
+    height: 4.2rem;
+    margin: 1.1rem auto 0;
+  }
+  .demo-pista {
+    position: absolute;
+    inset: 0;
+  }
+  .demo-card {
+    position: absolute;
+    left: 50%;
+    top: 42%;
+    width: 3rem;
+    height: 1.9rem;
+    margin: -0.95rem 0 0 -1.5rem;
+    border-radius: 0.32rem;
+    background: linear-gradient(150deg, #06204e, #4e0f1c);
+    box-shadow: 0 4px 10px -4px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  .dc-centro { transform: translateX(0) scale(1); opacity: 1; z-index: 2; }
+  .dc-esq { transform: translateX(-2.6rem) scale(0.78); opacity: 0.4; }
+  .dc-dir { transform: translateX(2.6rem) scale(0.78); opacity: 0.4; }
+  .demo-cursor {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 1.4rem;
+    height: 1.4rem;
+    transform: translate(1.4rem, 2.8rem);
+    z-index: 4;
+  }
+  .cur {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    fill: #fff;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
+  }
+  .cur-mao { opacity: 0; }
+  .demo-toque {
+    position: absolute;
+    left: 0.3rem;
+    top: 0.3rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: -0.75rem 0 0 -0.75rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--vermelho);
+    transform: scale(0);
+    opacity: 0;
+  }
+  .demo-fallback {
+    display: none;
     text-align: center;
-    margin: 1.25rem 0 0;
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.62rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.4);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .dc-centro { animation: demoCentro 4.6s ease-in-out infinite; }
+    .dc-dir { animation: demoDir 4.6s ease-in-out infinite; }
+    .dc-esq { animation: demoEsq 4.6s ease-in-out infinite; }
+    .demo-cursor { animation: demoCursor 4.6s ease-in-out infinite; }
+    .cur-seta { animation: demoSeta 4.6s ease-in-out infinite; }
+    .cur-mao { animation: demoMao 4.6s ease-in-out infinite; }
+    .demo-toque { animation: demoToque 4.6s ease-in-out infinite; }
+  }
+  @keyframes demoCursor {
+    0%, 15% { transform: translate(1.4rem, 2.8rem) scale(1); }
+    40%, 48% { transform: translate(0.2rem, 1.1rem) scale(1); }
+    54% { transform: translate(0.2rem, 1.1rem) scale(0.84); }
+    62% { transform: translate(0.2rem, 1.1rem) scale(1); }
+    82%, 100% { transform: translate(1.4rem, 2.8rem) scale(1); }
+  }
+  @keyframes demoSeta {
+    0%, 34% { opacity: 1; }
+    42%, 72% { opacity: 0; }
+    82%, 100% { opacity: 1; }
+  }
+  @keyframes demoMao {
+    0%, 34% { opacity: 0; }
+    42%, 72% { opacity: 1; }
+    82%, 100% { opacity: 0; }
+  }
+  @keyframes demoToque {
+    0%, 50% { transform: scale(0); opacity: 0; }
+    56% { transform: scale(0.3); opacity: 0.7; }
+    72% { transform: scale(1.4); opacity: 0; }
+    100% { opacity: 0; }
+  }
+  @keyframes demoCentro {
+    0%, 50% { transform: translateX(0) scale(1); opacity: 1; }
+    62% { transform: translateX(-1.4rem) scale(0.9); opacity: 0.7; }
+    80%, 100% { transform: translateX(0) scale(1); opacity: 1; }
+  }
+  @keyframes demoDir {
+    0%, 50% { transform: translateX(2.6rem) scale(0.78); opacity: 0.4; }
+    62% { transform: translateX(1.1rem) scale(0.92); opacity: 0.85; }
+    80%, 100% { transform: translateX(2.6rem) scale(0.78); opacity: 0.4; }
+  }
+  @keyframes demoEsq {
+    0%, 50% { transform: translateX(-2.6rem) scale(0.78); opacity: 0.4; }
+    62% { transform: translateX(-3.8rem) scale(0.7); opacity: 0.12; }
+    80%, 100% { transform: translateX(-2.6rem) scale(0.78); opacity: 0.4; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .demo-pista,
+    .demo-cursor { display: none; }
+    .cartao-demo { height: auto; }
+    .demo-fallback { display: block; }
   }
   .cartao-nota {
     max-width: 24rem;
