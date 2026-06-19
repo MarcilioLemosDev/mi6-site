@@ -145,31 +145,44 @@ fluxo no Power Automate pelo time, seguindo a receita acima.
 - Passo 2 (fase 3): criar a tabela oficial no Excel e o fluxo do Power
   Automate conforme a receita.
 
-## Captação de leads: front-end pronto (rodada 49)
+## Captação de leads: WhatsApp como canal principal (rodada 56)
 
-O formulário do simulador (conceito B) já está ligado em definitivo. No
-envio ele monta o lead e faz `POST` JSON para o endereço do fluxo, lido da
-variável de ambiente `PUBLIC_LEAD_ENDPOINT`. Enquanto a variável está
-vazia, roda em modo demonstração (confirma na hora, sem enviar). Trata
-estado de carregando, sucesso e erro; mantém a isca anti-robô.
+Decisão de Marcílio: em vez do formulário gravando direto no Excel, o
+caminho principal passa a ser o WhatsApp, com o e-mail como contagem
+paralela de leads. Menos fricção, conversão maior.
 
-Contrato do JSON enviado (uma chave por coluna sugerida da tabela):
+No simulador (conceito B), o botão "Falar no WhatsApp" faz duas coisas:
+
+1. Abre `wa.me/<numero>?text=<mensagem>` com a simulação montada como
+   texto (o "card": segmento, crédito e parcela), pronta para o cliente
+   enviar. O número vem da env `PUBLIC_WHATSAPP` (só dígitos com DDI). A
+   abertura acontece no gesto do clique, sem bloqueio de pop-up; a tela de
+   sucesso traz um link de reserva.
+2. Em paralelo, faz `POST` (text/plain, no-cors, sem preflight CORS) para
+   o fluxo em `PUBLIC_LEAD_ENDPOINT`, que dispara o e-mail de lead.
+
+Contrato do JSON enviado:
 
 ```
-{ data_hora, nome, telefone, email, segmento, credito, parcela, origem }
+{ data_hora, segmento, credito, parcela, resumo, origem }
 ```
 
-Para o teste de fogo passar ponta a ponta, faltam dois passos (conta do
-Marcílio; o acesso do assistente ao 365 é só leitura):
+Enquanto as envs estão vazias, roda em modo demonstração (mostra a
+confirmação sem abrir WhatsApp nem enviar).
 
-1. Em `002_Leads_Captados.xlsx`, formatar a aba como Tabela nomeada com as
-   colunas acima.
-2. No Power Automate, fluxo com gatilho "Quando uma solicitação HTTP é
-   recebida" (esquema JSON acima) e ação "Adicionar uma linha em uma
-   tabela" apontando para essa planilha; responder 200. Copiar a URL HTTP
-   gerada e defini-la na Vercel como `PUBLIC_LEAD_ENDPOINT` (ou me passar a
-   URL para fixar). Checkpoint de licença: confirmar o gatilho HTTP no
-   plano; se faltar, alternativa é o Microsoft Forms incorporado.
+Para ligar de ponta a ponta (conta do Marcílio; o acesso do assistente ao
+365 é só leitura):
 
-Verificação: enviar um lead real e ler a linha de volta na planilha pelo
-acesso de leitura ao 365.
+1. Definir `PUBLIC_WHATSAPP` na Vercel com o número da MI6.
+2. Criar um fluxo no Power Automate: gatilho "Quando uma solicitação HTTP
+   é recebida" (esquema JSON acima), passo "Analisar JSON" sobre o corpo e
+   ação "Enviar um e-mail de uma caixa de correio compartilhada (V2)" de
+   `processos.automatizados@mi6consorcio.com.br` para
+   `tecnologia@mi6consorcio.com.br`; responder 200. Definir a URL gerada
+   como `PUBLIC_LEAD_ENDPOINT` na Vercel. Pré-requisitos: permissão
+   "Enviar como" na caixa compartilhada; checkpoint do gatilho HTTP
+   (premium). Se travar no premium, alternativa é uma função na Vercel com
+   Microsoft Graph. Guia detalhado entregue por fora (guia-fluxo-email).
+
+A planilha `002_Leads_Captados.xlsx` segue disponível, caso no futuro se
+queira também gravar a linha no Excel (basta somar a ação no mesmo fluxo).
