@@ -507,39 +507,28 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
 
               <div class="sim-aguarde" id="sim-aguarde" hidden>
                 <p class="sim-aguarde-titulo">Sua vaga em <strong id="sim-seg-nome">carros</strong> está abrindo.</p>
-                <p>Deixe seu contato abaixo e garanta posição no início do grupo, com as condições de abertura em primeira mão.</p>
+                <p>Garanta posição no início do grupo, com as condições de abertura em primeira mão. Fale agora no WhatsApp.</p>
               </div>
 
               <div class="sim-contato">
-                <label class="sim-campo">
-                  <span>Nome</span>
-                  <input type="text" name="nome" required autocomplete="name" placeholder="Como podemos te chamar" />
-                </label>
-                <div class="sim-campo-dupla">
-                  <label class="sim-campo">
-                    <span>Telefone</span>
-                    <input type="tel" name="telefone" required autocomplete="tel" placeholder="(11) 90000-0000" />
-                  </label>
-                  <label class="sim-campo">
-                    <span>E-mail</span>
-                    <input type="email" name="email" required autocomplete="email" placeholder="voce@email.com" />
-                  </label>
-                </div>
+                <p class="sim-zap-nota">Leve a sua simulação para o WhatsApp e fale agora com um consultor. Sem formulário, sem espera.</p>
                 <input type="text" name="confirme" class="sim-mel" tabindex="-1" autocomplete="off" aria-hidden="true" />
-                <button type="submit" class="cta sim-cta">Falar com um consultor</button>
-                <p class="sim-erro" id="sim-erro" role="alert" hidden>Não foi possível enviar agora. Tente novamente em instantes ou fale pelo SAC 0800 000 5228.</p>
+                <button type="submit" class="cta sim-cta sim-zap">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.7 13.7L3 21l4.5-1.2A9 9 0 1 0 12 3z" /><circle cx="9" cy="12" r="1" fill="currentColor" stroke="none" /><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" /><circle cx="15" cy="12" r="1" fill="currentColor" stroke="none" /></svg>
+                  Falar no WhatsApp
+                </button>
               </div>
             </div>
 
             <div class="sim-sucesso" id="sim-sucesso" hidden>
               <span class="sim-check" aria-hidden="true"></span>
-              <h3>O primeiro passo já foi dado.</h3>
+              <h3>Sua simulação foi para o WhatsApp.</h3>
               <p>
-                Um consultor da MI6 entra em contato com você sobre o
-                consórcio de <strong id="sim-sucesso-seg">motos</strong>.
-                Enquanto isso, conheça o método.
+                Abrimos a conversa com a sua simulação de
+                <strong id="sim-sucesso-seg">motos</strong> já preenchida. É só
+                enviar e um consultor da MI6 continua com você por lá.
               </p>
-              <button type="button" class="cta cta-navy" data-folha="funciona">Como funciona</button>
+              <a class="cta cta-navy" id="sim-zap-fallback" href="#" target="_blank" rel="noopener">Não abriu? Toque para abrir o WhatsApp</a>
             </div>
           </form>
         </div>
@@ -1019,70 +1008,72 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
         a.addEventListener('click', () => escolherSegmento(a.dataset.segmento ?? 'motos'));
       });
 
-      // Envio do lead qualificado: a interface é nossa; o submit posta o lead
-      // como JSON num fluxo do Power Automate (gatilho HTTP) que grava na
-      // planilha de leads do Excel 365 (ver docs/arquitetura-dados.md).
-      // O endereço do fluxo vem da env de produção PUBLIC_LEAD_ENDPOINT
-      // (defina na Vercel); enquanto vazio, o formulário roda em modo
-      // demonstração, confirmando na hora sem enviar.
+      // Captação via WhatsApp: o botão leva a simulação (o "card" em texto) para
+      // uma conversa já preenchida, sem formulário. Em paralelo, registra o lead
+      // num fluxo (que dispara o e-mail de leads para a MI6). Endereços vêm de
+      // envs de produção (defina na Vercel):
+      //   PUBLIC_WHATSAPP       número da MI6, só dígitos com DDI (ex 5551999990000)
+      //   PUBLIC_LEAD_ENDPOINT  fluxo que envia o e-mail do lead
       const LEAD_ENDPOINT = (import.meta.env.PUBLIC_LEAD_ENDPOINT as string | undefined) ?? '';
-      simCard?.addEventListener('submit', async (e) => {
+      const WHATSAPP = ((import.meta.env.PUBLIC_WHATSAPP as string | undefined) ?? '').replace(/\D/g, '');
+      simCard?.addEventListener('submit', (e) => {
         e.preventDefault();
         const mel = simCard.querySelector<HTMLInputElement>('.sim-mel');
         if (mel && mel.value) return; // isca anti-robô preenchida: ignora
 
-        const valor = (n: string) =>
-          (simCard.querySelector<HTMLInputElement>(`[name="${n}"]`)?.value ?? '').trim();
+        const segNome = nomesSeg[segAtual] ?? segAtual;
+        const segCap = segNome.charAt(0).toUpperCase() + segNome.slice(1);
+        const creditoRaw = (document.getElementById('sim-credito') as HTMLInputElement | null)?.value ?? '';
+        const creditoFmt = creditoRaw ? Number(creditoRaw).toLocaleString('pt-BR') : '';
+        const parcela = document.getElementById('sim-parcela')?.textContent?.trim() ?? '';
+
+        // O "card" da simulação em texto, pronto para o cliente enviar.
+        const msg = [
+          'Olá! Fiz uma simulação no site da MI6 e quero falar com um consultor.',
+          '',
+          `Carta de crédito: ${segCap}`,
+          creditoFmt ? `Crédito: R$ ${creditoFmt}` : '',
+          parcela ? `Parcela: R$ ${parcela} por mês, sem juros` : '',
+        ].filter(Boolean).join('\n');
+        const urlZap = WHATSAPP ? `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}` : '';
+
+        // Abre o WhatsApp ainda no gesto do clique (evita bloqueio de pop-up).
+        if (urlZap) window.open(urlZap, '_blank', 'noopener,noreferrer');
+
+        // Registro paralelo do lead, que dispara o e-mail. text/plain + no-cors:
+        // requisição simples, sem preflight CORS, aceita pelo gatilho HTTP.
         const lead = {
           data_hora: new Date().toISOString(),
-          nome: valor('nome'),
-          telefone: valor('telefone'),
-          email: valor('email'),
           segmento: segAtual,
-          credito: (document.getElementById('sim-credito') as HTMLInputElement | null)?.value ?? '',
-          parcela: document.getElementById('sim-parcela')?.textContent?.trim() ?? '',
+          credito: creditoRaw,
+          parcela,
+          resumo: msg,
           origem: 'site/conceito-b/simulador',
         };
-
-        const btn = simCard.querySelector<HTMLButtonElement>('.sim-cta');
-        const erro = document.getElementById('sim-erro');
-        const mostrarSucesso = () => {
-          const corpo = document.getElementById('sim-corpo');
-          const sucesso = document.getElementById('sim-sucesso');
-          const seg = document.getElementById('sim-sucesso-seg');
-          if (seg) seg.textContent = nomesSeg[segAtual] ?? segAtual;
-          corpo?.setAttribute('hidden', '');
-          sucesso?.removeAttribute('hidden');
-          if (motionOk) gsap.from(sucesso, { autoAlpha: 0, y: 16, duration: 0.5, ease: 'power3.out' });
-        };
-
-        // Modo demonstração enquanto o fluxo não está configurado.
-        if (!LEAD_ENDPOINT) {
-          console.warn('[MI6] PUBLIC_LEAD_ENDPOINT não definido: lead não enviado (modo demonstração).');
-          mostrarSucesso();
-          return;
-        }
-
-        erro?.setAttribute('hidden', '');
-        const rotulo = btn?.textContent ?? '';
-        if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
-        try {
-          // text/plain + no-cors: requisição "simples", sem preflight CORS, que
-          // o gatilho HTTP do Power Automate aceita direto do navegador. A
-          // resposta vem opaca; a entrega (linha gravada) é assumida quando o
-          // fetch resolve sem erro de rede.
-          await fetch(LEAD_ENDPOINT, {
+        if (LEAD_ENDPOINT) {
+          fetch(LEAD_ENDPOINT, {
             method: 'POST',
             mode: 'no-cors',
             headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
             body: JSON.stringify(lead),
-          });
-          mostrarSucesso();
-        } catch (err) {
-          console.error('[MI6] Falha ao enviar lead:', err);
-          erro?.removeAttribute('hidden');
-          if (btn) { btn.disabled = false; btn.textContent = rotulo; }
+          }).catch((err) => console.error('[MI6] Falha ao registrar lead:', err));
+        } else {
+          console.warn('[MI6] PUBLIC_LEAD_ENDPOINT não definido: lead não registrado (modo demonstração).');
         }
+
+        // Confirmação na tela, com link de reserva caso o WhatsApp não abra.
+        const corpo = document.getElementById('sim-corpo');
+        const sucesso = document.getElementById('sim-sucesso');
+        const seg = document.getElementById('sim-sucesso-seg');
+        const fallback = document.getElementById('sim-zap-fallback') as HTMLAnchorElement | null;
+        if (seg) seg.textContent = segNome;
+        if (fallback) {
+          if (urlZap) fallback.href = urlZap;
+          else fallback.setAttribute('hidden', '');
+        }
+        corpo?.setAttribute('hidden', '');
+        sucesso?.removeAttribute('hidden');
+        if (motionOk) gsap.from(sucesso, { autoAlpha: 0, y: 16, duration: 0.5, ease: 'power3.out' });
       });
 
       type Cartao = { seg: string; nome: string; posse: string; valor: string; ativo: boolean; c1: string; c2: string; bem: string };
@@ -3110,7 +3101,27 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
     color: var(--vermelho);
     text-align: center;
   }
-  /* Passo 3: contato. Campos sóbrios que viram lead na planilha do 365. */
+  .sim-zap-nota {
+    margin: 0 0 1.1rem;
+    font-size: 0.92rem;
+    color: var(--tinta-suave);
+  }
+  .sim-cta.sim-zap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+  }
+  .sim-zap svg {
+    width: 1.3rem;
+    height: 1.3rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  /* Passo 3: contato. Agora um handoff direto para o WhatsApp com a simulação. */
   .sim-contato {
     margin-top: 1.6rem;
     padding-top: 1.4rem;
