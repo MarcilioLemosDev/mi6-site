@@ -1,0 +1,230 @@
+---
+import '@fontsource/instrument-serif';
+import '@fontsource/instrument-serif/400-italic.css';
+import '@fontsource-variable/manrope';
+import '@fontsource/ibm-plex-mono';
+
+// Antessala da Área do Cliente: tela com a identidade da MI6 que apresenta o
+// que o cliente encontra e faz a ponte, com um clique, para o ambiente seguro
+// de autoatendimento da Evertec (parceira de tecnologia). Sem capturar senha:
+// o login acontece do lado da Evertec.
+const LOGIN_EVERTEC = 'https://mi6.evertecinc.com.br/autoatendimento';
+const recursos = [
+  'Segunda via de boletos e pagamentos',
+  'Acompanhar a sua contemplação',
+  'Ofertar lances, inclusive o lance embutido',
+  'Contratos, extrato e atualização de dados',
+];
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Área do Cliente · MI6 Consórcio Nacional</title>
+    <meta name="description" content="Acesse a sua Área do Cliente MI6: boletos, lances, contemplação e mais, no ambiente seguro de autoatendimento." />
+  </head>
+  <body>
+    <header class="topo">
+      <a class="topo-logo" href="/play/conceito-b/" aria-label="MI6 Consórcio Nacional">
+        <img src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
+      </a>
+    </header>
+
+    <main class="palco">
+      <section class="cartao">
+        <p class="kicker">Área do Cliente</p>
+        <h1>Bem-vindo de volta</h1>
+        <p class="lead">
+          Sua conta MI6 está a um login de distância. Boletos, lances,
+          contemplação e seus contratos, tudo em um só lugar.
+        </p>
+
+        <ul class="recursos">
+          {recursos.map((r) => (
+            <li>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7" /></svg>
+              <span>{r}</span>
+            </li>
+          ))}
+        </ul>
+
+        <a class="entrar" href={LOGIN_EVERTEC} rel="noopener">
+          Ir para a tela de login
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        </a>
+
+        <p class="seguro">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.4l6 2.2v4.5c0 4.2-2.6 7-6 8.4-3.4-1.4-6-4.2-6-8.4V4.6z" /><path d="M7.2 10.1l2 2 3.6-3.8" /></svg>
+          Você será direcionado ao ambiente seguro de autoatendimento da Evertec,
+          parceira de tecnologia da MI6, onde informa seu CPF e senha.
+        </p>
+      </section>
+
+      <p class="ajuda">
+        Precisa de ajuda? SAC <a href="tel:08000005228">0800 000 5228</a> ·
+        Ouvidoria <a href="tel:08000005267">0800 000 5267</a>
+      </p>
+      <a class="voltar" href="/play/conceito-b/">Voltar ao site</a>
+    </main>
+
+    <p class="coord" aria-hidden="true">30°02′S 51°13′W · PORTO ALEGRE · BRASIL</p>
+  </body>
+</html>
+
+<style>
+  :root {
+    --navy: #012169;
+    --red: #c8102e;
+    --branco: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100svh;
+    color: var(--branco);
+    font-family: 'Manrope Variable', -apple-system, 'Segoe UI', Arial, sans-serif;
+    line-height: 1.6;
+    position: relative;
+    overflow-x: hidden;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 31px, rgba(130, 175, 255, 0.06) 31px 32px),
+      repeating-linear-gradient(90deg, transparent 0 31px, rgba(130, 175, 255, 0.06) 31px 32px),
+      repeating-linear-gradient(0deg, transparent 0 159px, rgba(130, 175, 255, 0.09) 159px 160px),
+      repeating-linear-gradient(90deg, transparent 0 159px, rgba(130, 175, 255, 0.09) 159px 160px),
+      radial-gradient(120% 90% at 50% 0%, rgba(2, 33, 105, 0.95), rgba(1, 16, 47, 1) 70%);
+  }
+  .topo {
+    padding: 1.3rem 1.6rem;
+  }
+  .topo-logo img { height: 1.9rem; width: auto; display: block; }
+  .palco {
+    min-height: calc(100svh - 5rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.4rem;
+    padding: 2rem 1.3rem 4rem;
+  }
+  /* Cartão de vidro, coerente com o conceito blueprint do hero */
+  .cartao {
+    width: 100%;
+    max-width: 30rem;
+    background:
+      linear-gradient(150deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04)),
+      linear-gradient(150deg, rgba(10, 44, 102, 0.5), rgba(1, 17, 47, 0.4));
+    backdrop-filter: blur(14px) saturate(135%);
+    -webkit-backdrop-filter: blur(14px) saturate(135%);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 20px;
+    box-shadow: 0 34px 64px -30px rgba(1, 10, 30, 0.9);
+    padding: 2.2rem 2rem 2rem;
+  }
+  .kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #ff8a98;
+    margin: 0 0 0.6rem;
+  }
+  h1 {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(2rem, 6vw, 2.6rem);
+    line-height: 1.05;
+    margin: 0 0 0.6rem;
+  }
+  .lead {
+    margin: 0 0 1.4rem;
+    color: rgba(255, 255, 255, 0.82);
+  }
+  .recursos {
+    list-style: none;
+    margin: 0 0 1.7rem;
+    padding: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .recursos li {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 0.95rem;
+  }
+  .recursos svg {
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    fill: none;
+    stroke: #6fe0a0;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .entrar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    background: var(--red);
+    color: var(--branco);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.02rem;
+    padding: 0.95rem 1.2rem;
+    border-radius: 12px;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .entrar svg {
+    width: 1.25rem; height: 1.25rem;
+    fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    transition: transform 0.2s ease;
+  }
+  .entrar:hover { background: #e21236; }
+  .entrar:hover svg { transform: translateX(3px); }
+  .seguro {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin: 1.1rem 0 0;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .seguro svg {
+    flex: none;
+    width: 1rem; height: 1rem; margin-top: 0.15rem;
+    fill: none; stroke: #6fe0a0; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .ajuda {
+    margin: 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.55);
+    text-align: center;
+  }
+  .ajuda a, .voltar { color: var(--branco); }
+  .voltar { font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); }
+  .coord {
+    position: fixed;
+    top: 50%;
+    right: 0.9rem;
+    transform: translateY(-50%);
+    margin: 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    color: rgba(255, 255, 255, 0.32);
+    writing-mode: vertical-rl;
+  }
+  @media (max-width: 40rem) {
+    .coord { display: none; }
+  }
+</style>
