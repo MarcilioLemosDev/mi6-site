@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 
 // Site estático para deploy na Vercel.
 // `site` aponta para o domínio final (mi6consorcio.com.br), usado para gerar
@@ -7,4 +8,5 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
   site: 'https://mi6consorcio.com.br',
   output: 'static',
+  integrations: [sitemap()],
 });
