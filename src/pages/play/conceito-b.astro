@@ -211,8 +211,14 @@ const cartoes = segmentos.map((s) => {
     c2,
   };
 });
-const idxInicial = Math.max(0, cartoes.findIndex((c) => c.ativo));
-const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
+// No hero, enxugamos: mostramos só o cronograma real, o ativo (motos) e os
+// próximos (imóveis e carros) como "Em breve". A trilha "O seu caminho"
+// segue com todos os seis segmentos.
+const ordemHome = ['motos', 'imoveis', 'carros'];
+const cartoesHome = ordemHome
+  .map((id) => cartoes.find((c) => c.seg === id))
+  .filter((c): c is (typeof cartoes)[number] => Boolean(c));
+const cartaoInicial = cartoesHome.find((c) => c.ativo) ?? cartoesHome[0] ?? cartoes[0];
 ---
 
 <!doctype html>
@@ -292,8 +298,8 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
               <div class="cartao-carrossel" id="cartao-carrossel" role="group" aria-roledescription="carrossel de cartões" aria-label="Cartas de crédito por segmento">
                 <ul class="cartao-pista" id="cartao-pista">
                   {
-                    cartoes.map((c, i) => (
-                      <li class="cartao-slot" data-i={i}>
+                    cartoesHome.map((c, i) => (
+                      <li class="cartao-slot" data-i={i} data-seg={c.seg}>
                         <a class="cartao" href="#contato" style={`--c1:${c.c1};--c2:${c.c2}`} aria-label={`Simular ${c.nome}`}>
                           <span class="cartao-brilho" aria-hidden="true"></span>
                           <div class="cartao-topo">
@@ -1152,19 +1158,14 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
         const prev = document.getElementById('cartao-prev');
         const next = document.getElementById('cartao-next');
         const carrossel = document.getElementById('cartao-carrossel');
-        const fonte = document.getElementById('cartoes-dados');
         if (!pista) return;
         const slots = Array.from(pista.querySelectorAll<HTMLElement>('.cartao-slot'));
         if (!slots.length) return;
-        let lista: Cartao[] = [];
-        try {
-          lista = JSON.parse(fonte?.textContent || '[]');
-        } catch {
-          lista = [];
-        }
+        // A ordem dos cartões do hero vem dos próprios slots (data-seg), que são
+        // só os do cronograma (motos ativo, imóveis e carros em breve).
+        const ordem = slots.map((s) => s.dataset.seg ?? '');
         const N = slots.length;
-        let ativo = Math.max(0, lista.findIndex((c) => c.seg === segAtual));
-        if (ativo < 0) ativo = 0;
+        let ativo = Math.max(0, ordem.indexOf(segAtual));
 
         // Geometria de cada anel da "porta": deslocamento (em % da largura do
         // cartão), profundidade, giro, escala e opacidade por distância.
@@ -1193,7 +1194,7 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
             card?.setAttribute('tabindex', dist === 0 ? '0' : '-1');
             card?.setAttribute('aria-hidden', dist === 0 ? 'false' : 'true');
           });
-          segAtual = lista[ativo]?.seg ?? segAtual;
+          segAtual = ordem[ativo] ?? segAtual;
         };
 
         const ir = (passo: number) => {
@@ -1211,7 +1212,7 @@ const cartaoInicial = cartoes[idxInicial] ?? cartoes[0];
             if (arrastou) { arrastou = false; return; }
             if (i === ativo) {
               // o central leva ao simulador, já com o segmento selecionado
-              escolherSegmento(lista[i]?.seg ?? 'motos');
+              escolherSegmento(slots[i].dataset.seg ?? 'motos');
               if (lenis) lenis.scrollTo('#contato', { offset: -72 });
               else document.getElementById('contato')?.scrollIntoView({ behavior: motionOk ? 'smooth' : 'auto' });
             } else {
