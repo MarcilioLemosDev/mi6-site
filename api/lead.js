@@ -1,4 +1,4 @@
-// Função serverless (Vercel) da MI6: recebe o lead do site na mesma origem
+// Função serverless (Vercel) da MI6 [rev 1]: recebe o lead do site na mesma origem
 // (/api/lead) e repassa ao fluxo do Power Automate. A URL assinada (SAS) do
 // fluxo fica só aqui, na variável de servidor LEAD_ENDPOINT (não pública,
 // definida no painel da Vercel), nunca no navegador. Devolve sucesso/erro
