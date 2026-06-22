@@ -211,6 +211,31 @@ const cartoes = segmentos.map((s) => {
     c2,
   };
 });
+// Parâmetros de cálculo de cada grupo ativo, indexados por segmento, para o
+// simulador trocar a conta ao clicar no chip. Tudo derivado do espelho
+// (grupos.json): ativar um segmento novo (casa, carro...) é só acrescentar o
+// grupo no JSON com status "ativo"; o simulador passa a calculá-lo sozinho.
+const gruposSim = Object.fromEntries(
+  dados.grupos
+    .filter((g) => g.status === 'ativo')
+    .map((g) => [
+      g.segmento,
+      {
+        prazo: g.prazo_restante_meses,
+        txadm: g.taxa_administracao,
+        fres: g.fundo_reserva,
+        seguro: g.seguro_prestamista_mes,
+        min: g.credito_min,
+        max: g.credito_max,
+        passo: g.passo_credito,
+        padrao: g.credito_padrao,
+        taxaMensal: numServidor(taxaMensal(g)),
+        grupo: g.grupo,
+        dia: g.dia_assembleia,
+      },
+    ])
+);
+
 // No hero, enxugamos: mostramos só o cronograma real, o ativo (motos) e os
 // próximos (imóveis e carros) como "Em breve". A trilha "O seu caminho"
 // segue com todos os seis segmentos.
@@ -363,6 +388,7 @@ const cartaoInicial = cartoesHome.find((c) => c.ativo) ?? cartoesHome[0] ?? cart
             </div>
             <p class="cartao-nota" data-intro>Com o Consórcio Inteligente da MI6, você paga a primeira parcela e já começa sua jornada rumo à carta de crédito. Rápido e prático, a escolha certa para realizar o seu sonho.</p>
             <script type="application/json" id="cartoes-dados" set:html={JSON.stringify(cartoes)}></script>
+            <script type="application/json" id="grupos-dados" set:html={JSON.stringify(gruposSim)}></script>
           </div>
         </div>
 
@@ -949,10 +975,23 @@ const cartaoInicial = cartoesHome.find((c) => c.ativo) ?? cartoesHome[0] ?? cart
       // Simulador: a conta inteira do grupo ativo, ao vivo. Os parâmetros
       // chegam pelo HTML, vindos do espelho da tabela verdade (grupos.json).
       const simCard = document.querySelector<HTMLElement>('.sim-card');
-      const PRAZO = parseInt(simCard?.dataset.prazo ?? '98', 10);
-      const TX_ADM = parseFloat(simCard?.dataset.txadm ?? '0.2');
-      const F_RES = parseFloat(simCard?.dataset.fres ?? '0.04');
-      const SEGURO = parseFloat(simCard?.dataset.seguro ?? '0.0008');
+      // Parâmetros do grupo ativo. Começam no grupo do HTML (motos) e trocam
+      // por segmento quando o cliente clica num chip ativo (ver gruposSim).
+      type ParamGrupo = {
+        prazo: number; txadm: number; fres: number; seguro: number;
+        min: number; max: number; passo: number; padrao: number;
+        taxaMensal: string; grupo: string; dia: number;
+      };
+      let gruposSim: Record<string, ParamGrupo> = {};
+      try {
+        gruposSim = JSON.parse(document.getElementById('grupos-dados')?.textContent || '{}');
+      } catch {
+        gruposSim = {};
+      }
+      let PRAZO = parseInt(simCard?.dataset.prazo ?? '98', 10);
+      let TX_ADM = parseFloat(simCard?.dataset.txadm ?? '0.2');
+      let F_RES = parseFloat(simCard?.dataset.fres ?? '0.04');
+      let SEGURO = parseFloat(simCard?.dataset.seguro ?? '0.0008');
       const brl = (v: number) =>
         'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       const exib = { c: parseInt(simCard?.dataset.creditoPadrao ?? '15000', 10) };
@@ -998,7 +1037,7 @@ const cartaoInicial = cartoesHome.find((c) => c.ativo) ?? cartoesHome[0] ?? cart
       } catch {
         temasSeg = {};
       }
-      let segAtual = 'motos';
+      let segAtual = Object.keys(gruposSim)[0] ?? 'motos';
       function escolherSegmento(id: string) {
         segAtual = id;
         document.querySelectorAll('#sim-chips button').forEach((b) => {
@@ -1013,10 +1052,30 @@ const cartaoInicial = cartoesHome.find((c) => c.ativo) ?? cartoesHome[0] ?? cart
         const vivo = document.getElementById('sim-vivo');
         const aguarde = document.getElementById('sim-aguarde');
         const nome = document.getElementById('sim-seg-nome');
-        if (id === 'motos') {
+        const g = gruposSim[id];
+        if (g) {
+          // Grupo ativo: carrega a conta do segmento (taxa, prazo, faixa).
+          PRAZO = g.prazo;
+          TX_ADM = g.txadm;
+          F_RES = g.fres;
+          SEGURO = g.seguro;
+          if (credito) {
+            credito.min = String(g.min);
+            credito.max = String(g.max);
+            credito.step = String(g.passo);
+            credito.value = String(g.padrao);
+          }
+          exib.c = g.padrao;
+          const extremos = document.querySelectorAll<HTMLElement>('#sim-vivo .sim-extremos span');
+          if (extremos[0]) extremos[0].textContent = 'R$ ' + g.min.toLocaleString('pt-BR');
+          if (extremos[1]) extremos[1].textContent = 'R$ ' + g.max.toLocaleString('pt-BR');
+          const txEl = document.querySelector('.sim-taxa-val');
+          if (txEl) txEl.textContent = g.taxaMensal + '% ao mês';
+          pintarSim();
           vivo?.removeAttribute('hidden');
           aguarde?.setAttribute('hidden', '');
         } else {
+          // Segmento sem grupo ativo: convida a entrar na abertura.
           vivo?.setAttribute('hidden', '');
           aguarde?.removeAttribute('hidden');
           if (nome) nome.textContent = nomesSeg[id] ?? id;
@@ -1029,6 +1088,9 @@ const cartaoInicial = cartoesHome.find((c) => c.ativo) ?? cartoesHome[0] ?? cart
       document.querySelectorAll<HTMLAnchorElement>('a[data-segmento]').forEach((a) => {
         a.addEventListener('click', () => escolherSegmento(a.dataset.segmento ?? 'motos'));
       });
+      // Concilia o estado inicial com o primeiro grupo ativo do espelho, para
+      // o simulador já abrir certo mesmo que o segmento de estreia mude.
+      escolherSegmento(segAtual);
 
       // Captação via WhatsApp + registro do lead. O botão leva a simulação (o
       // "card" em texto) para o WhatsApp já preenchido; em paralelo, registra o
