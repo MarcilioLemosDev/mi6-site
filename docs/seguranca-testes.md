@@ -25,7 +25,7 @@ Playwright (já instalado) para os testes de DOM.
 | 1 | #1 Injeção de fórmula (+ bypass unicode) | 12 | ✅ verde |
 | 1 | #7 Injeção em e-mail + validação positiva | 14 | ✅ verde |
 | 6 | Portão automático (CI rodando a suíte) | — | ✅ no ar |
-| 2 | #2/#8 Endpoint (content-type, body cap, honeypot server-side) | ~6 | ⬜ a fazer |
+| 2 | #2/#8 Endpoint (content-type, body cap, honeypot server-side) | 7 | ✅ verde |
 | 2 | Rate limit de plataforma (WAF/KV) | — | ⬜ tenant (Gate 2) |
 | 3 | Detecção & alerta (falha do fluxo, custo, volume) | — | ⬜ tenant |
 | 4 | CSP + cabeçalhos de segurança | ~2 | ⬜ a fazer |

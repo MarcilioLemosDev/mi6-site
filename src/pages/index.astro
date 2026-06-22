@@ -1217,6 +1217,8 @@ const schemaSeo = {
           parcela,
           resumo: msg,
           origem: 'site/mi6/simulador',
+          // Campo isca (honeypot): vazio para humano; validado no servidor.
+          confirme: simCard.querySelector('.sim-mel')?.value ?? '',
         };
         fetch('/api/lead', {
           method: 'POST',

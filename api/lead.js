@@ -6,6 +6,10 @@
 // fórmula na planilha e de cabeçalho/HTML no e-mail. Devolve sucesso/erro real.
 import { validarLead, sanitizarLead } from '../lib/seguranca.js';
 
+// Teto de corpo: um lead legítimo tem centenas de bytes; 10 KB é folga
+// generosa que ainda barra payloads de abuso.
+const LIMITE_CORPO = 10 * 1024;
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -15,6 +19,18 @@ export default async function handler(req, res) {
   const endpoint = process.env.LEAD_ENDPOINT;
   if (!endpoint) {
     return res.status(503).json({ ok: false, erro: 'LEAD_ENDPOINT nao configurado' });
+  }
+
+  // Só aceitamos JSON (o site sempre envia assim); fora disso é abuso.
+  const tipo = String(req.headers['content-type'] || '').toLowerCase();
+  if (!tipo.includes('application/json')) {
+    return res.status(415).json({ ok: false, erro: 'content-type invalido' });
+  }
+
+  // Teto de corpo pelo cabeçalho (barato) antes de processar qualquer coisa.
+  const tamanho = Number(req.headers['content-length'] || 0);
+  if (tamanho > LIMITE_CORPO) {
+    return res.status(413).json({ ok: false, erro: 'corpo grande demais' });
   }
 
   // Corpo: a Vercel já entrega objeto quando o Content-Type é JSON; se vier
@@ -31,6 +47,18 @@ export default async function handler(req, res) {
   }
   if (!corpo || typeof corpo !== 'object' || Array.isArray(corpo)) {
     return res.status(400).json({ ok: false, erro: 'corpo invalido' });
+  }
+
+  // Reforço do teto caso o cabeçalho content-length não tenha vindo.
+  if (JSON.stringify(corpo).length > LIMITE_CORPO) {
+    return res.status(413).json({ ok: false, erro: 'corpo grande demais' });
+  }
+
+  // Honeypot: o campo isca 'confirme' é invisível ao humano; preenchido = bot.
+  // Respondemos 200 (o bot pensa que funcionou) e NÃO repassamos ao fluxo.
+  if (typeof corpo.confirme === 'string' && corpo.confirme.trim() !== '') {
+    console.log('[lead] honeypot acionado; descartado sem repassar');
+    return res.status(200).json({ ok: true });
   }
 
   const validacao = validarLead(corpo);
