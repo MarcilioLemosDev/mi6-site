@@ -244,6 +244,74 @@ const cartoesHome = ordemHome
   .map((id) => cartoes.find((c) => c.seg === id))
   .filter((c): c is (typeof cartoes)[number] => Boolean(c));
 const cartaoInicial = cartoesHome.find((c) => c.ativo) ?? cartoesHome[0] ?? cartoes[0];
+
+// Dados estruturados (JSON-LD) para busca e mecanismos de resposta (Google,
+// AI Overviews, etc.). Só fatos confirmados: razão social, regulação BACEN,
+// sede, contatos e redes. CNPJ, endereço exato e número do processo BACEN
+// ficam de fora até serem confirmados, para não declarar dado incorreto.
+// A FAQPage é gerada da própria lista `faq`, então não duplica conteúdo.
+const SITE = 'https://mi6consorcio.com.br';
+const schemaSeo = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'FinancialService',
+      '@id': `${SITE}/#organizacao`,
+      name: 'MI6 Consórcio Nacional',
+      legalName: 'M.I6 Administradora de Consórcio Ltda.',
+      url: `${SITE}/`,
+      logo: `${SITE}/imgs/logo-mi6.png`,
+      image: `${SITE}/og.png`,
+      description:
+        'Administradora de consórcios autorizada e fiscalizada pelo Banco Central do Brasil, com sede em Porto Alegre e atuação nacional. Cartas de crédito para motos, carros, imóveis e mais, sem juros.',
+      areaServed: { '@type': 'Country', name: 'Brasil' },
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Porto Alegre',
+        addressRegion: 'RS',
+        addressCountry: 'BR',
+      },
+      contactPoint: [
+        {
+          '@type': 'ContactPoint',
+          telephone: '0800 000 5228',
+          contactType: 'customer service',
+          areaServed: 'BR',
+          availableLanguage: 'Portuguese',
+        },
+        {
+          '@type': 'ContactPoint',
+          telephone: '0800 000 5267',
+          contactType: 'ouvidoria',
+          areaServed: 'BR',
+          availableLanguage: 'Portuguese',
+        },
+      ],
+      sameAs: [
+        'https://www.instagram.com/mi6.consorcio/',
+        'https://www.facebook.com/61584214719614/',
+        'https://www.linkedin.com/company/110370080/',
+      ],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE}/#site`,
+      url: `${SITE}/`,
+      name: 'MI6 Consórcio Nacional',
+      inLanguage: 'pt-BR',
+      publisher: { '@id': `${SITE}/#organizacao` },
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${SITE}/#faq`,
+      mainEntity: faq.map((item) => ({
+        '@type': 'Question',
+        name: item.p,
+        acceptedAnswer: { '@type': 'Answer', text: item.r },
+      })),
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -279,6 +347,7 @@ const cartaoInicial = cartoesHome.find((c) => c.ativo) ?? cartoesHome[0] ?? cart
       content="Carta de crédito como poder de compra à vista, sem entrada e sem juros."
     />
     <meta name="twitter:image" content="https://mi6consorcio.com.br/og.png" />
+    <script type="application/ld+json" set:html={JSON.stringify(schemaSeo)} />
   </head>
   <body>
     <div class="veu" role="dialog" aria-label="Boas-vindas MI6">
