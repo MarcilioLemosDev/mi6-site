@@ -27,7 +27,8 @@ Playwright (já instalado) para os testes de DOM.
 | 6 | Portão automático (CI rodando a suíte) | — | ✅ no ar |
 | 2 | #2/#8 Endpoint (content-type, body cap, honeypot server-side) | 7 | ✅ verde |
 | 2 | Rate limit de plataforma (WAF/KV) | — | ⬜ tenant (Gate 2) |
-| 3 | Detecção & alerta (falha do fluxo, custo, volume) | — | ⬜ tenant |
+| 3 | Observabilidade: log estruturado de rejeições sem PII (SEC-12a) | 4 | ✅ verde |
+| 3 | Alerta automático (falha do fluxo, custo, volume) | — | ⬜ tenant |
 | 4 | CSP + cabeçalhos de segurança (HSTS fica para o go-live) | 2 | ✅ verde |
 | 5 | #4/#16 Vazamento de segredo (dist + git) | 2 + scanner | ✅ verde (varredura limpa) |
 | 5 | #12 Cadeia de dependências (npm audit) | 1 | ⬜ no CI (informativo) |
