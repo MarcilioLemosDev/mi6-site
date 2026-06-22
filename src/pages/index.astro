@@ -533,24 +533,30 @@ const cartaoInicial = cartoesHome.find((c) => c.ativo) ?? cartoesHome[0] ?? cart
               </div>
 
               <div class="sim-contato">
-                <p class="sim-zap-nota">Leve a sua simulação para o WhatsApp e fale agora com um consultor. Sem formulário, sem espera.</p>
+                <p class="sim-zap-nota">Preencha seus dados e leve a sua simulação direto para o WhatsApp.</p>
+                <label class="sim-campo">
+                  <span>Nome</span>
+                  <input type="text" name="nome" autocomplete="name" placeholder="Seu nome" required />
+                </label>
+                <div class="sim-campo-dupla">
+                  <label class="sim-campo">
+                    <span>Telefone</span>
+                    <input type="tel" name="telefone" autocomplete="tel" placeholder="(11) 90000-0000" required />
+                  </label>
+                  <label class="sim-campo">
+                    <span>E-mail</span>
+                    <input type="email" name="email" autocomplete="email" placeholder="voce@email.com" required />
+                  </label>
+                </div>
                 <input type="text" name="confirme" class="sim-mel" tabindex="-1" autocomplete="off" aria-hidden="true" />
                 <button type="submit" class="cta sim-cta sim-zap">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.7 13.7L3 21l4.5-1.2A9 9 0 1 0 12 3z" /><circle cx="9" cy="12" r="1" fill="currentColor" stroke="none" /><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" /><circle cx="15" cy="12" r="1" fill="currentColor" stroke="none" /></svg>
                   Falar no WhatsApp
                 </button>
+                <p class="sim-zap-aviso" id="sim-zap-aviso" hidden>
+                  Abrimos o WhatsApp com a sua simulação. <a class="sim-zap-link" id="sim-zap-fallback" href="#" target="_blank" rel="noopener">Não abriu? Toque para abrir.</a>
+                </p>
               </div>
-            </div>
-
-            <div class="sim-sucesso" id="sim-sucesso" hidden>
-              <span class="sim-check" aria-hidden="true"></span>
-              <h3>Sua simulação foi para o WhatsApp.</h3>
-              <p>
-                Abrimos a conversa com a sua simulação de
-                <strong id="sim-sucesso-seg">motos</strong> já preenchida. É só
-                enviar e um consultor da MI6 continua com você por lá.
-              </p>
-              <a class="sim-zap-link" id="sim-zap-fallback" href="#" target="_blank" rel="noopener">Não abriu o WhatsApp? Toque aqui.</a>
             </div>
           </form>
         </div>
@@ -1037,19 +1043,31 @@ const cartaoInicial = cartoesHome.find((c) => c.ativo) ?? cartoesHome[0] ?? cart
         const mel = simCard.querySelector<HTMLInputElement>('.sim-mel');
         if (mel && mel.value) return; // isca anti-robô preenchida: ignora
 
+        const campo = (n: string) =>
+          (simCard.querySelector<HTMLInputElement>(`[name="${n}"]`)?.value ?? '').trim();
+        const nome = campo('nome');
+        const telefone = campo('telefone');
+        const email = campo('email');
+
         const segNome = nomesSeg[segAtual] ?? segAtual;
         const segCap = segNome.charAt(0).toUpperCase() + segNome.slice(1);
         const creditoRaw = (document.getElementById('sim-credito') as HTMLInputElement | null)?.value ?? '';
         const creditoFmt = creditoRaw ? Number(creditoRaw).toLocaleString('pt-BR') : '';
         const parcela = document.getElementById('sim-parcela')?.textContent?.trim() ?? '';
 
-        // O "card" da simulação em texto, pronto para o cliente enviar.
+        // O "card" da simulação em texto: vai para o WhatsApp e, no campo
+        // "resumo", também para o e-mail do lead. Por isso os campos opcionais
+        // (nome, telefone, e-mail) entram aqui sem precisar mexer no fluxo.
         const msg = [
-          'Olá! Fiz uma simulação no site da MI6 e quero falar com um consultor.',
+          nome
+            ? `Olá! Sou ${nome}. Fiz uma simulação no site da MI6 e quero falar com um consultor.`
+            : 'Olá! Fiz uma simulação no site da MI6 e quero falar com um consultor.',
           '',
           `Carta de crédito: ${segCap}`,
           creditoFmt ? `Crédito: R$ ${creditoFmt}` : '',
           parcela ? `Parcela: R$ ${parcela} por mês, sem juros` : '',
+          telefone ? `Telefone: ${telefone}` : '',
+          email ? `E-mail: ${email}` : '',
         ].filter(Boolean).join('\n');
         const urlZap = WHATSAPP ? `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}` : '';
 
@@ -1061,6 +1079,9 @@ const cartaoInicial = cartoesHome.find((c) => c.ativo) ?? cartoesHome[0] ?? cart
         // servidor e devolvendo sucesso/erro de verdade.
         const lead = {
           data_hora: new Date().toISOString(),
+          nome,
+          telefone,
+          email,
           segmento: segAtual,
           credito: creditoRaw,
           parcela,
@@ -1075,19 +1096,15 @@ const cartaoInicial = cartoesHome.find((c) => c.ativo) ?? cartoesHome[0] ?? cart
           .then((r) => { if (!r.ok) console.warn('[MI6] registro de lead retornou', r.status); })
           .catch((err) => console.error('[MI6] falha ao registrar lead:', err));
 
-        // Confirmação na tela, com link de reserva caso o WhatsApp não abra.
-        const corpo = document.getElementById('sim-corpo');
-        const sucesso = document.getElementById('sim-sucesso');
-        const seg = document.getElementById('sim-sucesso-seg');
+        // Confirmação leve, sem travar o simulador: o botão segue ali para o
+        // cliente tentar de novo, e o link abre o WhatsApp se a aba não abriu.
+        const aviso = document.getElementById('sim-zap-aviso');
         const fallback = document.getElementById('sim-zap-fallback') as HTMLAnchorElement | null;
-        if (seg) seg.textContent = segNome;
-        if (fallback) {
-          if (urlZap) fallback.href = urlZap;
-          else fallback.setAttribute('hidden', '');
+        if (fallback && urlZap) fallback.href = urlZap;
+        if (aviso) {
+          aviso.removeAttribute('hidden');
+          if (motionOk) gsap.from(aviso, { autoAlpha: 0, y: 8, duration: 0.4, ease: 'power2.out' });
         }
-        corpo?.setAttribute('hidden', '');
-        sucesso?.removeAttribute('hidden');
-        if (motionOk) gsap.from(sucesso, { autoAlpha: 0, y: 16, duration: 0.5, ease: 'power3.out' });
       });
 
       type Cartao = { seg: string; nome: string; posse: string; valor: string; ativo: boolean; c1: string; c2: string };
@@ -3291,9 +3308,14 @@ const cartaoInicial = cartoesHome.find((c) => c.ativo) ?? cartoesHome[0] ?? cart
   .sim-sucesso strong {
     color: var(--navy);
   }
-  .sim-zap-link {
-    display: inline-block;
+  .sim-zap-aviso {
+    margin: 0.9rem 0 0;
     font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--tinta-suave);
+    text-align: center;
+  }
+  .sim-zap-link {
     color: var(--tinta-suave);
     text-decoration: underline;
     text-underline-offset: 0.2em;
