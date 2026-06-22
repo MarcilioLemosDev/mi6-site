@@ -28,7 +28,7 @@ Playwright (já instalado) para os testes de DOM.
 | 2 | #2/#8 Endpoint (content-type, body cap, honeypot server-side) | 7 | ✅ verde |
 | 2 | Rate limit de plataforma (WAF/KV) | — | ⬜ tenant (Gate 2) |
 | 3 | Detecção & alerta (falha do fluxo, custo, volume) | — | ⬜ tenant |
-| 4 | CSP + cabeçalhos de segurança | ~2 | ⬜ a fazer |
+| 4 | CSP + cabeçalhos de segurança (HSTS fica para o go-live) | 2 | ✅ verde |
 | 5 | #4/#16 Vazamento de segredo (dist + git) | ~3 | ⬜ a fazer |
 | 5 | #12 Cadeia de dependências (npm audit) | 1 | ⬜ no CI (informativo) |
 | 5 | #6 XSS / DOM (Playwright) | ~3 | ⬜ a verificar |
