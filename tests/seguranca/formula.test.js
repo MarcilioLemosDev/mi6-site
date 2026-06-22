@@ -39,3 +39,18 @@ for (const [entrada, nome] of legitimos) {
     assert.equal(neutralizarFormula(entrada), entrada);
   });
 }
+
+// Bypasses de Unicode (negative space que o red team não cobriu):
+const ZWSP = String.fromCharCode(0x200b); // espaço de largura zero
+const bypasses = [
+  [ZWSP + '=cmd', 'zero-width antes do igual'],
+  ['＝' + 'cmd', 'sinal de igual em forma larga (NFKC)'],
+];
+
+for (const [entrada, nome] of bypasses) {
+  test(`#1 bypass unicode neutralizado: ${nome}`, () => {
+    const saida = neutralizarFormula(entrada);
+    assert.ok(saida.startsWith("'"), `esperava prefixo, veio: ${JSON.stringify(saida)}`);
+    assert.equal(saida.slice(1), entrada);
+  });
+}

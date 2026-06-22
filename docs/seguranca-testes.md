@@ -20,14 +20,22 @@ Playwright (já instalado) para os testes de DOM.
 
 ## Fases
 
-| Fase | Ponto (red team) | Testes | Status |
+| WS | Ponto (red team) | Testes | Status |
 |---|---|---|---|
-| 1 | #1 Injeção de fórmula em planilha | 10 | ✅ verde |
-| 2 | #7 Injeção em e-mail (header/HTML) | ~6 | ⬜ a fazer |
-| 3 | #2/#8 Abuso e validação do endpoint | ~8 | ⬜ a fazer |
-| 4 | #4/#16 Vazamento de segredo (dist + git) | ~3 | ⬜ a fazer |
-| 5 | #6 XSS / DOM (Playwright) | ~3 | ⬜ a fazer |
-| 6 | #12 Cadeia de dependências (npm audit) | 1 | ⬜ a fazer |
+| 1 | #1 Injeção de fórmula (+ bypass unicode) | 12 | ✅ verde |
+| 1 | #7 Injeção em e-mail + validação positiva | 14 | ✅ verde |
+| 6 | Portão automático (CI rodando a suíte) | — | ✅ no ar |
+| 2 | #2/#8 Endpoint (content-type, body cap, honeypot server-side) | ~6 | ⬜ a fazer |
+| 2 | Rate limit de plataforma (WAF/KV) | — | ⬜ tenant (Gate 2) |
+| 3 | Detecção & alerta (falha do fluxo, custo, volume) | — | ⬜ tenant |
+| 4 | CSP + cabeçalhos de segurança | ~2 | ⬜ a fazer |
+| 5 | #4/#16 Vazamento de segredo (dist + git) | ~3 | ⬜ a fazer |
+| 5 | #12 Cadeia de dependências (npm audit) | 1 | ⬜ no CI (informativo) |
+| 5 | #6 XSS / DOM (Playwright) | ~3 | ⬜ a verificar |
+
+**Espelho no fluxo (defesa em profundidade):** a neutralização de fórmula tem
+de existir TAMBÉM na etapa do Power Automate que escreve a célula, porque a SAS
+URL é chamável direto se vazar. Trilha do tenant (cowork), não trava o Gate 1.
 
 As primitivas de sanitização (`neutralizarFormula`, depois `limparCampo`)
 vivem em `lib/seguranca.js` e são plugadas no único ponto de estrangulamento,
@@ -48,11 +56,21 @@ configuração no ambiente, com dono indicado:
 
 ## Registro das fases
 
-### Fase 1 — Injeção de fórmula em planilha (✅)
+### WS1 — Defesa do dado (✅, lado da função)
 
-`lib/seguranca.js: neutralizarFormula()`. Prefixa com apóstrofo qualquer valor
-cujo primeiro caractere de conteúdo seja `=`, `+`, `-` ou `@` (gatilhos de
-fórmula do Excel), ignorando espaços/tab/CR à esquerda, sem mutilar o conteúdo
-e sem tocar em texto legítimo. 10 testes em `tests/seguranca/formula.test.js`
-(8 ataques + 2 legítimos). Demonstração: contra o stub inicial, os 8 ataques
-falharam (vermelho) e os 2 legítimos passaram; após a correção, 10/10 verdes.
+`lib/seguranca.js` reúne as primitivas, plugadas no ponto único `api/lead.js`
+(valida → sanitiza → repassa):
+
+- `neutralizarFormula()` prefixa com apóstrofo valor cujo primeiro caractere de
+  conteúdo seja `=`, `+`, `-` ou `@`, ignorando branco e invisíveis à esquerda
+  e normalizando NFKC (pega zero-width e forma larga `＝`). 12 testes.
+- `validarLead()` valida por formato (e-mail, telefone, tamanho do nome) antes
+  de tudo: e-mail/telefone válidos não conseguem carregar fórmula nem cabeçalho.
+- `limparCampo()` troca CR/LF/controle por espaço e remove `< >` (anti header e
+  HTML injection), preservando acentos; mantém quebras legítimas no resumo.
+- `sanitizarLead()` aplica tudo a todos os campos, incluindo `resumo`.
+
+26 testes em `tests/seguranca/` (formula + validacao), todos verdes. Baseline
+vermelho demonstrado na primeira rodada (#1 com 8 ataques falhando no stub).
+
+Pendente do WS1: o espelho da neutralização no fluxo do Power Automate (tenant).

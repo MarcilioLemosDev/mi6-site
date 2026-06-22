@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      # Portão de segurança (WS6): a suíte tem de passar para o merge seguir.
+      - run: npm test
+      - run: npm run build
+      # Auditoria de dependências (WS5/#12): informativa por enquanto; vira
+      # bloqueante quando a triagem de high/critical estiver feita.
+      - name: npm audit (informativo)
+        run: npm audit --audit-level=high
+        continue-on-error: true
