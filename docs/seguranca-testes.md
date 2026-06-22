@@ -32,7 +32,7 @@ Playwright (já instalado) para os testes de DOM.
 | 4 | CSP + cabeçalhos de segurança (HSTS fica para o go-live) | 2 | ✅ verde |
 | 5 | #4/#16 Vazamento de segredo (dist + git) | 2 + scanner | ✅ verde (varredura limpa) |
 | 5 | #12 Cadeia de dependências (npm audit) | 1 | ⬜ no CI (informativo) |
-| 5 | #6 XSS / DOM (Playwright) | ~3 | ⬜ a verificar |
+| 5 | #6 XSS / DOM (Playwright, em Chromium real) | 1 | ✅ verde (não executa) |
 
 **Espelho no fluxo (defesa em profundidade):** a neutralização de fórmula tem
 de existir TAMBÉM na etapa do Power Automate que escreve a célula, porque a SAS
