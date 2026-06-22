@@ -550,7 +550,7 @@ const cartaoInicial = cartoesHome.find((c) => c.ativo) ?? cartoesHome[0] ?? cart
                 <strong id="sim-sucesso-seg">motos</strong> já preenchida. É só
                 enviar e um consultor da MI6 continua com você por lá.
               </p>
-              <a class="cta cta-navy" id="sim-zap-fallback" href="#" target="_blank" rel="noopener">Não abriu? Toque para abrir o WhatsApp</a>
+              <a class="sim-zap-link" id="sim-zap-fallback" href="#" target="_blank" rel="noopener">Não abriu o WhatsApp? Toque aqui.</a>
             </div>
           </form>
         </div>
@@ -3290,6 +3290,16 @@ const cartaoInicial = cartoesHome.find((c) => c.ativo) ?? cartoesHome[0] ?? cart
   }
   .sim-sucesso strong {
     color: var(--navy);
+  }
+  .sim-zap-link {
+    display: inline-block;
+    font-size: 0.82rem;
+    color: var(--tinta-suave);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .sim-zap-link:hover {
+    color: var(--vermelho);
   }
   .sim-nota {
     font-size: 0.75rem;
