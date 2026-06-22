@@ -1025,13 +1025,12 @@ const cartaoInicial = cartoesHome.find((c) => c.ativo) ?? cartoesHome[0] ?? cart
         a.addEventListener('click', () => escolherSegmento(a.dataset.segmento ?? 'motos'));
       });
 
-      // Captação via WhatsApp: o botão leva a simulação (o "card" em texto) para
-      // uma conversa já preenchida, sem formulário. Em paralelo, registra o lead
-      // num fluxo (que dispara o e-mail de leads para a MI6). Endereços vêm de
-      // envs de produção (defina na Vercel):
-      //   PUBLIC_WHATSAPP       número da MI6, só dígitos com DDI (ex 5551999990000)
-      //   PUBLIC_LEAD_ENDPOINT  fluxo que envia o e-mail do lead
-      const LEAD_ENDPOINT = (import.meta.env.PUBLIC_LEAD_ENDPOINT as string | undefined) ?? '';
+      // Captação via WhatsApp + registro do lead. O botão leva a simulação (o
+      // "card" em texto) para o WhatsApp já preenchido; em paralelo, registra o
+      // lead em /api/lead (função serverless da MI6), que repassa ao fluxo do
+      // Power Automate sem expor a URL assinada no navegador.
+      // Env do cliente: PUBLIC_WHATSAPP (número da MI6, só dígitos com DDI).
+      // Env do servidor (na função, secreta): LEAD_ENDPOINT (URL SAS do fluxo).
       const WHATSAPP = ((import.meta.env.PUBLIC_WHATSAPP as string | undefined) ?? '').replace(/\D/g, '');
       simCard?.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -1057,26 +1056,24 @@ const cartaoInicial = cartoesHome.find((c) => c.ativo) ?? cartoesHome[0] ?? cart
         // Abre o WhatsApp ainda no gesto do clique (evita bloqueio de pop-up).
         if (urlZap) window.open(urlZap, '_blank', 'noopener,noreferrer');
 
-        // Registro paralelo do lead, que dispara o e-mail. text/plain + no-cors:
-        // requisição simples, sem preflight CORS, aceita pelo gatilho HTTP.
+        // Registro do lead via função serverless (/api/lead), mesma origem, que
+        // repassa ao fluxo do Power Automate mantendo a URL como segredo de
+        // servidor e devolvendo sucesso/erro de verdade.
         const lead = {
           data_hora: new Date().toISOString(),
           segmento: segAtual,
           credito: creditoRaw,
           parcela,
           resumo: msg,
-          origem: 'site/conceito-b/simulador',
+          origem: 'site/mi6/simulador',
         };
-        if (LEAD_ENDPOINT) {
-          fetch(LEAD_ENDPOINT, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-            body: JSON.stringify(lead),
-          }).catch((err) => console.error('[MI6] Falha ao registrar lead:', err));
-        } else {
-          console.warn('[MI6] PUBLIC_LEAD_ENDPOINT não definido: lead não registrado (modo demonstração).');
-        }
+        fetch('/api/lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(lead),
+        })
+          .then((r) => { if (!r.ok) console.warn('[MI6] registro de lead retornou', r.status); })
+          .catch((err) => console.error('[MI6] falha ao registrar lead:', err));
 
         // Confirmação na tela, com link de reserva caso o WhatsApp não abra.
         const corpo = document.getElementById('sim-corpo');
