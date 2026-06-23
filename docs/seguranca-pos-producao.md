@@ -70,3 +70,19 @@ infraestrutura.
   Política perto do botão do WhatsApp) e alinhar o texto de cookies à realidade.
 - **Coletor de relatórios da CSP** (report-uri/report-to) para enxergar
   violações sem depender do console do navegador.
+
+## Operação / prontidão (trazido pelo coordenador na revisão de fechamento)
+
+Enquanto SEC-07b/SEC-12b (alertas automáticos) e SEC-08 (rate limit) não
+entram, a operação cobre o intervalo na mão:
+
+- **Vigilância manual na semana 1:** alguém olha os logs da Vercel (eventos
+  `"ev":"lead"`) periodicamente para flagrar pico de rejeições ou de honeypots,
+  ou seja, abuso em andamento. Hoje a detecção existe (logs), mas o **aviso
+  ativo não**; isso é tarefa humana até o SEC-07b.
+- **Monitorar volume/custo** do Power Automate e da função até o WAF (SEC-08).
+- **Plano de rollback:** site estático + função; reverter = redeploy do build
+  anterior na Vercel (Deployments → Promote/Redeploy a versão boa). Sem migração
+  de dados envolvida, então é rápido e seguro.
+- **Dono:** operação (Marcílio/time), com a engenharia de apoio na leitura dos
+  logs. Encerrar quando os alertas automáticos estiverem no ar.
