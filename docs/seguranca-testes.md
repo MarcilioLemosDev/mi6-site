@@ -53,7 +53,7 @@ configuração no ambiente, com dono indicado:
 - #13 SPF/DKIM/DMARC do domínio — DNS (Marcílio).
 - #14 HTTPS/HSTS e subdomain takeover — DNS/Vercel (Marcílio).
 - #15 Acesso ao Excel/fluxo, retenção e backup dos leads — Microsoft 365 (Marcílio).
-- Rotação do segredo `LEAD_ENDPOINT` — procedimento documentado.
+- Rotação do segredo `LEAD_ENDPOINT` — ✅ runbook em `docs/runbook-rotacao-segredo.md`.
 
 ## Registro das fases
 
