@@ -647,6 +647,9 @@ const schemaSeo = {
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.7 13.7L3 21l4.5-1.2A9 9 0 1 0 12 3z" /><circle cx="9" cy="12" r="1" fill="currentColor" stroke="none" /><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" /><circle cx="15" cy="12" r="1" fill="currentColor" stroke="none" /></svg>
                   Falar no WhatsApp
                 </button>
+                <p class="sim-zap-consent">
+                  Ao enviar, você concorda que a MI6 use os dados informados para entrar em contato sobre o consórcio, conforme a <a href="/politica-de-privacidade/">Política de Privacidade</a>.
+                </p>
                 <p class="sim-zap-aviso" id="sim-zap-aviso" hidden>
                   Abrimos o WhatsApp com a sua simulação. <a class="sim-zap-link" id="sim-zap-fallback" href="#" target="_blank" rel="noopener">Não abriu? Toque para abrir.</a>
                 </p>
@@ -3335,6 +3338,19 @@ const schemaSeo = {
     margin: 0 0 1.1rem;
     font-size: 0.92rem;
     color: var(--tinta-suave);
+  }
+  .sim-zap-consent {
+    margin: 0.75rem 0 0;
+    font-size: 0.72rem;
+    line-height: 1.4;
+    text-align: center;
+    color: var(--tinta-suave);
+    opacity: 0.85;
+  }
+  .sim-zap-consent a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
   .sim-cta.sim-zap {
     display: inline-flex;
