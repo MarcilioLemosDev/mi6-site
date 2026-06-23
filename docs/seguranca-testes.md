@@ -43,6 +43,13 @@ vivem em `lib/seguranca.js` e são plugadas no único ponto de estrangulamento,
 a função `api/lead.js`, na Fase 3 (endpoint), para que todo lead passe por uma
 sanitização só antes de virar e-mail/planilha.
 
+## Sprint de código: ENCERRADO
+
+Todas as tarefas de código do sprint estão verdes: SEC-01, SEC-02, SEC-04,
+SEC-05, SEC-06a, SEC-12a, SEC-13, SEC-14, SEC-15 e SEC-17. **42 testes** na
+suíte + scanner de segredo + gate de `npm audit`, tudo no CI. O que depende de
+tenant/DNS foi registrado em `docs/seguranca-pos-producao.md`.
+
 ## Fora da suíte (checklist de smoke pós-deploy / ações no tenant)
 
 Não são testáveis por unidade; viram verificação em runtime (curl/dig) ou
