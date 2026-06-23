@@ -24,8 +24,8 @@ jobs:
       # Varredura de segredo (SEC-06a): a SAS URL não pode estar no bundle nem
       # no histórico. Roda após o build para inspecionar o dist/ também.
       - run: npm run audit:segredos
-      # Auditoria de dependências (WS5/#12): informativa por enquanto; vira
-      # bloqueante quando a triagem de high/critical estiver feita.
-      - name: npm audit (informativo)
+      # Auditoria de dependências (WS5/#12), bloqueante a partir de high.
+      # Triagem em docs/seguranca-testes.md: hoje só há low/moderate não
+      # aplicáveis (dev server / devDependency), nenhum high/critical.
+      - name: npm audit (bloqueante em high)
         run: npm audit --audit-level=high
-        continue-on-error: true

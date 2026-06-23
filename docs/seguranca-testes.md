@@ -31,7 +31,7 @@ Playwright (já instalado) para os testes de DOM.
 | 3 | Alerta automático (falha do fluxo, custo, volume) | — | ⬜ tenant |
 | 4 | CSP + cabeçalhos de segurança (HSTS fica para o go-live) | 2 | ✅ verde |
 | 5 | #4/#16 Vazamento de segredo (dist + git) | 2 + scanner | ✅ verde (varredura limpa) |
-| 5 | #12 Cadeia de dependências (npm audit) | 1 | ⬜ no CI (informativo) |
+| 5 | #12 Cadeia de dependências (npm audit) | gate CI | ✅ bloqueante em high |
 | 5 | #6 XSS / DOM (Playwright, em Chromium real) | 1 | ✅ verde (não executa) |
 
 **Espelho no fluxo (defesa em profundidade):** a neutralização de fórmula tem
@@ -75,3 +75,18 @@ configuração no ambiente, com dono indicado:
 vermelho demonstrado na primeira rodada (#1 com 8 ataques falhando no stub).
 
 Pendente do WS1: o espelho da neutralização no fluxo do Power Automate (tenant).
+
+### SEC-14 — Triagem de dependências (✅, gate bloqueante em high)
+
+`npm audit` em 2026-06: **nenhuma high/critical**. O que existe:
+
+- **Produção:** 2 low no `esbuild` (via Astro), advisory de leitura de arquivo
+  no **dev server em Windows**. Não se aplica: produção é estática, sem dev
+  server. Aceito.
+- **5 moderate** na cadeia `potrace → jimp → phin`, que é **devDependency**
+  (traço de imagem em build), nunca embarcada no site. Aceito.
+
+Decisão: **não** rodar `audit fix --force` (instalaria Astro 7 e potrace 2.1.1,
+breaking) por questões low/moderate não aplicáveis às vésperas do go-live. O CI
+bloqueia a partir de **high**, então qualquer regressão séria futura quebra o
+build. Reavaliar o upgrade do Astro como item de manutenção pós-produção.
