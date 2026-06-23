@@ -18,9 +18,10 @@ jobs:
       - run: npm ci
       # Browser para o teste de XSS/DOM (SEC-13); se faltar, o teste se auto-pula.
       - run: npx playwright install --with-deps chromium
+      # Build ANTES dos testes: o teste de XSS serve o dist/.
+      - run: npm run build
       # Portão de segurança (WS6): a suíte tem de passar para o merge seguir.
       - run: npm test
-      - run: npm run build
       # Varredura de segredo (SEC-06a): a SAS URL não pode estar no bundle nem
       # no histórico. Roda após o build para inspecionar o dist/ também.
       - run: npm run audit:segredos

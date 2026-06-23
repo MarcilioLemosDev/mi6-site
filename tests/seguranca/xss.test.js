@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { join, extname, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -29,8 +30,13 @@ let server;
 let browser;
 let base;
 let semBrowser;
+let semDist;
 
 before(async () => {
+  if (!existsSync(join(DIST, 'index.html'))) {
+    semDist = true; // sem build: o teste serve o dist/ (rode `npm run build`)
+    return;
+  }
   server = createServer(async (req, res) => {
     try {
       let p = decodeURIComponent(req.url.split('?')[0]);
@@ -62,6 +68,10 @@ after(async () => {
 });
 
 test('SEC-13 payload XSS no formulario nao executa nem vira HTML', async (t) => {
+  if (semDist) {
+    t.skip('dist ausente: rode `npm run build` antes dos testes');
+    return;
+  }
   if (semBrowser) {
     t.skip('chromium indisponivel: ' + semBrowser);
     return;
