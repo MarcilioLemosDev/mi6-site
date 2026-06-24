@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # histórico completo para a varredura de segredo
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      # Browser para o teste de XSS/DOM (SEC-13); se faltar, o teste se auto-pula.
+      - run: npx playwright install --with-deps chromium
+      # Build ANTES dos testes: o teste de XSS serve o dist/.
+      - run: npm run build
+      # Portão de segurança (WS6): a suíte tem de passar para o merge seguir.
+      - run: npm test
+      # Varredura de segredo (SEC-06a): a SAS URL não pode estar no bundle nem
+      # no histórico. Roda após o build para inspecionar o dist/ também.
+      - run: npm run audit:segredos
+      # Auditoria de dependências (WS5/#12), bloqueante a partir de high.
+      # Triagem em docs/seguranca-testes.md: hoje só há low/moderate não
+      # aplicáveis (dev server / devDependency), nenhum high/critical.
+      - name: npm audit (bloqueante em high)
+        run: npm audit --audit-level=high

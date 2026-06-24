@@ -1,0 +1,4272 @@
+---
+import '@fontsource/instrument-serif';
+import '@fontsource/instrument-serif/400-italic.css';
+import '@fontsource-variable/archivo';
+import '@fontsource-variable/geist';
+import '@fontsource/ibm-plex-mono';
+import '@fontsource/ibm-plex-mono/500.css';
+import dados from '../dados/grupos.json';
+import marca from '../dados/mi6-traco.json';
+
+// CONCEITO A, DOSSIÊ (v2.1)
+// Refino pós-feedback: mantém a modernidade navy cinematográfica e ganha a
+// humanização do conceito B. Foto humana em duotone dentro de uma lente
+// circular no hero, ritmo claro/escuro entre seções, fotos que ganham cor
+// ao toque. Texto: o do site atual, com ajuste fino.
+
+const segmentos = [
+  {
+    n: '01',
+    id: 'carros',
+    nome: 'Consórcio de carros',
+    img: '/play-assets/carros.webp',
+    alt: 'Casal observa um carro em uma concessionária',
+  },
+  {
+    n: '02',
+    id: 'pesados',
+    nome: 'Consórcio de pesados',
+    img: '/play-assets/pesados.webp',
+    alt: 'Motorista conversa na cabine de um caminhão',
+  },
+  {
+    n: '03',
+    id: 'motos',
+    nome: 'Consórcio de motos',
+    img: '/play-assets/moto.webp',
+    alt: 'Homem de jaqueta ajusta uma moto em uma garagem',
+  },
+  {
+    n: '04',
+    id: 'imoveis',
+    nome: 'Consórcio de imóveis',
+    img: '/play-assets/imoveis.webp',
+    alt: 'Pessoas conversam em um apartamento vazio de janelas amplas',
+  },
+  {
+    n: '05',
+    id: 'servicos',
+    nome: 'Consórcio de serviços',
+    img: '/play-assets/servicos.webp',
+    alt: 'Profissional em ambiente de serviços',
+  },
+  {
+    n: '06',
+    id: 'eletro',
+    nome: 'Consórcio de eletro',
+    img: '/play-assets/eletro.webp',
+    alt: 'Casal no sofá da sala olhando um tablet',
+  },
+];
+
+const passos = [
+  'Escolha o plano ideal voltado para seu objetivo e com o valor de crédito compatível.',
+  'Você passa a integrar um grupo de consórcio e contribui com parcelas mensais.',
+  'A cada mês, os participantes devem aguardar serem contemplados por sorteio ou oferta de lance.',
+  'Após a contemplação, utilize o crédito para adquirir o bem conforme o segmento contratado.',
+];
+
+const vantagens = [
+  {
+    titulo: 'Sem entrada e juros',
+    texto:
+      'Comece a poupar e invista no seu objetivo sem pagar juros bancários ou dar entrada no início do plano.',
+  },
+  {
+    titulo: 'Planejamento acessível',
+    texto:
+      'Parcelas que cabem no bolso e ajudam você a conquistar seus bens com mais tranquilidade.',
+  },
+  {
+    titulo: 'Liberdade de escolha',
+    texto:
+      'Escolha como e quando usar seu crédito, de acordo com seus objetivos e necessidades nos principais segmentos.',
+  },
+];
+
+const diferenciais = [
+  {
+    titulo: 'Consultoria personalizada',
+    texto: 'Conte com o apoio de especialistas para escolher o melhor plano e aproveitar as melhores condições.',
+  },
+  {
+    titulo: 'Boas chances de contemplação',
+    texto: 'Participe com lances livres, embutidos ou fixos, além dos sorteios mensais pela Loteria Federal.',
+  },
+  {
+    titulo: 'Segurança e transparência',
+    texto: 'Clareza em todas as etapas. Sem inconsistências no contrato ou taxas abusivas.',
+  },
+];
+
+const faq = [
+  {
+    p: 'Como funciona o consórcio?',
+    r: 'O consórcio é uma forma de compra planejada em que um grupo de pessoas contribui mensalmente para formar um fundo comum. Todo mês, um ou mais participantes são contemplados por sorteio ou lance e recebem uma carta de crédito para adquirir o bem desejado, sem juros, apenas com taxa de administração.',
+  },
+  {
+    p: 'O que compõe o valor da minha parcela?',
+    r: 'A parcela mensal corresponde à soma dos percentuais referentes ao Fundo Comum, ao Fundo de Reserva, à Taxa de Administração e ao Prêmio de Seguro Prestamista, se contratado.',
+  },
+  {
+    p: 'Consórcio ou financiamento: qual escolher?',
+    r: 'O consórcio é ideal para quem quer planejar a compra sem pressa, pois não tem juros, apenas taxa de administração. Já o financiamento libera o bem de imediato, mas inclui juros e pode ter um custo maior ao longo do tempo.',
+  },
+  {
+    p: 'Consórcio vale a pena?',
+    r: 'Sim, principalmente para quem deseja planejar a compra sem pagar juros. No Consórcio Nacional MI6, você pode adquirir imóveis, veículos, equipamentos ou eletroeletrônicos com parcelas acessíveis e flexibilidade para ofertar lances e antecipar a contemplação.',
+  },
+];
+
+// Grupo ativo de motos: parâmetros vêm do espelho da tabela verdade
+// (src/dados/grupos.json), que na fase 3 será alimentado pelo Excel do 365.
+const grupoMotos = dados.grupos.find((g) => g.segmento === 'motos' && g.status === 'ativo')!;
+const brlServidor = (v: number) =>
+  'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const pct = (v: number) => (v * 100).toLocaleString('pt-BR');
+const numServidor = (v: number) =>
+  v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+// Conta enxuta: a parcela e a taxa de administração convertida a taxa mensal.
+// Tudo derivado do grupo no banco (grupos.json), sem números fixos no código.
+const calcParcela = (g: typeof grupoMotos, credito: number) =>
+  (credito * (1 + g.taxa_administracao + g.fundo_reserva)) / g.prazo_restante_meses;
+const calcComSeguro = (g: typeof grupoMotos, credito: number) => {
+  const base = credito * (1 + g.taxa_administracao + g.fundo_reserva);
+  return base / g.prazo_restante_meses + base * g.seguro_prestamista_mes;
+};
+const taxaMensal = (g: typeof grupoMotos) => (g.taxa_administracao / g.prazo_restante_meses) * 100;
+
+const simInicial = {
+  credito: grupoMotos.credito_padrao.toLocaleString('pt-BR'),
+  // Parcela exibida sempre com seguro prestamista (regra do produto: obrigatório).
+  parcela: numServidor(calcComSeguro(grupoMotos, grupoMotos.credito_padrao)),
+  taxaMensal: numServidor(taxaMensal(grupoMotos)),
+};
+
+// Ticket do hero "parcelas a partir de": menor parcela entre os grupos ativos,
+// calculada do crédito mínimo de cada um. Quando novos grupos/segmentos forem
+// conectados no banco, o ticket se atualiza sozinho.
+const nomeSeg: Record<string, string> = {
+  carros: 'Carros', pesados: 'Pesados', motos: 'Motos',
+  imoveis: 'Imóveis', servicos: 'Serviços', eletro: 'Eletro',
+};
+const grupoDestaque = dados.grupos
+  .filter((g) => g.status === 'ativo')
+  .map((g) => ({ g, p: calcComSeguro(g, g.credito_min) }))
+  .sort((a, b) => a.p - b.p)[0];
+const ticket = grupoDestaque
+  ? {
+      rotulo: `${nomeSeg[grupoDestaque.g.segmento] ?? grupoDestaque.g.segmento} · grupos ativos`,
+      valor: brlServidor(grupoDestaque.p),
+      dia: Math.ceil(grupoDestaque.p / 30),
+    }
+  : null;
+
+// Marca viva: guias de caligrafia no ângulo do talhe do logo (medido na
+// barra vermelha: dx/dy = -0,3345), prolongadas para fora da tela.
+const talhe = -0.3345;
+const guiaInclinada = (xBase: number) => ({
+  x1: xBase + (-1500 - 376) * talhe,
+  y1: -1500,
+  x2: xBase + (1900 - 376) * talhe,
+  y2: 1900,
+});
+const guiasInclinadas = [60, 250, 640].map(guiaInclinada);
+const guiaBarra = guiaInclinada(388);
+
+// Cartões por segmento, navegáveis por setas. Cada segmento tem um tom
+// próprio dentro da paleta da marca (azul, preto, vermelho da bandeira),
+// sóbrio. A faixa de crédito (mínimo a máximo) vem do grupo ativo; segmento
+// sem grupo aparece como "Em breve", sem inventar valor.
+const temas: Record<string, [string, string]> = {
+  carros: ['#0a2c66', '#02112e'],
+  pesados: ['#2a2f3a', '#0b0e14'],
+  motos: ['#06204e', '#4e0f1c'],
+  imoveis: ['#103a72', '#05152f'],
+  servicos: ['#1a2740', '#080d18'],
+  eletro: ['#07265a', '#020a18'],
+};
+const cartoes = segmentos.map((s) => {
+  const g = dados.grupos.find((x) => x.segmento === s.id && x.status === 'ativo');
+  const [c1, c2] = temas[s.id] ?? ['#012169', '#01112f'];
+  // O cartão materializa o bem: "Sua moto", "Seu imóvel". Posse por segmento.
+  const posses: Record<string, string> = {
+    carros: 'Seu carro',
+    pesados: 'Seu caminhão',
+    motos: 'Sua moto',
+    imoveis: 'Seu imóvel',
+    servicos: 'Seu serviço',
+    eletro: 'Seu eletro',
+  };
+  return {
+    seg: s.id,
+    nome: s.nome.replace('Consórcio de ', ''),
+    posse: posses[s.id] ?? 'Seu bem',
+    valor: g
+      ? `R$ ${g.credito_min.toLocaleString('pt-BR')} a ${g.credito_max.toLocaleString('pt-BR')}`
+      : 'Em breve',
+    ativo: !!g,
+    c1,
+    c2,
+  };
+});
+// Parâmetros de cálculo de cada grupo ativo, indexados por segmento, para o
+// simulador trocar a conta ao clicar no chip. Tudo derivado do espelho
+// (grupos.json): ativar um segmento novo (casa, carro...) é só acrescentar o
+// grupo no JSON com status "ativo"; o simulador passa a calculá-lo sozinho.
+const gruposSim = Object.fromEntries(
+  dados.grupos
+    .filter((g) => g.status === 'ativo')
+    .map((g) => [
+      g.segmento,
+      {
+        prazo: g.prazo_restante_meses,
+        txadm: g.taxa_administracao,
+        fres: g.fundo_reserva,
+        seguro: g.seguro_prestamista_mes,
+        min: g.credito_min,
+        max: g.credito_max,
+        passo: g.passo_credito,
+        padrao: g.credito_padrao,
+        taxaMensal: numServidor(taxaMensal(g)),
+        grupo: g.grupo,
+        dia: g.dia_assembleia,
+      },
+    ])
+);
+
+// No hero, enxugamos: mostramos só o cronograma real, o ativo (motos) e os
+// próximos (imóveis e carros) como "Em breve". A trilha "O seu caminho"
+// segue com todos os seis segmentos.
+const ordemHome = ['motos', 'imoveis', 'carros'];
+const cartoesHome = ordemHome
+  .map((id) => cartoes.find((c) => c.seg === id))
+  .filter((c): c is (typeof cartoes)[number] => Boolean(c));
+const cartaoInicial = cartoesHome.find((c) => c.ativo) ?? cartoesHome[0] ?? cartoes[0];
+
+// Dados estruturados (JSON-LD) para busca e mecanismos de resposta (Google,
+// AI Overviews, etc.). Só fatos confirmados: razão social, regulação BACEN,
+// sede, contatos e redes. CNPJ, endereço exato e número do processo BACEN
+// ficam de fora até serem confirmados, para não declarar dado incorreto.
+// A FAQPage é gerada da própria lista `faq`, então não duplica conteúdo.
+const SITE = 'https://mi6consorcio.com.br';
+const schemaSeo = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'FinancialService',
+      '@id': `${SITE}/#organizacao`,
+      name: 'MI6 Consórcio Nacional',
+      legalName: 'M.I6 Administradora de Consórcio Ltda.',
+      url: `${SITE}/`,
+      logo: `${SITE}/imgs/logo-mi6.png`,
+      image: `${SITE}/og.png`,
+      description:
+        'Administradora de consórcios autorizada e fiscalizada pelo Banco Central do Brasil, com sede em Porto Alegre e atuação nacional. Cartas de crédito para motos, carros, imóveis e mais, sem juros.',
+      areaServed: { '@type': 'Country', name: 'Brasil' },
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Porto Alegre',
+        addressRegion: 'RS',
+        addressCountry: 'BR',
+      },
+      contactPoint: [
+        {
+          '@type': 'ContactPoint',
+          telephone: '0800 000 5228',
+          contactType: 'customer service',
+          areaServed: 'BR',
+          availableLanguage: 'Portuguese',
+        },
+        {
+          '@type': 'ContactPoint',
+          telephone: '0800 000 5267',
+          contactType: 'ouvidoria',
+          areaServed: 'BR',
+          availableLanguage: 'Portuguese',
+        },
+      ],
+      sameAs: [
+        'https://www.instagram.com/mi6.consorcio/',
+        'https://www.facebook.com/61584214719614/',
+        'https://www.linkedin.com/company/110370080/',
+      ],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE}/#site`,
+      url: `${SITE}/`,
+      name: 'MI6 Consórcio Nacional',
+      inLanguage: 'pt-BR',
+      publisher: { '@id': `${SITE}/#organizacao` },
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${SITE}/#faq`,
+      mainEntity: faq.map((item) => ({
+        '@type': 'Question',
+        name: item.p,
+        acceptedAnswer: { '@type': 'Answer', text: item.r },
+      })),
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="canonical" href="https://mi6consorcio.com.br/" />
+    <meta name="theme-color" content="#012169" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>MI6 Consórcio Nacional | Consórcio sem juros, o melhor investimento</title>
+    <meta
+      name="description"
+      content="Conquiste sua moto, seu imóvel ou seu carro com o Consórcio MI6: poder de compra à vista, sem entrada e sem juros. Administradora autorizada pelo Banco Central do Brasil."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="MI6 Consórcio Nacional" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:url" content="https://mi6consorcio.com.br/" />
+    <meta property="og:title" content="MI6 Consórcio Nacional, o melhor investimento" />
+    <meta
+      property="og:description"
+      content="Carta de crédito como poder de compra à vista, sem entrada e sem juros. Simule em menos de dois minutos."
+    />
+    <meta property="og:image" content="https://mi6consorcio.com.br/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="MI6 Consórcio Nacional, o melhor investimento" />
+    <meta
+      name="twitter:description"
+      content="Carta de crédito como poder de compra à vista, sem entrada e sem juros."
+    />
+    <meta name="twitter:image" content="https://mi6consorcio.com.br/og.png" />
+    <script type="application/ld+json" set:html={JSON.stringify(schemaSeo)} />
+  </head>
+  <body>
+    <div class="veu" role="dialog" aria-label="Boas-vindas MI6">
+      <button type="button" class="veu-pano veu-pano-cliente" data-perfil="cliente">
+        <span class="veu-pano-rotulo">Já sou cliente</span>
+        <span class="veu-pano-sub">boletos, lances e contemplação</span>
+      </button>
+      <button type="button" class="veu-pano veu-pano-novo" data-perfil="novo">
+        <span class="veu-pano-rotulo">Ainda não sou</span>
+        <span class="veu-pano-sub">quero simular meu plano</span>
+      </button>
+      <div class="veu-centro" aria-hidden="true">
+        <span class="veu-linha"></span>
+        <div class="veu-miolo">
+          <img class="veu-logo" src="/imgs/logo-mi6-branco.png" alt="" width="219" height="47" />
+          <p class="veu-pergunta">Como podemos te receber hoje?</p>
+        </div>
+      </div>
+      <button type="button" class="veu-pular" data-perfil="">Entrar sem escolher</button>
+    </div>
+    <div class="grao" aria-hidden="true"></div>
+
+    <header class="topo">
+      <a class="topo-marca" href="/">
+        <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
+      </a>
+      <div class="topo-acessos">
+        <a class="acesso acesso-cliente" href="/area-do-cliente/">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-3.6 3.7-5.5 7-5.5s6 1.9 7 5.5"/></svg>
+          <span>Sou cliente</span>
+        </a>
+        <a class="topo-cta" href="#contato">Simular</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="inicio">
+        <p class="hero-coord" aria-hidden="true">30°02′S 51°13′W · PORTO ALEGRE · BRASIL</p>
+
+        <div class="hero-grade">
+          <div class="hero-conteudo">
+            <p class="hero-kicker"><span id="scramble">O Melhor Investimento:</span></p>
+            <h1 id="titulo">
+              <span class="linha">6 caminhos para</span>
+              <span class="linha">transformar <em>sonhos</em></span>
+              <span class="linha">em conquistas</span>
+            </h1>
+            <p class="hero-frase" data-intro>Dê agora o primeiro passo para a conquista dos seus sonhos</p>
+            <div class="hero-acoes" data-intro>
+              <a class="cta so-novo" href="#contato">Simule agora</a>
+              <a class="cta so-cliente" href="/area-do-cliente/">Área do Cliente</a>
+              <button type="button" class="link-claro sub so-novo" data-folha="funciona">O que é consórcio?</button>
+              <button type="button" class="link-claro sub so-cliente" data-folha="contemplacao">Fui contemplado, e agora?</button>
+            </div>
+            <p class="hero-prova" data-intro>
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.4l6 2.2v4.5c0 4.2-2.6 7-6 8.4-3.4-1.4-6-4.2-6-8.4V4.6z"/><path d="M7.2 10.1l2 2 3.6-3.8"/></svg>
+              Administradora autorizada pelo Banco Central do Brasil
+            </p>
+          </div>
+
+          <div class="hero-visual">
+            <div class="cartao-palco" data-intro>
+              <button type="button" class="cartao-seta" id="cartao-prev" aria-label="Segmento anterior">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg>
+              </button>
+              <div class="cartao-carrossel" id="cartao-carrossel" role="group" aria-roledescription="carrossel de cartões" aria-label="Cartas de crédito por segmento">
+                <ul class="cartao-pista" id="cartao-pista">
+                  {
+                    cartoesHome.map((c, i) => (
+                      <li class="cartao-slot" data-i={i} data-seg={c.seg}>
+                        <a class="cartao" href="#contato" style={`--c1:${c.c1};--c2:${c.c2}`} aria-label={`Simular ${c.nome}`}>
+                          <span class="cartao-brilho" aria-hidden="true"></span>
+                          <div class="cartao-topo">
+                            <img class="cartao-logo" src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
+                            <svg class="cartao-lampada" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 17.5h5" /><path d="M10.2 20.5h3.6" /><path d="M12 3.5a6 6 0 0 0-3.8 10.6c.8.7 1.1 1.3 1.2 2.4h5.2c.1-1.1.4-1.7 1.2-2.4A6 6 0 0 0 12 3.5z" /><path d="M10.2 9.6l1.8 2 1.8-2" /></svg>
+                          </div>
+                          <div class="cartao-corpo">
+                            <p class="cartao-posse">{c.ativo ? `${c.posse} de` : c.posse}</p>
+                            <p class="cartao-valor">{c.valor}</p>
+                          </div>
+                          <div class="cartao-rodape">
+                            <p class="cartao-legenda">Ao ser contemplado, você compra à vista com a carta de crédito.</p>
+                            <span class="cartao-seg">{c.nome.toUpperCase()}</span>
+                          </div>
+                        </a>
+                      </li>
+                    ))
+                  }
+                </ul>
+              </div>
+              <button type="button" class="cartao-seta" id="cartao-next" aria-label="Próximo segmento">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+              </button>
+            </div>
+            <div class="cartao-demo" role="img" aria-label="Navegue pelos cartões e toque para simular">
+              <div class="demo-pista" aria-hidden="true">
+                <span class="demo-card dc-esq"></span>
+                <span class="demo-card dc-dir"></span>
+                <span class="demo-card dc-centro"></span>
+              </div>
+              <span class="demo-cursor" aria-hidden="true">
+                <span class="demo-toque"></span>
+                <svg class="cur cur-seta" viewBox="0 0 24 24"><path d="M4 1.8 4 19.5 8.7 15l2.7 6 2.7-1.2-2.7-5.9 6.4-.2z"/></svg>
+                <svg class="cur cur-mao" viewBox="0 0 24 24"><path d="M9 12.5V6a1.6 1.6 0 0 1 3.2 0v4.6m0-1.5a1.6 1.6 0 0 1 3.2 0v1.9m0-1.3a1.6 1.6 0 0 1 3.2 0v3.6a5.6 5.6 0 0 1-5.6 5.6h-1.6a4.6 4.6 0 0 1-3.5-1.6l-3-3.6a1.5 1.5 0 0 1 2.2-2L9 14z"/></svg>
+              </span>
+              <span class="demo-fallback">Navegue pelos cartões e toque para simular</span>
+            </div>
+            <p class="cartao-nota" data-intro>Com o Consórcio Inteligente da MI6, você paga a primeira parcela e já começa sua jornada rumo à carta de crédito. Rápido e prático, a escolha certa para realizar o seu sonho.</p>
+            <script type="application/json" id="cartoes-dados" set:html={JSON.stringify(cartoes)}></script>
+            <script type="application/json" id="grupos-dados" set:html={JSON.stringify(gruposSim)}></script>
+          </div>
+        </div>
+
+        <p class="hero-scroll" aria-hidden="true">role</p>
+      </section>
+
+      <section class="credibilidade" aria-label="Credenciais institucionais">
+        <div class="cred-abac">
+          <img src="/imgs/abac.svg" alt="ABAC" width="127" height="41" />
+          <p>Filiada à ABAC, Associação Brasileira de Administradoras de Consórcios</p>
+        </div>
+        <span class="cred-divisa" aria-hidden="true"></span>
+        <div class="cred-bacen">
+          <p class="cred-frase">Autorizada pelo Banco Central do Brasil</p>
+          <p class="cred-oficio">Ofício nº 33.288/2024</p>
+        </div>
+      </section>
+
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-faixa">
+          <span>Lei nº 11.795/2008 · SAC 0800 000 5228 · Ouvidoria 0800 000 5267 · Atendimento em todo o Brasil · </span><span>Lei nº 11.795/2008 · SAC 0800 000 5228 · Ouvidoria 0800 000 5267 · Atendimento em todo o Brasil · </span>
+        </div>
+      </div>
+
+      <section class="jornada" id="solucoes">
+        <header class="jornada-cabeca">
+          <p class="indice" data-reveal>SIMPLES ASSIM</p>
+          <h2 data-reveal>Da sua escolha à <em>carta de crédito</em></h2>
+          <p data-reveal>
+            Do primeiro passo à carta de crédito, um caminho simples e no seu
+            ritmo, com você no controle.
+          </p>
+        </header>
+
+        <ol class="trilha">
+          <span class="trilha-fio" aria-hidden="true"><i></i></span>
+
+          <li class="estacao estacao-inicio" data-estacao>
+            <span class="estacao-marco" aria-hidden="true"></span>
+            <span class="estacao-quem">Você escolhe</span>
+            <h3>O seu caminho</h3>
+            <div class="caminho-lente" id="caminho-lente" aria-hidden="true">
+              {
+                segmentos.map((s, i) => (
+                  <img src={s.img} alt="" loading="lazy" class:list={['caminho-foto', { ativo: s.id === cartaoInicial.seg }]} data-seg={s.id} />
+                ))
+              }
+            </div>
+            <div class="estacao-segs" id="jornada-segs" role="group" aria-label="Segmentos">
+              {
+                segmentos.map((s) => (
+                  <button type="button" data-segmento={s.id} aria-pressed={s.id === cartaoInicial.seg ? 'true' : 'false'}>
+                    <span>{s.nome.replace('Consórcio de ', '')}</span>
+                  </button>
+                ))
+              }
+            </div>
+          </li>
+
+          <li class="estacao" data-estacao>
+            <span class="estacao-marco" aria-hidden="true"></span>
+            <span class="estacao-quem">O primeiro passo</span>
+            <h3>A primeira parcela</h3>
+            <p>Ao pagar a primeira parcela, você já deu o primeiro passo rumo à conquista. Sem entrada e sem juros.</p>
+          </li>
+
+          <li class="estacao estacao-auto" data-estacao>
+            <span class="estacao-marco" aria-hidden="true"></span>
+            <span class="estacao-quem">Você avança</span>
+            <h3>Parcelas e lances</h3>
+            <p>Pague em dia e amplie suas chances de contemplação. Quando quiser, dê um lance, inclusive o embutido, pela Área do Cliente, sem tirar do bolso.</p>
+          </li>
+
+          <li class="estacao estacao-fim" data-estacao>
+            <span class="estacao-marco estacao-marco-fim" aria-hidden="true"></span>
+            <span class="estacao-quem">Você conquista</span>
+            <h3>A carta de crédito</h3>
+            <p>Ao ser contemplado, o processo é descomplicado: você encaminha a documentação e recebe a carta de crédito para comprar seu bem à vista.</p>
+            <a class="jornada-cartao" id="jornada-cartao" href="#contato" style={`--c1:${cartaoInicial.c1};--c2:${cartaoInicial.c2}`} aria-label={`Simular ${cartaoInicial.nome}`}>
+              <span class="jornada-cartao-rotulo">Carta de Crédito</span>
+              <span class="jornada-cartao-valor" id="jornada-valor">{cartaoInicial.valor}</span>
+              <span class="jornada-cartao-tag">Poder de compra à vista · <strong id="jornada-seg">{cartaoInicial.nome}</strong></span>
+            </a>
+          </li>
+        </ol>
+      </section>
+
+      <section class="contato" id="contato">
+        <svg class="contato-geo" aria-hidden="true" viewBox="0 0 1440 600" preserveAspectRatio="xMidYMid slice">
+          <g class="geo-fim-claras" stroke="rgba(255,255,255,0.14)" stroke-width="1">
+            <line x1="0" y1="0" x2="1440" y2="600"></line>
+            <line x1="1440" y1="0" x2="0" y2="600"></line>
+          </g>
+          <g class="geo-fim-navy" stroke="rgba(1,33,105,0.28)" stroke-width="1">
+            <line x1="80" y1="0" x2="1520" y2="600"></line>
+            <line x1="1360" y1="0" x2="-80" y2="600"></line>
+          </g>
+        </svg>
+        <div class="sim-grade">
+          <header class="sim-cabeca">
+            <p class="sim-kicker" data-reveal>O primeiro e mais importante passo</p>
+            <h2 data-reveal>Sua conquista <em>começa</em> aqui</h2>
+            <p data-reveal>Escolha, veja a parcela, fale com um consultor.</p>
+          </header>
+
+          <form
+            class="sim-card"
+            aria-label="Simulação e contato"
+            data-prazo={grupoMotos.prazo_restante_meses}
+            data-txadm={grupoMotos.taxa_administracao}
+            data-fres={grupoMotos.fundo_reserva}
+            data-seguro={grupoMotos.seguro_prestamista_mes}
+            data-credito-padrao={grupoMotos.credito_padrao}
+            data-grupo={grupoMotos.grupo}
+            data-dia={grupoMotos.dia_assembleia}
+          >
+            <div class="sim-corpo" id="sim-corpo">
+              <p class="sim-passo">01 · O que você vai conquistar hoje?</p>
+              <div class="chips" id="sim-chips">
+                {
+                  segmentos.map((s) => (
+                    <button
+                      type="button"
+                      data-segmento={s.id}
+                      aria-pressed={s.id === 'motos' ? 'true' : 'false'}
+                      style={`--seg-cor:${(temas[s.id] ?? ['#012169'])[0]}`}
+                    >
+                      {s.nome.replace('Consórcio de ', '')}
+                    </button>
+                  ))
+                }
+              </div>
+
+              <div class="sim-vivo" id="sim-vivo">
+                <p class="sim-passo">02 · Quanto vale essa conquista?</p>
+                <p class="sim-credito">
+                  <span class="sim-moeda">R$</span><output id="sim-valor" for="sim-credito">{simInicial.credito}</output>
+                </p>
+                <input
+                  type="range"
+                  id="sim-credito"
+                  min={grupoMotos.credito_min}
+                  max={grupoMotos.credito_max}
+                  step={grupoMotos.passo_credito}
+                  value={grupoMotos.credito_padrao}
+                  aria-label="Valor do bem desejado"
+                />
+                <div class="sim-extremos" aria-hidden="true">
+                  <span>R$ {grupoMotos.credito_min.toLocaleString('pt-BR')}</span>
+                  <span>R$ {grupoMotos.credito_max.toLocaleString('pt-BR')}</span>
+                </div>
+                <div class="sim-resultado" id="sim-resultado" style={`--c1:${cartaoInicial.c1};--c2:${cartaoInicial.c2}`}>
+                  <p class="sim-res-rotulo">A sua parcela, sem juros</p>
+                  <p class="sim-res-valor">
+                    <span class="sim-moeda-sm">R$</span><span id="sim-parcela">{simInicial.parcela}</span><span class="sim-res-mes">por mês</span>
+                  </p>
+                </div>
+                <p class="sim-taxa">
+                  <span class="sim-taxa-rot">Taxa de administração</span>
+                  <span class="sim-taxa-val">{simInicial.taxaMensal}% ao mês</span>
+                </p>
+              </div>
+
+              <div class="sim-aguarde" id="sim-aguarde" hidden>
+                <p class="sim-aguarde-titulo">Sua vaga em <strong id="sim-seg-nome">carros</strong> está abrindo.</p>
+                <p>Garanta posição no início do grupo, com as condições de abertura em primeira mão. Fale agora no WhatsApp.</p>
+              </div>
+
+              <div class="sim-contato">
+                <p class="sim-zap-nota">Preencha seus dados e leve a sua simulação direto para o WhatsApp.</p>
+                <label class="sim-campo">
+                  <span>Nome</span>
+                  <input type="text" name="nome" autocomplete="name" placeholder="Seu nome" required />
+                </label>
+                <div class="sim-campo-dupla">
+                  <label class="sim-campo">
+                    <span>Telefone</span>
+                    <input type="tel" name="telefone" autocomplete="tel" placeholder="(11) 90000-0000" required />
+                  </label>
+                  <label class="sim-campo">
+                    <span>E-mail</span>
+                    <input type="email" name="email" autocomplete="email" placeholder="voce@email.com" required />
+                  </label>
+                </div>
+                <input type="text" name="confirme" class="sim-mel" tabindex="-1" autocomplete="off" aria-hidden="true" />
+                <button type="submit" class="cta sim-cta sim-zap">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.7 13.7L3 21l4.5-1.2A9 9 0 1 0 12 3z" /><circle cx="9" cy="12" r="1" fill="currentColor" stroke="none" /><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" /><circle cx="15" cy="12" r="1" fill="currentColor" stroke="none" /></svg>
+                  Falar no WhatsApp
+                </button>
+                <p class="sim-zap-consent">
+                  Ao enviar, você concorda que a MI6 use os dados informados para entrar em contato sobre o consórcio, conforme a <a href="/politica-de-privacidade/">Política de Privacidade</a>.
+                </p>
+                <p class="sim-zap-aviso" id="sim-zap-aviso" hidden>
+                  Abrimos o WhatsApp com a sua simulação. <a class="sim-zap-link" id="sim-zap-fallback" href="#" target="_blank" rel="noopener">Não abriu? Toque para abrir.</a>
+                </p>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="rodape">
+      <div class="rodape-manifesto">
+        <img src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
+        <p class="rodape-frase">O melhor investimento. <em>Seis</em> soluções para tirar seu sonho do papel.</p>
+        <ul class="rodape-redes" aria-label="Redes sociais">
+          <li>
+            <a href="https://www.instagram.com/mi6.consorcio/" aria-label="Instagram da MI6" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>
+            </a>
+          </li>
+          <li>
+            <a href="https://www.facebook.com/61584214719614/" aria-label="Facebook da MI6" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 21v-7.5h2.5l.4-3.1H14.5V8.5c0-.9.3-1.5 1.6-1.5h1.7V4.2c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.4-4 4v2.3H8.7v3.1h2.7V21z"/></svg>
+            </a>
+          </li>
+          <li>
+            <a href="https://www.linkedin.com/company/110370080/" aria-label="LinkedIn da MI6" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="2"/><path d="M7.6 9.8v7.2M7.6 7.2v.05M11 17V10m0 2.6c0-1.6 1-2.6 2.4-2.6S16 11 16 12.7V17"/></svg>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="rodape-grade">
+        <nav class="rodape-bloco" aria-label="Atendimento">
+          <h3>Atendimento</h3>
+          <p class="rodape-canal">
+            <span class="rodape-rotulo">SAC</span>
+            <a href="tel:08000005228">0800 000 5228</a>
+          </p>
+          <p class="rodape-canal">
+            <span class="rodape-rotulo">Ouvidoria</span>
+            <a href="tel:08000005267">0800 000 5267</a>
+          </p>
+          <p class="rodape-canal">
+            <span class="rodape-rotulo">E-mail</span>
+            <a href="mailto:contato@mi6consorcio.com.br">contato@mi6consorcio.com.br</a>
+          </p>
+        </nav>
+
+        <nav class="rodape-bloco" aria-label="Consórcio">
+          <h3>Consórcio</h3>
+          <button type="button" class="sub" data-folha="funciona">Como funciona</button>
+          <button type="button" class="sub" data-folha="contemplacao">Contemplação</button>
+          <button type="button" class="sub" data-folha="duvidas">Perguntas frequentes</button>
+          <a class="sub" href="#solucoes">Seis caminhos</a>
+        </nav>
+
+        <nav class="rodape-bloco" aria-label="Acesso rápido">
+          <h3>Acesso rápido</h3>
+          <a class="sub" href="/area-do-cliente/" rel="noopener">Área do cliente</a>
+          <a class="sub" href="https://mi6.evertecinc.com.br/newcon.web/frmCorCCCnsLogin.aspx?applicationKey=3M9zL0+WaLYAeBQwijSQEkhjyy42CGuQj8DXZNFUeAoW7bdn/JfcNmUNbNUgQJqaufUv7kqAamOQCRrx6B2F7w==" rel="noopener">Canal do parceiro</a>
+          <a class="sub" href="#contato">Simular agora</a>
+          <a class="sub" href="/politica-de-privacidade/">Política de privacidade</a>
+          <a class="sub" href="/docs/regulamento.pdf" target="_blank" rel="noopener">Regulamento</a>
+          <a class="sub" href="/docs/contrato-adesao.pdf" target="_blank" rel="noopener">Contrato de adesão</a>
+        </nav>
+
+        <div class="rodape-bloco rodape-credenciais">
+          <h3>Regulação</h3>
+          <p>
+            <img src="/imgs/abac.svg" alt="ABAC" width="100" height="32" />
+          </p>
+          <p class="rodape-cred-frase">Autorizada pelo Banco Central do Brasil</p>
+          <p class="rodape-cred-oficio">Ofício nº 33.288/2024</p>
+          <button type="button" class="rodape-perfil" data-trocar-perfil>Trocar perfil de navegação</button>
+        </div>
+      </div>
+
+      <p class="rodape-legal">
+        © Todos os direitos reservados. Administradora de consórcios autorizada
+        e fiscalizada pelo Banco Central do Brasil, Lei nº 11.795/2008.
+        Filiada à ABAC.
+      </p>
+    </footer>
+
+    <nav class="dock" id="dock" aria-label="Menu flutuante">
+      <button type="button" class="dock-toggle" id="dock-toggle" aria-expanded="false" aria-controls="dock-itens" aria-label="Abrir menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <span class="dock-toggle-label">Menu</span>
+        <span class="dock-mao" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M9 12.5V6a1.6 1.6 0 0 1 3.2 0v4.6m0-1.5a1.6 1.6 0 0 1 3.2 0v1.9m0-1.3a1.6 1.6 0 0 1 3.2 0v3.6a5.6 5.6 0 0 1-5.6 5.6h-1.6a4.6 4.6 0 0 1-3.5-1.6l-3-3.6a1.5 1.5 0 0 1 2.2-2L9 14z"/></svg>
+        </span>
+      </button>
+      <div class="dock-itens" id="dock-itens">
+        <button type="button" data-folha="funciona">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5 12 4l8 3.5v9L12 20l-8-3.5z"/><path d="M4 7.5 12 11l8-3.5"/><path d="M12 11v9"/></svg>
+          <span>Consórcio</span>
+        </button>
+        <button type="button" data-folha="contemplacao">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v4.5a4 4 0 0 1-8 0z"/><path d="M16 5h2.5v1.5A2.5 2.5 0 0 1 16 9"/><path d="M8 5H5.5v1.5A2.5 2.5 0 0 0 8 9"/><path d="M10 13h4l-.5 3h-3z"/><path d="M9 20h6"/></svg>
+          <span>Contemplação</span>
+        </button>
+        <a class="dock-cta" href="#contato" aria-label="Simular agora">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18 9 13l3 3 7-7"/><path d="M14 9h5v5"/></svg>
+          <span>Simular</span>
+        </a>
+        <button type="button" data-folha="duvidas">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.3 2.4c-.6.2-1 .7-1 1.4v.4"/><circle cx="11.85" cy="16.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+          <span>Dúvidas</span>
+        </button>
+        <button type="button" data-folha="cliente">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-3.6 3.7-5.5 7-5.5s6 1.9 7 5.5"/></svg>
+          <span>Cliente</span>
+        </button>
+      </div>
+    </nav>
+
+    <div class="folha-fundo" id="folha-fundo" hidden></div>
+
+    <section class="folha" id="folha-funciona" hidden role="dialog" aria-modal="true" aria-labelledby="folha-funciona-t">
+      <header class="folha-cabeca">
+        <p class="indice">Como funciona</p>
+        <button type="button" class="folha-fechar" data-fechar aria-label="Fechar">&times;</button>
+      </header>
+      <h2 id="folha-funciona-t">Como funciona o consórcio</h2>
+      <p class="statement">
+        Um modelo de compra inteligente e planejada que permite a aquisição
+        de bens e serviços com parcelas que cabem no seu bolso, <em>sem juros</em>.
+      </p>
+      <div class="vantagens">
+        <p class="indice">Vantagens do consórcio</p>
+        <ol class="vantagens-lista folha-vantagens">
+          {
+            vantagens.map((v, i) => (
+              <li>
+                <span class="num">{String(i + 1).padStart(2, '0')}</span>
+                <h3>{v.titulo}</h3>
+                <p>{v.texto}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+      <p class="indice folha-sub">Passo a passo</p>
+      <ol class="metodo-lista">
+        <span class="metodo-fio" aria-hidden="true"><i></i></span>
+        {
+          passos.map((p, i) => (
+            <li>
+              <span class="metodo-num">{String(i + 1).padStart(2, '0')}</span>
+              <p>{p}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="folha-numeros">
+        <div>
+          <strong>+1,27 mi</strong>
+          <span>contemplados em 2024. Fonte: ABAC, dado do setor.</span>
+        </div>
+        <div>
+          <strong>0 juros</strong>
+          <span>taxa de administração definida em contrato, não juros bancários.</span>
+        </div>
+      </div>
+      <p class="folha-acao">Pronto para começar? <a class="cta" href="#contato">Comece a sua simulação</a></p>
+    </section>
+
+    <section class="folha" id="folha-contemplacao" hidden role="dialog" aria-modal="true" aria-labelledby="folha-contemplacao-t">
+      <header class="folha-cabeca">
+        <p class="indice">Contemplação</p>
+        <button type="button" class="folha-fechar" data-fechar aria-label="Fechar">&times;</button>
+      </header>
+      <h2 id="folha-contemplacao-t">A jornada da contemplação</h2>
+      <p class="apoio">
+        Contemplação é o momento em que o grupo libera o seu crédito. O
+        caminho, do sorteio à conquista:
+      </p>
+      <ol class="metodo-lista">
+        <span class="metodo-fio" aria-hidden="true"><i></i></span>
+        <li>
+          <span class="metodo-num">01</span>
+          <p>Toda terceira quarta-feira do mês acontece a assembleia mensal do grupo; é nela que saem as contemplações.</p>
+        </li>
+        <li>
+          <span class="metodo-num">02</span>
+          <p>A contemplação vem por sorteio, vinculado à Loteria Federal, ou pela melhor oferta de lance.</p>
+        </li>
+        <li>
+          <span class="metodo-num">03</span>
+          <p>A MI6 comunica o contemplado e orienta os próximos passos, pelos canais oficiais.</p>
+        </li>
+        <li>
+          <span class="metodo-num">04</span>
+          <p>Você apresenta a documentação e as garantias previstas no regulamento do grupo.</p>
+        </li>
+        <li>
+          <span class="metodo-num">05</span>
+          <p>Com tudo aprovado, a carta de crédito paga o seu bem, com o poder de quem compra à vista.</p>
+        </li>
+      </ol>
+      <p class="folha-nota">
+        Carta contemplada é a cota que já foi sorteada ou venceu o lance; a
+        carta de crédito é o documento com o valor disponível, usado na compra
+        do bem. A MI6 não comercializa cotas contempladas.
+      </p>
+      <p class="folha-acao">
+        <a class="cta cta-navy" href="/area-do-cliente/">Área do Cliente</a>
+        <a class="sub link-navy" href="#contato">Simular um novo plano</a>
+      </p>
+    </section>
+
+    <section class="folha" id="folha-cliente" hidden role="dialog" aria-modal="true" aria-labelledby="folha-cliente-t">
+      <header class="folha-cabeca">
+        <p class="indice">Sou cliente</p>
+        <button type="button" class="folha-fechar" data-fechar aria-label="Fechar">&times;</button>
+      </header>
+      <h2 id="folha-cliente-t">Bem-vindo de volta</h2>
+      <p class="apoio">
+        Boletos e segunda via, contratos, extrato e ofertas de lance: tudo
+        na sua Área do Cliente, a um login de distância.
+      </p>
+      <p class="folha-acao folha-acao-topo">
+        <a class="cta cta-navy" href="/area-do-cliente/">Entrar na Área do Cliente</a>
+      </p>
+      <ul class="cliente-atalhos">
+        <li>
+          <button type="button" class="sub link-navy" data-folha="contemplacao">Fui contemplado, e agora?</button>
+        </li>
+        <li>
+          <a class="sub link-navy" href="#contato">Quero mais um consórcio, simular de novo</a>
+        </li>
+        <li>
+          <a class="sub link-navy" href="https://mi6.evertecinc.com.br/newcon.web/frmCorCCCnsLogin.aspx?applicationKey=3M9zL0+WaLYAeBQwijSQEkhjyy42CGuQj8DXZNFUeAoW7bdn/JfcNmUNbNUgQJqaufUv7kqAamOQCRrx6B2F7w==">Sou parceiro, acessar o Canal do parceiro</a>
+        </li>
+      </ul>
+      <p class="folha-nota">
+        Atendimento humano: SAC 0800 000 5228 · Ouvidoria 0800 000 5267 ·
+        contato@mi6consorcio.com.br
+      </p>
+    </section>
+
+    <section class="folha" id="folha-duvidas" hidden role="dialog" aria-modal="true" aria-labelledby="folha-duvidas-t">
+      <header class="folha-cabeca">
+        <p class="indice">Dúvidas</p>
+        <button type="button" class="folha-fechar" data-fechar aria-label="Fechar">&times;</button>
+      </header>
+      <h2 id="folha-duvidas-t">Perguntas frequentes</h2>
+      <div class="faq-lista">
+        {
+          faq.map((item) => (
+            <details>
+              <summary>
+                {item.p}
+                <span class="faq-sinal" aria-hidden="true" />
+              </summary>
+              <p>{item.r}</p>
+            </details>
+          ))
+        }
+      </div>
+      <p class="indice folha-sub">Diferenciais pensados para você</p>
+      <ul class="diferenciais-lista">
+        {
+          diferenciais.map((d) => (
+            <li>
+              <h3>{d.titulo}</h3>
+              <p>{d.texto}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="documentos">
+        Documentos públicos: <a class="sub" href="/docs/regulamento.pdf">Regulamento</a> e
+        <a class="sub" href="/docs/contrato-adesao.pdf">Contrato de adesão</a>.
+      </p>
+    </section>
+
+    <script>
+      import gsap from 'gsap';
+      import { ScrollTrigger } from 'gsap/ScrollTrigger';
+      import { SplitText } from 'gsap/SplitText';
+      import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
+      import Lenis from 'lenis';
+
+      gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin);
+
+      const motionOk = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+      if (!motionOk) document.querySelector('.veu')?.remove();
+
+      // Perfil guardado de visitas anteriores reordena os destaques.
+      const perfilSalvo = localStorage.getItem('mi6b-perfil');
+      if (perfilSalvo === 'cliente' || perfilSalvo === 'novo') {
+        document.body.dataset.perfil = perfilSalvo;
+      }
+      document.querySelectorAll('[data-trocar-perfil]').forEach((b) => {
+        b.addEventListener('click', () => {
+          localStorage.removeItem('mi6b-perfil');
+          sessionStorage.removeItem('mi6b-veu');
+          location.reload();
+        });
+      });
+
+      let lenis: Lenis | null = null;
+      if (motionOk) {
+        lenis = new Lenis({ autoRaf: true, lerp: 0.12 });
+        lenis.on('scroll', ScrollTrigger.update);
+        document.querySelectorAll('a[href^="#"]').forEach((a) => {
+          a.addEventListener('click', (e) => {
+            const alvo = a.getAttribute('href');
+            if (alvo && alvo.length > 1) {
+              e.preventDefault();
+              lenis?.scrollTo(alvo, { offset: -72 });
+            }
+          });
+        });
+      }
+
+      // Topo ganha fundo sólido depois da primeira rolagem.
+      ScrollTrigger.create({
+        start: 60,
+        end: 'max',
+        toggleClass: { className: 'rolou', targets: '.topo' },
+      });
+
+      // Folhas: o conteúdo de apoio sobe em lâminas a partir do dock.
+      const fundo = document.getElementById('folha-fundo');
+      // O Lenis intercepta roda e toque no documento todo; marcamos as folhas
+      // (e seus campos roláveis) como "prevent" para que rolem nativamente.
+      document.querySelectorAll('.folha').forEach((f) => f.setAttribute('data-lenis-prevent', ''));
+      let folhaAberta: HTMLElement | null = null;
+      function abrirFolha(id: string) {
+        const folha = document.getElementById(`folha-${id}`);
+        if (!folha) return;
+        if (folhaAberta === folha) return;
+        if (folhaAberta) {
+          // Troca direta de lâmina: a aberta sai na hora, a nova entra animada.
+          folhaAberta.setAttribute('hidden', '');
+          folhaAberta = null;
+        }
+        folhaAberta = folha;
+        fundo?.removeAttribute('hidden');
+        folha.removeAttribute('hidden');
+        document.documentElement.style.overflow = 'hidden';
+        lenis?.stop();
+        if (motionOk) {
+          gsap.fromTo(fundo, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35, ease: 'power2.out' });
+          gsap.fromTo(folha, { yPercent: 100 }, { yPercent: 0, duration: 0.55, ease: 'power3.out' });
+        }
+        folha.querySelector<HTMLButtonElement>('.folha-fechar')?.focus();
+      }
+      function fecharFolha() {
+        const folha = folhaAberta;
+        if (!folha) return;
+        folhaAberta = null;
+        const encerrar = () => {
+          folha.setAttribute('hidden', '');
+          fundo?.setAttribute('hidden', '');
+          document.documentElement.style.overflow = '';
+          lenis?.start();
+        };
+        if (motionOk) {
+          gsap.to(fundo, { autoAlpha: 0, duration: 0.3, ease: 'power2.in' });
+          gsap.to(folha, { yPercent: 100, duration: 0.4, ease: 'power3.in', onComplete: encerrar });
+        } else {
+          encerrar();
+        }
+      }
+      // Dock recolhível: guardado como "Menu" e expandido no clique.
+      const dock = document.getElementById('dock');
+      const dockToggle = document.getElementById('dock-toggle');
+      dockToggle?.addEventListener('click', () => {
+        dock?.classList.add('dock-usado'); // a dica para de aparecer após o 1o uso
+        const aberto = dock?.classList.toggle('aberto') ?? false;
+        dockToggle.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+        dockToggle.setAttribute('aria-label', aberto ? 'Fechar menu' : 'Abrir menu');
+      });
+
+      document.querySelectorAll<HTMLElement>('[data-folha]').forEach((el) => {
+        el.addEventListener('click', () => abrirFolha(el.dataset.folha ?? ''));
+      });
+      document.querySelectorAll('[data-fechar]').forEach((el) => {
+        el.addEventListener('click', fecharFolha);
+      });
+      fundo?.addEventListener('click', fecharFolha);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') fecharFolha();
+      });
+      // Link interno dentro de uma folha fecha a lâmina antes de rolar.
+      document.querySelectorAll('.folha a[href^="#"]').forEach((a) => {
+        a.addEventListener('click', () => fecharFolha());
+      });
+
+      // Simulador: a conta inteira do grupo ativo, ao vivo. Os parâmetros
+      // chegam pelo HTML, vindos do espelho da tabela verdade (grupos.json).
+      const simCard = document.querySelector<HTMLElement>('.sim-card');
+      // Parâmetros do grupo ativo. Começam no grupo do HTML (motos) e trocam
+      // por segmento quando o cliente clica num chip ativo (ver gruposSim).
+      type ParamGrupo = {
+        prazo: number; txadm: number; fres: number; seguro: number;
+        min: number; max: number; passo: number; padrao: number;
+        taxaMensal: string; grupo: string; dia: number;
+      };
+      let gruposSim: Record<string, ParamGrupo> = {};
+      try {
+        gruposSim = JSON.parse(document.getElementById('grupos-dados')?.textContent || '{}');
+      } catch {
+        gruposSim = {};
+      }
+      let PRAZO = parseInt(simCard?.dataset.prazo ?? '98', 10);
+      let TX_ADM = parseFloat(simCard?.dataset.txadm ?? '0.2');
+      let F_RES = parseFloat(simCard?.dataset.fres ?? '0.04');
+      let SEGURO = parseFloat(simCard?.dataset.seguro ?? '0.0008');
+      const brl = (v: number) =>
+        'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const exib = { c: parseInt(simCard?.dataset.creditoPadrao ?? '15000', 10) };
+      const num = (v: number) =>
+        v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      function pintarSim() {
+        const c = exib.c;
+        const base = c * (1 + TX_ADM + F_RES);
+        const por = (id: string, v: string) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = v;
+        };
+        por('sim-valor', Math.round(c).toLocaleString('pt-BR'));
+        // Parcela com seguro embutido (obrigatório).
+        por('sim-parcela', num(base / PRAZO + base * SEGURO));
+      }
+      const credito = document.getElementById('sim-credito') as HTMLInputElement | null;
+      credito?.addEventListener('input', () => {
+        const alvo = parseInt(credito.value, 10);
+        if (motionOk) {
+          gsap.to(exib, { c: alvo, duration: 0.3, ease: 'power2.out', overwrite: true, onUpdate: pintarSim });
+        } else {
+          exib.c = alvo;
+          pintarSim();
+        }
+      });
+
+      const nomesSeg: Record<string, string> = {
+        carros: 'carros',
+        pesados: 'pesados',
+        motos: 'motos',
+        imoveis: 'imóveis',
+        servicos: 'serviços',
+        eletro: 'eletro',
+      };
+      // Tons por segmento (mesmos cartões), para pintar o resultado do simulador.
+      let temasSeg: Record<string, { c1: string; c2: string }> = {};
+      try {
+        const fonteTemas = document.getElementById('cartoes-dados');
+        (JSON.parse(fonteTemas?.textContent || '[]') as Cartao[]).forEach((c) => {
+          temasSeg[c.seg] = { c1: c.c1, c2: c.c2 };
+        });
+      } catch {
+        temasSeg = {};
+      }
+      let segAtual = Object.keys(gruposSim)[0] ?? 'motos';
+      function escolherSegmento(id: string) {
+        segAtual = id;
+        document.querySelectorAll('#sim-chips button').forEach((b) => {
+          b.setAttribute('aria-pressed', (b as HTMLElement).dataset.segmento === id ? 'true' : 'false');
+        });
+        const res = document.getElementById('sim-resultado');
+        const t = temasSeg[id];
+        if (res && t) {
+          res.style.setProperty('--c1', t.c1);
+          res.style.setProperty('--c2', t.c2);
+        }
+        const vivo = document.getElementById('sim-vivo');
+        const aguarde = document.getElementById('sim-aguarde');
+        const nome = document.getElementById('sim-seg-nome');
+        const g = gruposSim[id];
+        if (g) {
+          // Grupo ativo: carrega a conta do segmento (taxa, prazo, faixa).
+          PRAZO = g.prazo;
+          TX_ADM = g.txadm;
+          F_RES = g.fres;
+          SEGURO = g.seguro;
+          if (credito) {
+            credito.min = String(g.min);
+            credito.max = String(g.max);
+            credito.step = String(g.passo);
+            credito.value = String(g.padrao);
+          }
+          exib.c = g.padrao;
+          const extremos = document.querySelectorAll<HTMLElement>('#sim-vivo .sim-extremos span');
+          if (extremos[0]) extremos[0].textContent = 'R$ ' + g.min.toLocaleString('pt-BR');
+          if (extremos[1]) extremos[1].textContent = 'R$ ' + g.max.toLocaleString('pt-BR');
+          const txEl = document.querySelector('.sim-taxa-val');
+          if (txEl) txEl.textContent = g.taxaMensal + '% ao mês';
+          pintarSim();
+          vivo?.removeAttribute('hidden');
+          aguarde?.setAttribute('hidden', '');
+        } else {
+          // Segmento sem grupo ativo: convida a entrar na abertura.
+          vivo?.setAttribute('hidden', '');
+          aguarde?.removeAttribute('hidden');
+          if (nome) nome.textContent = nomesSeg[id] ?? id;
+        }
+      }
+      document.getElementById('sim-chips')?.addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest('button');
+        if (b?.dataset.segmento) escolherSegmento(b.dataset.segmento);
+      });
+      document.querySelectorAll<HTMLAnchorElement>('a[data-segmento]').forEach((a) => {
+        a.addEventListener('click', () => escolherSegmento(a.dataset.segmento ?? 'motos'));
+      });
+      // Concilia o estado inicial com o primeiro grupo ativo do espelho, para
+      // o simulador já abrir certo mesmo que o segmento de estreia mude.
+      escolherSegmento(segAtual);
+
+      // Captação via WhatsApp + registro do lead. O botão leva a simulação (o
+      // "card" em texto) para o WhatsApp já preenchido; em paralelo, registra o
+      // lead em /api/lead (função serverless da MI6), que repassa ao fluxo do
+      // Power Automate sem expor a URL assinada no navegador.
+      // Env do cliente: PUBLIC_WHATSAPP (número da MI6, só dígitos com DDI).
+      // Env do servidor (na função, secreta): LEAD_ENDPOINT (URL SAS do fluxo).
+      const WHATSAPP = ((import.meta.env.PUBLIC_WHATSAPP as string | undefined) ?? '').replace(/\D/g, '');
+      simCard?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const mel = simCard.querySelector<HTMLInputElement>('.sim-mel');
+        if (mel && mel.value) return; // isca anti-robô preenchida: ignora
+
+        const campo = (n: string) =>
+          (simCard.querySelector<HTMLInputElement>(`[name="${n}"]`)?.value ?? '').trim();
+        const nome = campo('nome');
+        const telefone = campo('telefone');
+        const email = campo('email');
+
+        const segNome = nomesSeg[segAtual] ?? segAtual;
+        const segCap = segNome.charAt(0).toUpperCase() + segNome.slice(1);
+        const creditoRaw = (document.getElementById('sim-credito') as HTMLInputElement | null)?.value ?? '';
+        const creditoFmt = creditoRaw ? Number(creditoRaw).toLocaleString('pt-BR') : '';
+        const parcela = document.getElementById('sim-parcela')?.textContent?.trim() ?? '';
+
+        // O "card" da simulação em texto: vai para o WhatsApp e, no campo
+        // "resumo", também para o e-mail do lead. Por isso os campos opcionais
+        // (nome, telefone, e-mail) entram aqui sem precisar mexer no fluxo.
+        const msg = [
+          nome
+            ? `Olá! Sou ${nome}. Fiz uma simulação no site da MI6 e quero falar com um consultor.`
+            : 'Olá! Fiz uma simulação no site da MI6 e quero falar com um consultor.',
+          '',
+          `Carta de crédito: ${segCap}`,
+          creditoFmt ? `Crédito: R$ ${creditoFmt}` : '',
+          parcela ? `Parcela: R$ ${parcela} por mês, sem juros` : '',
+          telefone ? `Telefone: ${telefone}` : '',
+          email ? `E-mail: ${email}` : '',
+        ].filter(Boolean).join('\n');
+        const urlZap = WHATSAPP ? `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}` : '';
+
+        // Abre o WhatsApp ainda no gesto do clique (evita bloqueio de pop-up).
+        if (urlZap) window.open(urlZap, '_blank', 'noopener,noreferrer');
+
+        // Registro do lead via função serverless (/api/lead), mesma origem, que
+        // repassa ao fluxo do Power Automate mantendo a URL como segredo de
+        // servidor e devolvendo sucesso/erro de verdade.
+        const lead = {
+          data_hora: new Date().toISOString(),
+          nome,
+          telefone,
+          email,
+          segmento: segAtual,
+          credito: creditoRaw,
+          parcela,
+          resumo: msg,
+          origem: 'site/mi6/simulador',
+          // Campo isca (honeypot): vazio para humano; validado no servidor.
+          confirme: simCard.querySelector('.sim-mel')?.value ?? '',
+        };
+        fetch('/api/lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(lead),
+        })
+          .then((r) => { if (!r.ok) console.warn('[MI6] registro de lead retornou', r.status); })
+          .catch((err) => console.error('[MI6] falha ao registrar lead:', err));
+
+        // Confirmação leve, sem travar o simulador: o botão segue ali para o
+        // cliente tentar de novo, e o link abre o WhatsApp se a aba não abriu.
+        const aviso = document.getElementById('sim-zap-aviso');
+        const fallback = document.getElementById('sim-zap-fallback') as HTMLAnchorElement | null;
+        if (fallback && urlZap) fallback.href = urlZap;
+        if (aviso) {
+          aviso.removeAttribute('hidden');
+          if (motionOk) gsap.from(aviso, { autoAlpha: 0, y: 8, duration: 0.4, ease: 'power2.out' });
+        }
+      });
+
+      type Cartao = { seg: string; nome: string; posse: string; valor: string; ativo: boolean; c1: string; c2: string };
+
+      // Jornada: a estação de partida escolhe o segmento; a estação final (a
+      // carta de crédito) assume a cor, a faixa e o nome do segmento, e leva
+      // ao simulador já selecionado.
+      function montarJornada() {
+        const segs = document.getElementById('jornada-segs');
+        const cartao = document.getElementById('jornada-cartao') as HTMLAnchorElement | null;
+        const elV = document.getElementById('jornada-valor');
+        const elS = document.getElementById('jornada-seg');
+        const fonte = document.getElementById('cartoes-dados');
+        const lente = document.getElementById('caminho-lente');
+        if (!segs || !cartao || !elV || !elS || !fonte) return;
+        let lista: Cartao[] = [];
+        try {
+          lista = JSON.parse(fonte.textContent || '[]');
+        } catch {
+          return;
+        }
+        const fotos = lente ? Array.from(lente.querySelectorAll<HTMLElement>('.caminho-foto')) : [];
+        const ordem = lista.map((c) => c.seg);
+        const aplicar = (seg: string) => {
+          const c = lista.find((x) => x.seg === seg);
+          if (!c) return;
+          cartao.style.setProperty('--c1', c.c1);
+          cartao.style.setProperty('--c2', c.c2);
+          cartao.setAttribute('aria-label', `Simular ${c.nome}`);
+          elV.textContent = c.valor;
+          elS.textContent = c.nome;
+          segs.querySelectorAll('button').forEach((b) =>
+            b.setAttribute('aria-pressed', (b as HTMLElement).dataset.segmento === seg ? 'true' : 'false'),
+          );
+          fotos.forEach((f) => f.classList.toggle('ativo', f.dataset.seg === seg));
+        };
+
+        // Carrossel automático: a lente passa pelos segmentos (foto + chip +
+        // carta final em sincronia) até o usuário escolher um.
+        let i = Math.max(0, ordem.indexOf(segAtual));
+        let timer: number | undefined;
+        let escolheu = false;
+        const avancar = () => {
+          i = (i + 1) % ordem.length;
+          aplicar(ordem[i]);
+        };
+        const iniciar = () => {
+          if (motionOk && !escolheu && timer === undefined && ordem.length > 1) {
+            timer = window.setInterval(avancar, 3400);
+          }
+        };
+        const parar = () => {
+          if (timer !== undefined) {
+            clearInterval(timer);
+            timer = undefined;
+          }
+        };
+        segs.addEventListener('click', (e) => {
+          const b = (e.target as HTMLElement).closest('button');
+          if (b?.dataset.segmento) {
+            escolheu = true;
+            parar();
+            i = ordem.indexOf(b.dataset.segmento);
+            aplicar(b.dataset.segmento);
+          }
+        });
+        cartao.addEventListener('click', () => {
+          const ativo = segs.querySelector('button[aria-pressed="true"]') as HTMLElement | null;
+          escolherSegmento(ativo?.dataset.segmento ?? 'motos');
+        });
+        const estacao = lente?.closest('.estacao');
+        estacao?.addEventListener('mouseenter', parar);
+        estacao?.addEventListener('mouseleave', iniciar);
+        iniciar();
+      }
+      montarJornada();
+
+      // Cartão do hero como porta giratória: os seis cartões ficam empilhados
+      // em 3D; o central fica de frente e os vizinhos giram em perspectiva,
+      // esmaecidos, dos dois lados. As setas (ou arrastar, ou clicar num
+      // vizinho) trazem outro segmento ao centro; tocar no central leva ao
+      // simulador já naquele segmento.
+      function montarCartao() {
+        const pista = document.getElementById('cartao-pista');
+        const prev = document.getElementById('cartao-prev');
+        const next = document.getElementById('cartao-next');
+        const carrossel = document.getElementById('cartao-carrossel');
+        if (!pista) return;
+        const slots = Array.from(pista.querySelectorAll<HTMLElement>('.cartao-slot'));
+        if (!slots.length) return;
+        // A ordem dos cartões do hero vem dos próprios slots (data-seg), que são
+        // só os do cronograma (motos ativo, imóveis e carros em breve).
+        const ordem = slots.map((s) => s.dataset.seg ?? '');
+        const N = slots.length;
+        let ativo = Math.max(0, ordem.indexOf(segAtual));
+
+        // Geometria de cada anel da "porta": deslocamento (em % da largura do
+        // cartão), profundidade, giro, escala e opacidade por distância.
+        const aneis = [
+          { disp: 0, z: 0, ry: 0, sc: 1, op: 1, zi: 30 },
+          { disp: 54, z: -120, ry: 40, sc: 0.82, op: 0.5, zi: 20 },
+          { disp: 86, z: -280, ry: 48, sc: 0.62, op: 0.16, zi: 10 },
+        ];
+        const oculto = { disp: 100, z: -340, ry: 50, sc: 0.5, op: 0, zi: 0 };
+
+        const pintar = () => {
+          slots.forEach((slot, i) => {
+            let off = i - ativo;
+            if (off > N / 2) off -= N;
+            if (off < -N / 2) off += N;
+            const dist = Math.abs(off);
+            const dir = Math.sign(off) || 1;
+            const a = aneis[dist] ?? oculto;
+            const visivel = dist < aneis.length;
+            slot.style.transform = `translateX(calc(-50% + ${dir * a.disp * (dist === 0 ? 0 : 1)}%)) translateZ(${a.z}px) rotateY(${-dir * a.ry}deg) scale(${a.sc})`;
+            slot.style.opacity = String(a.op);
+            slot.style.zIndex = String(a.zi);
+            slot.style.pointerEvents = visivel ? 'auto' : 'none';
+            slot.classList.toggle('is-active', dist === 0);
+            const card = slot.querySelector('.cartao');
+            card?.setAttribute('tabindex', dist === 0 ? '0' : '-1');
+            card?.setAttribute('aria-hidden', dist === 0 ? 'false' : 'true');
+          });
+          segAtual = ordem[ativo] ?? segAtual;
+        };
+
+        const ir = (passo: number) => {
+          ativo = (ativo + passo + N) % N;
+          pintar();
+        };
+        prev?.addEventListener('click', () => ir(-1));
+        next?.addEventListener('click', () => ir(1));
+
+        let arrastou = false;
+        slots.forEach((slot, i) => {
+          const card = slot.querySelector<HTMLAnchorElement>('.cartao');
+          card?.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (arrastou) { arrastou = false; return; }
+            if (i === ativo) {
+              // o central leva ao simulador, já com o segmento selecionado
+              escolherSegmento(slots[i].dataset.seg ?? 'motos');
+              if (lenis) lenis.scrollTo('#contato', { offset: -72 });
+              else document.getElementById('contato')?.scrollIntoView({ behavior: motionOk ? 'smooth' : 'auto' });
+            } else {
+              // um vizinho gira para o centro
+              ativo = i;
+              pintar();
+            }
+          });
+        });
+
+        // Arrastar no toque/mouse gira a porta
+        let x0: number | null = null;
+        carrossel?.addEventListener('pointerdown', (e) => {
+          x0 = e.clientX;
+          arrastou = false;
+        });
+        carrossel?.addEventListener('pointerup', (e) => {
+          if (x0 === null) return;
+          const dx = e.clientX - x0;
+          x0 = null;
+          if (Math.abs(dx) > 40) {
+            arrastou = true;
+            ir(dx < 0 ? 1 : -1);
+          }
+        });
+
+        // Setas do teclado quando o carrossel está em foco
+        carrossel?.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowLeft') { e.preventDefault(); ir(-1); }
+          if (e.key === 'ArrowRight') { e.preventDefault(); ir(1); }
+        });
+
+        pintar();
+        // primeira pintura sem transição; depois liga a animação da porta
+        requestAnimationFrame(() => pista.classList.add('pronto'));
+      }
+      montarCartao();
+
+      const mm = gsap.matchMedia();
+
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        const split = new SplitText('#titulo .linha', { type: 'lines', mask: 'lines' });
+        const tl = gsap.timeline({ paused: true, defaults: { ease: 'power4.out' } });
+        tl.from('.topo', { yPercent: -100, duration: 0.8, ease: 'power2.out' })
+          .to('#scramble', {
+            duration: 1.4,
+            scrambleText: { text: 'O Melhor Investimento:', chars: 'MI6·01/', speed: 0.4 },
+          }, 0.15)
+          .from(split.lines, { yPercent: 115, duration: 1.1, stagger: 0.14 }, 0.4)
+          .from('[data-intro]', { y: 28, autoAlpha: 0, duration: 0.9, stagger: 0.14 }, '-=0.55')
+          .from('.hero-coord, .hero-scroll', { autoAlpha: 0, duration: 0.8 }, '-=0.8')
+          .from('.dock', { y: 90, autoAlpha: 0, duration: 0.8, ease: 'power3.out' }, '-=0.9');
+
+        // Cortina-pergunta: a linha desenha, o logo é revelado, os dois
+        // panos perguntam o perfil e a cortina abre para os lados.
+        // Pergunta uma vez; a escolha fica guardada (trocável no rodapé),
+        // é escapável (Esc ou "entrar sem escolher") e a página completa
+        // existe por baixo, intacta para buscadores.
+        const veu = document.querySelector<HTMLElement>('.veu');
+        const abrirCortina = (escolha: string) => {
+          if (escolha === 'cliente' || escolha === 'novo') {
+            localStorage.setItem('mi6b-perfil', escolha);
+            document.body.dataset.perfil = escolha;
+          }
+          gsap.timeline({
+            onComplete: () => {
+              document.documentElement.style.overflow = '';
+              veu?.remove();
+            },
+          })
+            .to('.veu-centro, .veu-pular', { autoAlpha: 0, duration: 0.25 }, 0)
+            .to('.veu-pano-cliente', { xPercent: -101, duration: 0.85, ease: 'power3.inOut' }, 0.05)
+            .to('.veu-pano-novo', { xPercent: 101, duration: 0.85, ease: 'power3.inOut' }, 0.05)
+            .add(() => tl.play(), '-=0.5');
+        };
+        if (veu && !sessionStorage.getItem('mi6b-veu') && !perfilSalvo) {
+          sessionStorage.setItem('mi6b-veu', '1');
+          veu.style.visibility = 'visible';
+          document.documentElement.style.overflow = 'hidden';
+          gsap.timeline()
+            .to('.veu-linha', { scaleX: 1, duration: 0.55, ease: 'power2.inOut' })
+            .to('.veu-logo', { clipPath: 'inset(0 0% 0 0)', duration: 0.85, ease: 'power3.inOut' }, '-=0.15')
+            .to('.veu-pano-rotulo, .veu-pano-sub', { autoAlpha: 1, duration: 0.6, stagger: 0.08 }, '-=0.2')
+            .to('.veu-pergunta, .veu-pular', { autoAlpha: 1, duration: 0.5 }, '-=0.35');
+          veu.querySelectorAll<HTMLElement>('[data-perfil]').forEach((b) => {
+            b.addEventListener('click', () => abrirCortina(b.dataset.perfil ?? ''));
+          });
+          document.addEventListener('keydown', function escCortina(e) {
+            if (e.key === 'Escape' && veu && document.body.contains(veu)) {
+              abrirCortina('');
+              document.removeEventListener('keydown', escCortina);
+            }
+          });
+        } else {
+          veu?.remove();
+          tl.play();
+        }
+
+        // O cartão flutua de leve com o scroll.
+        gsap.to('.cartao', {
+          y: -28,
+          ease: 'none',
+          scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
+        });
+
+        gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((el) => {
+          gsap.from(el, {
+            y: 36,
+            autoAlpha: 0,
+            duration: 0.9,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 86%' },
+          });
+        });
+
+        // Jornada: o fio se preenche e as estações acendem em sequência.
+        const trilha = document.querySelector('.trilha');
+        if (trilha) {
+          const estacoes = gsap.utils.toArray<HTMLElement>('[data-estacao]');
+          gsap.to('.trilha-fio i', {
+            scaleX: 1,
+            scaleY: 1,
+            ease: 'none',
+            scrollTrigger: { trigger: trilha, start: 'top 70%', end: 'bottom 70%', scrub: 0.6 },
+          });
+          gsap.from(estacoes, {
+            autoAlpha: 0,
+            y: 24,
+            duration: 0.6,
+            stagger: 0.18,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: trilha, start: 'top 75%' },
+          });
+          estacoes.forEach((el) => {
+            ScrollTrigger.create({
+              trigger: el,
+              start: 'top 72%',
+              once: true,
+              onEnter: () => el.classList.add('aceso'),
+            });
+          });
+        }
+
+        return () => split.revert();
+      });
+
+      mm.add('(min-width: 960px) and (prefers-reduced-motion: no-preference)', () => {
+        // O cartão inclina seguindo o cursor, como um objeto físico na mão.
+        const heroEl = document.querySelector<HTMLElement>('.hero');
+        const cartao = document.querySelector<HTMLElement>('.cartao');
+        if (heroEl && cartao) {
+          const rx = gsap.quickTo(cartao, 'rotationX', { duration: 0.6, ease: 'power3' });
+          const ry = gsap.quickTo(cartao, 'rotationY', { duration: 0.6, ease: 'power3' });
+          gsap.set(cartao, { transformPerspective: 900 });
+          heroEl.addEventListener('mousemove', (e) => {
+            const r = heroEl.getBoundingClientRect();
+            rx((0.5 - (e.clientY - r.top) / r.height) * 14);
+            ry(((e.clientX - r.left) / r.width - 0.5) * 18);
+          });
+          heroEl.addEventListener('mouseleave', () => { rx(0); ry(0); });
+        }
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  :global(html) {
+    scroll-behavior: auto;
+    scroll-padding-top: 6rem;
+    interpolate-size: allow-keywords;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    --navy: #012169;
+    --navy-fundo: #021a4f;
+    --navy-escuro: #01133a;
+    --vermelho: #c8102e;
+    --branco: #ffffff;
+    --papel: #f6f3ec;
+    --tinta: #101728;
+    --tinta-suave: #525a68;
+    --gelo: rgba(255, 255, 255, 0.72);
+    --linha: rgba(255, 255, 255, 0.16);
+    --linha-clara: rgba(1, 33, 105, 0.16);
+    background: var(--navy-fundo);
+    color: var(--branco);
+    font-family: 'Archivo Variable', 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.55;
+    overflow-x: hidden;
+  }
+  ::selection {
+    background: var(--vermelho);
+    color: var(--branco);
+  }
+  :focus-visible {
+    outline: 2px solid var(--vermelho);
+    outline-offset: 3px;
+  }
+
+  /* Cortina de abertura: a linha revela o logo e os dois panos fazem a
+     pergunta (cliente à esquerda em navy, novo à direita em vermelho).
+     Invisível por padrão; só o JavaScript (com movimento permitido) a exibe. */
+  .veu {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    visibility: hidden;
+  }
+  .veu-pano {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    border: 0;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.45rem;
+    padding-bottom: 16vh;
+    color: var(--branco);
+    transition: filter 0.3s ease;
+  }
+  .veu-pano:hover {
+    filter: brightness(1.18);
+  }
+  .veu-pano-cliente {
+    left: 0;
+    background: rgba(1, 19, 58, 0.86);
+    backdrop-filter: blur(18px);
+  }
+  .veu-pano-novo {
+    right: 0;
+    background: rgba(200, 16, 46, 0.82);
+    backdrop-filter: blur(18px);
+  }
+  .veu-pano-cliente::after,
+  .veu-pano-novo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120% 70% at 50% 100%, rgba(255, 255, 255, 0.08), transparent 60%);
+    pointer-events: none;
+  }
+  .veu-pano-rotulo {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(1.7rem, 3.6vw, 2.7rem);
+    line-height: 1;
+    opacity: 0;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.25s ease;
+  }
+  .veu-pano:hover .veu-pano-rotulo {
+    border-bottom-color: rgba(255, 255, 255, 0.7);
+  }
+  .veu-pano-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.64rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0;
+  }
+  .veu-centro {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .veu-linha {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(34rem, 76vw);
+    height: 1px;
+    background: var(--branco);
+    transform: translate(-50%, -50%) scaleX(0);
+    transform-origin: left center;
+  }
+  .veu-miolo {
+    display: grid;
+    justify-items: center;
+    gap: 1.1rem;
+  }
+  .veu-logo {
+    height: 2.7rem;
+    width: auto;
+    clip-path: inset(0 100% 0 0);
+  }
+  .veu-pergunta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+    margin: 0;
+    opacity: 0;
+  }
+  .veu-pular {
+    position: absolute;
+    left: 50%;
+    bottom: 1.5rem;
+    transform: translateX(-50%);
+    z-index: 3;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.85);
+    border-radius: 999px;
+    padding: 0.5rem 1.15rem;
+    font-size: 0.78rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: background 0.25s ease;
+  }
+  .veu-pular:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  /* Perfil de navegação: a escolha da cortina reordena os destaques */
+  .so-cliente {
+    display: none !important;
+  }
+  body[data-perfil='cliente'] .so-cliente {
+    display: inline-block !important;
+  }
+  body[data-perfil='cliente'] .so-novo {
+    display: none !important;
+  }
+
+  /* Linhas vivas: a geometria respira entre as cores da marca
+     e pulsos de luz viajam pelos traçados */
+  @keyframes pulsoClaro {
+    0%, 100% { stroke: rgba(255, 255, 255, 0.10); }
+    50% { stroke: rgba(200, 16, 46, 0.45); }
+  }
+  @keyframes pulsoRubro {
+    0%, 100% { stroke: rgba(200, 16, 46, 0.38); }
+    50% { stroke: rgba(255, 255, 255, 0.22); }
+  }
+  @keyframes pulsoFimClaro {
+    0%, 100% { stroke: rgba(255, 255, 255, 0.16); }
+    50% { stroke: rgba(1, 33, 105, 0.5); }
+  }
+  @keyframes pulsoFimNavy {
+    0%, 100% { stroke: rgba(1, 33, 105, 0.3); }
+    50% { stroke: rgba(255, 255, 255, 0.28); }
+  }
+  @keyframes viajar {
+    from { stroke-dashoffset: 100; }
+    to { stroke-dashoffset: -100; }
+  }
+  .geo-claras line {
+    animation: pulsoClaro 9s ease-in-out infinite;
+  }
+  .geo-rubras line {
+    animation: pulsoRubro 9s ease-in-out infinite;
+  }
+  .geo-fim-claras line {
+    animation: pulsoFimClaro 9s ease-in-out infinite;
+  }
+  .geo-fim-navy line {
+    animation: pulsoFimNavy 9s ease-in-out infinite;
+  }
+  .geo-viaja line {
+    stroke-dasharray: 13 87;
+    animation: viajar 8s linear infinite;
+  }
+  .geo-viaja line:nth-child(2) {
+    animation-delay: -2.6s;
+  }
+  .geo-viaja line:nth-child(3) {
+    animation-delay: -4.8s;
+    animation-duration: 10s;
+  }
+  .geo-viaja line:nth-child(4) {
+    animation-delay: -6.4s;
+    animation-duration: 11s;
+  }
+  .geo-claras line:nth-child(2),
+  .geo-fim-claras line:nth-child(2) {
+    animation-delay: -3s;
+  }
+  .geo-claras line:nth-child(3) {
+    animation-delay: -6s;
+  }
+  .geo-rubras line:nth-child(2),
+  .geo-fim-navy line:nth-child(2) {
+    animation-delay: -4.5s;
+  }
+  .geo-rubras line:nth-child(1) {
+    animation-delay: -1.5s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .geo-claras line,
+    .geo-rubras line,
+    .geo-fim-claras line,
+    .geo-fim-navy line,
+    .geo-viaja line {
+      animation: none;
+    }
+    .cartao-slot {
+      transition: opacity 0.2s ease;
+    }
+    .geo-viaja {
+      display: none;
+    }
+    .veu {
+      display: none;
+    }
+  }
+
+  .grao {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0.4;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E");
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    margin: 0;
+  }
+  em {
+    font-style: italic;
+  }
+  h2 {
+    font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+    line-height: 1.05;
+    margin-bottom: 2rem;
+  }
+
+  /* Régua dupla, abstração da Union Jack: navy contínuo, vermelho no arranque */
+  .claro h2,
+  .jornada-cabeca h2 {
+    position: relative;
+    border-top: 2px solid var(--navy);
+    padding-top: 1.1rem;
+  }
+  .claro h2::before,
+  .jornada-cabeca h2::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 0;
+    width: 4rem;
+    height: 2px;
+    background: var(--vermelho);
+  }
+  .jornada-cabeca h2 {
+    border-top-color: var(--navy);
+  }
+
+  .indice {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    color: var(--gelo);
+    margin: 0 0 1rem;
+  }
+  .miolo {
+    max-width: 70rem;
+    margin: 0 auto;
+  }
+
+  /* Sublinhado que se desenha, detalhe compartilhado de links */
+  .sub {
+    text-decoration: none;
+    background: linear-gradient(currentColor, currentColor) bottom left / 0% 1px no-repeat;
+    transition: background-size 0.3s ease;
+    padding-bottom: 2px;
+  }
+  .sub:hover {
+    background-size: 100% 1px;
+  }
+
+  .cta {
+    display: inline-block;
+    background: var(--vermelho);
+    color: var(--branco);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.95rem 2.1rem;
+    border-radius: 999px;
+    transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .cta:hover {
+    box-shadow: 0 14px 28px -14px rgba(200, 16, 46, 0.55);
+  }
+  .cta:hover {
+    background: #e21236;
+    transform: translateY(-2px);
+  }
+
+  /* Topo: barra clara, habitat do logo oficial primário */
+  .topo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 0.85rem 2.5rem;
+    background: var(--papel);
+    border-bottom: 1px solid rgba(1, 33, 105, 0.12);
+    transition: padding 0.35s ease, box-shadow 0.35s ease;
+  }
+  .topo.rolou {
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    box-shadow: 0 10px 30px -18px rgba(1, 19, 58, 0.45);
+  }
+  .topo-marca img {
+    height: 2rem;
+    width: auto;
+    display: block;
+  }
+  .topo nav {
+    display: flex;
+    gap: 1.9rem;
+  }
+  .topo nav a {
+    color: var(--tinta-suave);
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .topo nav a:hover {
+    color: var(--navy);
+  }
+  .topo-acessos {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+  .acesso {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.84rem;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.5rem 0.95rem;
+    border-radius: 999px;
+    transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  }
+  .acesso svg {
+    width: 1.05rem;
+    height: 1.05rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex: none;
+  }
+  .acesso-parceiro {
+    color: var(--tinta-suave);
+  }
+  .acesso-parceiro:hover {
+    color: var(--vermelho);
+    background: rgba(200, 16, 46, 0.07);
+  }
+  .acesso-cliente {
+    color: var(--navy);
+    border: 1.5px solid rgba(1, 33, 105, 0.45);
+  }
+  .acesso-cliente:hover {
+    background: var(--navy);
+    color: var(--papel);
+    border-color: var(--navy);
+  }
+  .topo-cta {
+    background: var(--vermelho);
+    color: var(--branco);
+    text-decoration: none;
+    font-size: 0.86rem;
+    font-weight: 700;
+    padding: 0.55rem 1.25rem;
+    border-radius: 999px;
+    margin-left: 0.35rem;
+    white-space: nowrap;
+    transition: background 0.25s ease, transform 0.25s ease;
+  }
+  .topo-cta:hover {
+    background: #e21236;
+    transform: translateY(-1px);
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    align-content: center;
+    padding: 7.5rem 2.5rem 5rem;
+    overflow: hidden;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 31px, rgba(130, 175, 255, 0.06) 31px 32px),
+      repeating-linear-gradient(90deg, transparent 0 31px, rgba(130, 175, 255, 0.06) 31px 32px),
+      repeating-linear-gradient(0deg, transparent 0 159px, rgba(130, 175, 255, 0.09) 159px 160px),
+      repeating-linear-gradient(90deg, transparent 0 159px, rgba(130, 175, 255, 0.09) 159px 160px),
+      radial-gradient(120% 90% at 50% 0%, rgba(2, 33, 105, 0.9), rgba(1, 19, 58, 1) 70%);
+  }
+  /* Marca viva, caderno de caligrafia: o logo menor ao centro e as guias,
+     no ângulo do próprio talhe, prolongadas até fora da tela. Sem brilho. */
+  .hero-marca {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .marca-grupo {
+    transform: translate(482px, 337px) scale(0.6);
+  }
+  .traco,
+  .guia {
+    fill: none;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .traco {
+    stroke-width: 2.6;
+    stroke: rgba(255, 255, 255, 0.34);
+  }
+  .guia {
+    stroke-width: 1.6;
+    stroke: rgba(255, 255, 255, 0.1);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .traco,
+    .guia {
+      stroke-dasharray: 100;
+      stroke-dashoffset: 100;
+    }
+  }
+  @media (max-width: 60rem) {
+    .marca-grupo {
+      transform: translate(553px, 371px) scale(0.42);
+    }
+  }
+  .hero-coord {
+    position: absolute;
+    top: 7rem;
+    right: 2.2rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+    color: rgba(255, 255, 255, 0.45);
+    writing-mode: vertical-rl;
+    margin: 0;
+  }
+  .hero-grade {
+    position: relative;
+    max-width: 76rem;
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: 2.5rem;
+    align-items: center;
+  }
+  .hero-kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gelo);
+    margin: 0 0 1.6rem;
+    min-height: 1.2em;
+  }
+  .hero h1 {
+    font-size: clamp(2.9rem, 6.6vw, 5.6rem);
+    line-height: 0.99;
+    letter-spacing: -0.015em;
+    margin: 0 0 1.4rem;
+  }
+  .hero h1 .linha {
+    display: block;
+  }
+  .hero h1 em {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--branco);
+  }
+  .hero-frase {
+    color: var(--gelo);
+    font-size: 1.02rem;
+    margin: 0 0 2.2rem;
+    max-width: 30rem;
+  }
+  .hero-acoes {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    flex-wrap: wrap;
+  }
+  .link-claro {
+    color: var(--branco);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .hero-acoes .cta::after {
+    content: ' \2193';
+    display: inline-block;
+    transition: transform 0.3s ease;
+  }
+  .hero-acoes .cta:hover::after {
+    transform: translateY(3px);
+  }
+  .hero-prova {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1.2rem 0 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+  }
+  .hero-prova svg {
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+    fill: none;
+    stroke: var(--vermelho);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Lente: a foto humana dentro da geometria */
+  .hero-visual {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 0.5rem;
+  }
+  /* A carta de crédito materializada: cartão sóbrio Union Jack, sem clichê
+     de fintech. Navy profundo, filete vermelho da bandeira, brilho que cruza. */
+  /* Palco do cartão: setas finas nas laterais, cartão no centro */
+  .cartao-palco {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    width: 100%;
+  }
+  /* Carrossel "porta giratória": o cartão central de frente, os vizinhos
+     girados em perspectiva e esmaecidos dos dois lados. */
+  .cartao-carrossel {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+    height: calc(clamp(16rem, 23vw, 21rem) / 1.586);
+    perspective: 1500px;
+  }
+  .cartao-pista {
+    position: absolute;
+    inset: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    transform-style: preserve-3d;
+  }
+  .cartao-slot {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: clamp(16rem, 23vw, 21rem);
+    transform-origin: center center;
+    transform: translateX(-50%);
+    transition: transform 0.62s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+  }
+  .cartao-pista:not(.pronto) .cartao-slot {
+    transition: none;
+  }
+  /* O brilho que cruza só corre no cartão em foco, sem seis animações juntas */
+  .cartao-slot:not(.is-active) .cartao-brilho {
+    display: none;
+  }
+  .cartao-seta {
+    flex: none;
+    position: relative;
+    z-index: 40;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(1, 17, 47, 0.45);
+    backdrop-filter: blur(2px);
+    color: var(--branco);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
+  .cartao-seta:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.06);
+  }
+  .cartao-seta svg {
+    width: 1.2rem;
+    height: 1.2rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  /* O cartão, no conceito blueprint: vidro fosco com tinta translúcida do
+     segmento, deixando a grade técnica aparecer por trás. */
+  .cartao {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1.586;
+    border-radius: 1rem;
+    padding: 1.4rem 1.5rem;
+    color: var(--branco);
+    text-decoration: none;
+    background:
+      linear-gradient(150deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04)),
+      linear-gradient(150deg, color-mix(in srgb, var(--c1, #012169) 60%, transparent), color-mix(in srgb, var(--c2, #01112f) 38%, transparent));
+    backdrop-filter: blur(12px) saturate(135%);
+    -webkit-backdrop-filter: blur(12px) saturate(135%);
+    box-shadow:
+      0 26px 54px -30px rgba(1, 10, 30, 0.9),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    row-gap: 0.55rem;
+    transition: box-shadow 0.4s ease, background 0.6s ease;
+  }
+  .cartao-slot.is-active .cartao:hover {
+    box-shadow: 0 34px 64px -28px rgba(1, 10, 30, 0.95), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  }
+  .cartao-brilho {
+    position: absolute;
+    top: -60%;
+    left: -30%;
+    width: 45%;
+    height: 220%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+    transform: rotate(18deg);
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cartao-brilho {
+      animation: cartaoBrilho 7.5s ease-in-out infinite;
+    }
+  }
+  @keyframes cartaoBrilho {
+    0%, 100% { transform: translateX(-60%) rotate(18deg); }
+    55% { transform: translateX(420%) rotate(18deg); }
+  }
+  .cartao-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .cartao-logo {
+    height: 1.35rem;
+    width: auto;
+  }
+  /* No lugar do chip, uma lâmpada (a boa ideia): no cartão em foco ela
+     "acende" como uma luz fluorescente piscando e firma o brilho puxando
+     para o vermelho da marca. */
+  .cartao-lampada {
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.5);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cartao-slot.is-active .cartao-lampada {
+      animation: lampadaAcende 4.5s ease-in-out infinite;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cartao-slot.is-active .cartao-lampada {
+      stroke: #ff5a6e;
+      filter: drop-shadow(0 0 4px rgba(200, 16, 46, 0.85));
+    }
+  }
+  @keyframes lampadaAcende {
+    0% { opacity: 0.35; stroke: rgba(255, 255, 255, 0.5); filter: none; }
+    4% { opacity: 1; }
+    7% { opacity: 0.4; }
+    10% { opacity: 1; }
+    13% { opacity: 0.55; }
+    18% { opacity: 1; stroke: #ff5a6e; filter: drop-shadow(0 0 5px rgba(200, 16, 46, 0.9)); }
+    88% { opacity: 1; stroke: #ff5a6e; filter: drop-shadow(0 0 6px rgba(200, 16, 46, 0.85)); }
+    93% { opacity: 0.82; }
+    100% { opacity: 1; stroke: #ff5a6e; filter: drop-shadow(0 0 5px rgba(200, 16, 46, 0.9)); }
+  }
+  /* Manchete do cartão: posse + valor em Archivo, moderna e legível sobre o
+     wireframe e o vidro do conceito blueprint. */
+  .cartao-corpo {
+    align-self: end;
+    display: grid;
+    gap: 0.3rem;
+  }
+  .cartao-posse {
+    font-family: 'Archivo Variable', sans-serif;
+    font-weight: 500;
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+    color: rgba(255, 255, 255, 0.72);
+    margin: 0;
+  }
+  .cartao-valor {
+    font-family: 'Geist Variable', sans-serif;
+    font-weight: 600;
+    font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+    line-height: 1.05;
+    letter-spacing: -0.005em;
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .cartao-rodape {
+    align-self: end;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.8rem;
+  }
+  .cartao-legenda {
+    margin: 0;
+    font-size: 0.62rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.6);
+    max-width: 12.5rem;
+  }
+  .cartao-seg {
+    flex: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    color: var(--branco);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 999px;
+    padding: 0.2rem 0.6rem;
+    white-space: nowrap;
+  }
+  /* Instrução de navegação visual: miniatura do carrossel com um cursor que
+     vira mãozinha e clica em looping, mostrando como navegar pelos cartões. */
+  .cartao-demo {
+    position: relative;
+    width: 12rem;
+    height: 4.2rem;
+    margin: 1.1rem auto 0;
+  }
+  .demo-pista {
+    position: absolute;
+    inset: 0;
+  }
+  .demo-card {
+    position: absolute;
+    left: 50%;
+    top: 42%;
+    width: 3rem;
+    height: 1.9rem;
+    margin: -0.95rem 0 0 -1.5rem;
+    border-radius: 0.32rem;
+    background: linear-gradient(150deg, #06204e, #4e0f1c);
+    box-shadow: 0 4px 10px -4px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  .dc-centro { transform: translateX(0) scale(1); opacity: 1; z-index: 2; }
+  .dc-esq { transform: translateX(-2.6rem) scale(0.78); opacity: 0.4; }
+  .dc-dir { transform: translateX(2.6rem) scale(0.78); opacity: 0.4; }
+  .demo-cursor {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 1.4rem;
+    height: 1.4rem;
+    transform: translate(1.4rem, 2.8rem);
+    z-index: 4;
+  }
+  .cur {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    fill: #fff;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
+  }
+  .cur-mao { opacity: 0; }
+  .demo-toque {
+    position: absolute;
+    left: 0.3rem;
+    top: 0.3rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: -0.75rem 0 0 -0.75rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--vermelho);
+    transform: scale(0);
+    opacity: 0;
+  }
+  .demo-fallback {
+    display: none;
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .dc-centro { animation: demoCentro 4.6s ease-in-out infinite; }
+    .dc-dir { animation: demoDir 4.6s ease-in-out infinite; }
+    .dc-esq { animation: demoEsq 4.6s ease-in-out infinite; }
+    .demo-cursor { animation: demoCursor 4.6s ease-in-out infinite; }
+    .cur-seta { animation: demoSeta 4.6s ease-in-out infinite; }
+    .cur-mao { animation: demoMao 4.6s ease-in-out infinite; }
+    .demo-toque { animation: demoToque 4.6s ease-in-out infinite; }
+  }
+  @keyframes demoCursor {
+    0%, 15% { transform: translate(1.4rem, 2.8rem) scale(1); }
+    40%, 48% { transform: translate(0.2rem, 1.1rem) scale(1); }
+    54% { transform: translate(0.2rem, 1.1rem) scale(0.84); }
+    62% { transform: translate(0.2rem, 1.1rem) scale(1); }
+    82%, 100% { transform: translate(1.4rem, 2.8rem) scale(1); }
+  }
+  @keyframes demoSeta {
+    0%, 34% { opacity: 1; }
+    42%, 72% { opacity: 0; }
+    82%, 100% { opacity: 1; }
+  }
+  @keyframes demoMao {
+    0%, 34% { opacity: 0; }
+    42%, 72% { opacity: 1; }
+    82%, 100% { opacity: 0; }
+  }
+  @keyframes demoToque {
+    0%, 50% { transform: scale(0); opacity: 0; }
+    56% { transform: scale(0.3); opacity: 0.7; }
+    72% { transform: scale(1.4); opacity: 0; }
+    100% { opacity: 0; }
+  }
+  @keyframes demoCentro {
+    0%, 50% { transform: translateX(0) scale(1); opacity: 1; }
+    62% { transform: translateX(-1.4rem) scale(0.9); opacity: 0.7; }
+    80%, 100% { transform: translateX(0) scale(1); opacity: 1; }
+  }
+  @keyframes demoDir {
+    0%, 50% { transform: translateX(2.6rem) scale(0.78); opacity: 0.4; }
+    62% { transform: translateX(1.1rem) scale(0.92); opacity: 0.85; }
+    80%, 100% { transform: translateX(2.6rem) scale(0.78); opacity: 0.4; }
+  }
+  @keyframes demoEsq {
+    0%, 50% { transform: translateX(-2.6rem) scale(0.78); opacity: 0.4; }
+    62% { transform: translateX(-3.8rem) scale(0.7); opacity: 0.12; }
+    80%, 100% { transform: translateX(-2.6rem) scale(0.78); opacity: 0.4; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .demo-pista,
+    .demo-cursor { display: none; }
+    .cartao-demo { height: auto; }
+    .demo-fallback { display: block; }
+  }
+  .cartao-nota {
+    max-width: 24rem;
+    margin: 0.6rem auto 0;
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.64rem;
+    letter-spacing: 0.04em;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2.2rem;
+    left: 2.5rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+    margin: 0;
+    animation: pulsar 2.4s ease-in-out infinite;
+  }
+  @keyframes pulsar {
+    50% {
+      opacity: 0.35;
+      transform: translateY(4px);
+    }
+  }
+
+  /* Credibilidade: ABAC (filiada) e BACEN em texto, logo após o hero */
+  .credibilidade {
+    background: var(--papel);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.25rem 2.5rem;
+    padding: 1.5rem 2.5rem;
+  }
+  .cred-abac {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+  }
+  .cred-abac img {
+    height: 2.3rem;
+    width: auto;
+    flex: none;
+  }
+  .cred-abac p {
+    margin: 0;
+    color: var(--tinta-suave);
+    font-size: 0.85rem;
+    max-width: 19rem;
+    line-height: 1.4;
+  }
+  .cred-divisa {
+    width: 1px;
+    height: 2.4rem;
+    background: rgba(1, 33, 105, 0.22);
+  }
+  .cred-bacen p {
+    margin: 0;
+  }
+  .cred-frase {
+    color: var(--navy);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .cred-oficio {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--tinta-suave);
+    margin-top: 0.25rem !important;
+  }
+
+  /* Marquee */
+  .marquee {
+    overflow: hidden;
+    border-top: 1px solid var(--linha);
+    border-bottom: 1px solid var(--linha);
+    background: var(--navy-escuro);
+    padding: 0.7rem 0;
+  }
+  .marquee-faixa {
+    display: flex;
+    white-space: nowrap;
+    width: max-content;
+    animation: rolar 36s linear infinite;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gelo);
+  }
+  @keyframes rolar {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-faixa,
+    .hero-scroll,
+    .cartao-brilho {
+      animation: none;
+    }
+  }
+
+  /* Seções claras: o respiro humano entre os blocos navy */
+  .claro {
+    background: var(--papel);
+    color: var(--tinta);
+    padding: 7.5rem 2.5rem;
+  }
+  .claro h2,
+  .claro h3 {
+    color: var(--navy);
+  }
+  .claro .indice {
+    color: #8a90a0;
+  }
+  .claro .apoio {
+    color: var(--tinta-suave);
+    margin: -1rem 0 3rem;
+    max-width: 36rem;
+  }
+  .statement {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(1.8rem, 3.8vw, 3.1rem);
+    line-height: 1.22;
+    max-width: 30ch;
+    margin: 0;
+    color: var(--navy);
+  }
+  .statement em {
+    color: var(--vermelho);
+  }
+
+  .vantagens {
+    margin-top: 5rem;
+  }
+  .vantagens-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem 2.5rem;
+  }
+  .vantagens-lista li {
+    border-top: 1px solid var(--linha-clara);
+    padding-top: 1.4rem;
+    transform: translateY(calc(var(--desloca) * 1.75rem));
+  }
+  .vantagens-lista .num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    color: var(--vermelho);
+  }
+  .vantagens-lista h3 {
+    font-size: 1.65rem;
+    margin: 0.7rem 0 0.5rem;
+  }
+  .vantagens-lista p {
+    margin: 0;
+    color: var(--tinta-suave);
+    font-size: 0.97rem;
+  }
+
+  /* Jornada: trilha viva do primeiro passo à carta de crédito */
+  .jornada {
+    background: var(--papel);
+    border-top: 1px solid rgba(1, 33, 105, 0.1);
+    padding: 5.5rem 2.5rem 6.5rem;
+  }
+  .jornada-cabeca {
+    max-width: 70rem;
+    margin: 0 auto 4rem;
+    width: 100%;
+  }
+  .jornada-cabeca h2 {
+    color: var(--navy);
+  }
+  .jornada-cabeca p {
+    color: var(--tinta-suave);
+    max-width: 42rem;
+    margin: 0;
+  }
+  .trilha {
+    position: relative;
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 72rem;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1.2fr 1.3fr;
+    gap: 1.5rem;
+  }
+  .trilha-fio {
+    position: absolute;
+    top: 0.85rem;
+    left: 7%;
+    right: 7%;
+    height: 2px;
+    background: rgba(1, 33, 105, 0.14);
+    overflow: hidden;
+    z-index: 0;
+  }
+  .trilha-fio i {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: var(--vermelho);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  .estacao {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 0.45rem;
+    padding-top: 2.6rem;
+  }
+  .estacao-marco {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid rgba(1, 33, 105, 0.3);
+    display: grid;
+    place-items: center;
+    z-index: 1;
+    transition: box-shadow 0.4s ease, border-color 0.4s ease;
+  }
+  .estacao.aceso .estacao-marco {
+    border-color: var(--vermelho);
+    box-shadow: 0 0 0 5px rgba(200, 16, 46, 0.12);
+  }
+  .estacao-marco-fim {
+    background: var(--vermelho);
+    border-color: var(--vermelho);
+  }
+  .estacao-marco-fim::after {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: #fff;
+  }
+  .estacao-quem {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--vermelho);
+    font-weight: 500;
+  }
+  .estacao h3 {
+    color: var(--navy);
+    font-size: 1.15rem;
+    margin: 0;
+  }
+  .estacao p {
+    color: var(--tinta-suave);
+    font-size: 0.88rem;
+    margin: 0;
+    max-width: 16rem;
+  }
+  /* Lente circular com as fotos reais dos segmentos, passando em carrossel,
+     como a imagem do home nas primeiras etapas. */
+  .caminho-lente {
+    position: relative;
+    width: clamp(8rem, 13vw, 10.5rem);
+    aspect-ratio: 1;
+    margin: 0.4rem auto 0.9rem;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--navy);
+    box-shadow: 0 18px 40px -22px rgba(1, 19, 58, 0.6), inset 0 0 0 1px rgba(1, 33, 105, 0.12);
+  }
+  .caminho-foto {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.04);
+    transition: opacity 0.8s ease, transform 6s ease;
+  }
+  .caminho-foto.ativo {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .estacao-segs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-top: 0.3rem;
+  }
+  .estacao-segs button {
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid rgba(1, 33, 105, 0.18);
+    background: #fff;
+    color: var(--navy);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .estacao-segs button:hover {
+    border-color: var(--navy);
+  }
+  .estacao-segs button[aria-pressed='true'] {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: var(--branco);
+  }
+  .jornada-cartao {
+    display: grid;
+    gap: 0.25rem;
+    width: 100%;
+    max-width: 13.5rem;
+    padding: 0.95rem 1.05rem;
+    border-radius: 0.8rem;
+    text-decoration: none;
+    text-align: left;
+    color: var(--branco);
+    background: linear-gradient(150deg, var(--c1, #012169), var(--c2, #01112f));
+    box-shadow: 0 18px 36px -22px rgba(1, 10, 30, 0.9), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    transition: transform 0.3s ease, background 0.6s ease;
+  }
+  .jornada-cartao:hover {
+    transform: translateY(-4px);
+  }
+  .jornada-cartao-rotulo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .jornada-cartao-valor {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 1.45rem;
+    line-height: 1.05;
+    font-variant-numeric: tabular-nums;
+  }
+  .jornada-cartao-tag {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 0.15rem;
+  }
+  .jornada-cartao-tag strong {
+    color: var(--branco);
+  }
+
+  /* Método (claro) */
+  .metodo-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+  .metodo-fio {
+    position: absolute;
+    left: -1.5rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 2px;
+    background: rgba(1, 33, 105, 0.14);
+  }
+  .metodo-fio i {
+    position: absolute;
+    inset: 0;
+    background: var(--vermelho);
+    transform-origin: top center;
+    display: block;
+  }
+  .metodo-convite {
+    margin: 2.25rem 0 0;
+    font-size: 1.05rem;
+    color: var(--tinta-suave);
+  }
+  .metodo-convite a {
+    color: var(--navy);
+    font-weight: 700;
+  }
+  .metodo-lista li {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 2rem;
+    padding: 1.7rem 0;
+    border-top: 1px solid var(--linha-clara);
+    align-items: baseline;
+  }
+  .metodo-num {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 2.6rem;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(1, 33, 105, 0.55);
+  }
+  .metodo-lista p {
+    margin: 0;
+    font-size: 1.12rem;
+    max-width: 44rem;
+    color: var(--tinta);
+  }
+
+  /* Números */
+  .numeros {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--linha);
+    border-bottom: 1px solid var(--linha);
+    background: var(--navy-fundo);
+    position: relative;
+    overflow: hidden;
+  }
+  .seis-marca {
+    position: absolute;
+    right: -1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 22rem;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.09);
+    pointer-events: none;
+    user-select: none;
+  }
+  .numeros-grande {
+    padding: 4.5rem 2.5rem;
+    text-align: center;
+  }
+  .numeros-grande + .numeros-grande {
+    border-left: 1px solid var(--linha);
+  }
+  .numeros-valor {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(3.4rem, 8vw, 6.5rem);
+    line-height: 1;
+    margin: 0 0 1rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .numeros-sufixo {
+    display: inline-block;
+    font-size: 0.32em;
+    margin-left: 0.4em;
+    font-style: italic;
+    color: var(--branco);
+    border-bottom: 3px solid var(--vermelho);
+    padding-bottom: 0.1em;
+    transform: translateY(-0.35em);
+  }
+  .numeros-legenda {
+    color: var(--gelo);
+    margin: 0 auto;
+    max-width: 24rem;
+    font-size: 0.95rem;
+  }
+  .numeros-legenda small {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Diferenciais e FAQ (claro) */
+  .diferenciais-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .diferenciais-lista li {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr);
+    gap: 2rem;
+    border-top: 1px solid var(--linha-clara);
+    padding: 1.6rem 0;
+  }
+  .diferenciais-lista h3 {
+    font-size: 1.6rem;
+  }
+  .diferenciais-lista p {
+    margin: 0;
+    color: var(--tinta-suave);
+  }
+  .documentos {
+    margin: 2.25rem 0 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    color: var(--tinta-suave);
+  }
+  .documentos a {
+    color: var(--navy);
+  }
+
+  .faq {
+    margin-top: 6rem;
+  }
+  .faq-lista details {
+    border-top: 1px solid var(--linha-clara);
+  }
+  .faq-lista details:last-child {
+    border-bottom: 1px solid var(--linha-clara);
+  }
+  .faq-lista summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 1.35rem 0;
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 1.45rem;
+    color: var(--navy);
+  }
+  .faq-lista summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-sinal {
+    flex: none;
+    width: 0.9rem;
+    height: 0.9rem;
+    position: relative;
+  }
+  .faq-sinal::before,
+  .faq-sinal::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0 auto;
+    height: 1px;
+    background: var(--vermelho);
+    transition: transform 0.3s ease;
+  }
+  .faq-sinal::after {
+    transform: rotate(90deg);
+  }
+  details[open] .faq-sinal::after {
+    transform: rotate(0deg);
+  }
+  .faq-lista details p {
+    margin: 0;
+    padding: 0 0 1.6rem;
+    color: var(--tinta-suave);
+    max-width: 52rem;
+  }
+  @supports (interpolate-size: allow-keywords) {
+    .faq-lista details::details-content {
+      height: 0;
+      overflow: clip;
+      transition: height 0.4s ease, content-visibility 0.4s allow-discrete;
+    }
+    .faq-lista details[open]::details-content {
+      height: auto;
+    }
+  }
+
+  /* Contato */
+  /* Simulador no conceito blueprint, em vermelho: mesma grade técnica do
+     hero, agora sobre o vermelho forte da MI6. */
+  .contato {
+    position: relative;
+    overflow: hidden;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 31px, rgba(255, 150, 160, 0.08) 31px 32px),
+      repeating-linear-gradient(90deg, transparent 0 31px, rgba(255, 150, 160, 0.08) 31px 32px),
+      repeating-linear-gradient(0deg, transparent 0 159px, rgba(255, 160, 170, 0.12) 159px 160px),
+      repeating-linear-gradient(90deg, transparent 0 159px, rgba(255, 160, 170, 0.12) 159px 160px),
+      radial-gradient(120% 95% at 50% 0%, #d11331, #7d0c1d 72%);
+    color: #fff;
+    padding: 6rem 2.5rem;
+  }
+  .contato-geo {
+    display: none;
+  }
+  .contato > :not(.contato-geo) {
+    position: relative;
+  }
+  .sim-grade {
+    position: relative;
+    max-width: 38rem;
+    margin: 0 auto;
+    display: grid;
+    gap: 2.5rem;
+  }
+  .sim-cabeca {
+    text-align: center;
+  }
+  .sim-kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.82);
+    margin: 0 0 0.6rem;
+  }
+  .sim-cabeca h2 {
+    color: #fff;
+    margin: 0 0 0.85rem;
+  }
+  .sim-cabeca p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.82);
+  }
+
+  /* Cartão do simulador: a conta inteira, em papel sobre o vermelho */
+  /* Cartão do simulador: superfície papel limpa, com uma borda viva em
+     gradiente cônico que gira lentamente nas cores da marca. O movimento
+     transmite cuidado sem ruído visual no miolo. */
+  @property --sim-ang {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+  .sim-card {
+    position: relative;
+    background: #ffffff;
+    color: var(--tinta);
+    border-radius: 28px;
+    padding: 1.85rem;
+    margin: 0;
+    box-shadow: 0 34px 64px -30px rgba(1, 19, 58, 0.45);
+    --sim-ang: 0deg;
+  }
+  .sim-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 3px;
+    border-radius: inherit;
+    background: conic-gradient(
+      from var(--sim-ang),
+      #7d0c1d 0deg,
+      #c8102e 90deg,
+      #ff5a6e 180deg,
+      #c8102e 270deg,
+      #7d0c1d 360deg
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    filter: drop-shadow(0 0 5px rgba(200, 16, 46, 0.45));
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .sim-card {
+      animation: simBorda 9s linear infinite;
+    }
+  }
+  @keyframes simBorda {
+    to {
+      --sim-ang: 360deg;
+    }
+  }
+  .sim-card > * {
+    position: relative;
+  }
+  .sim-passo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--tinta-suave);
+    margin: 0 0 0.8rem;
+  }
+  .sim-card .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .sim-card .chips button {
+    font: inherit;
+    font-size: 0.86rem;
+    font-weight: 600;
+    padding: 0.55rem 1.05rem;
+    border-radius: 999px;
+    border: 1px solid rgba(1, 33, 105, 0.16);
+    background: #fff;
+    color: var(--navy);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .sim-card .chips button:hover {
+    border-color: var(--seg-cor, var(--navy));
+  }
+  .sim-card .chips button[aria-pressed='true'] {
+    background: var(--seg-cor, var(--navy));
+    border-color: var(--seg-cor, var(--navy));
+    color: var(--branco);
+  }
+  .sim-credito {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    margin: 0.25rem 0 0.4rem;
+    color: var(--navy);
+  }
+  .sim-moeda {
+    font-weight: 600;
+    color: var(--tinta-suave);
+  }
+  .sim-credito output {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(2.6rem, 4vw, 3.4rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .sim-card input[type='range'] {
+    width: 100%;
+    appearance: none;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(1, 33, 105, 0.18);
+    outline-offset: 4px;
+    margin: 0.5rem 0 0.3rem;
+  }
+  .sim-card input[type='range']::-webkit-slider-thumb {
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--vermelho);
+    border: 3px solid var(--papel);
+    box-shadow: 0 0 0 1px var(--vermelho);
+    cursor: grab;
+  }
+  .sim-card input[type='range']::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--vermelho);
+    border: 3px solid var(--papel);
+    box-shadow: 0 0 0 1px var(--vermelho);
+    cursor: grab;
+  }
+  .sim-extremos {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: var(--tinta-suave);
+    margin-bottom: 1.4rem;
+  }
+  /* Resultado enxuto: a parcela é a estrela */
+  /* O resultado da simulação ganha a pele da carta de crédito: bloco navy
+     com chip, fixando o conceito sem aumentar a altura do simulador. */
+  .sim-resultado {
+    position: relative;
+    margin: 0.4rem 0 1.25rem;
+    padding: 1rem 1.15rem;
+    border-radius: 0.9rem;
+    color: var(--branco);
+    background:
+      radial-gradient(130% 140% at 85% -20%, rgba(255, 255, 255, 0.1), transparent 55%),
+      linear-gradient(150deg, var(--c1, #012169), var(--c2, #01112f));
+    overflow: hidden;
+    transition: background 0.5s ease;
+  }
+  .sim-resultado::after {
+    content: '';
+    position: absolute;
+    top: 1rem;
+    right: 1.15rem;
+    width: 1.7rem;
+    height: 1.25rem;
+    border-radius: 0.25rem;
+    background: linear-gradient(135deg, #ecdca6, #c2a04a);
+    opacity: 0.9;
+  }
+  .sim-res-rotulo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.64rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0 0 0.25rem;
+  }
+  .sim-res-valor {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    margin: 0;
+    color: var(--branco);
+  }
+  .sim-moeda-sm {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.1rem;
+  }
+  .sim-res-valor #sim-parcela {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(2.6rem, 5vw, 3.4rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .sim-res-mes {
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .sim-taxa {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0 0 1.4rem;
+    padding: 0.75rem 1rem;
+    border-radius: 14px;
+    background: rgba(1, 33, 105, 0.05);
+  }
+  .sim-taxa-rot {
+    font-size: 0.85rem;
+    color: var(--tinta-suave);
+  }
+  .sim-taxa-val {
+    text-align: right;
+    font-weight: 700;
+    color: var(--navy);
+    font-variant-numeric: tabular-nums;
+  }
+  .sim-taxa-val em {
+    display: block;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--tinta-suave);
+  }
+  .sim-cta {
+    display: block;
+    width: 100%;
+    border: 0;
+    cursor: pointer;
+    text-align: center;
+    font: inherit;
+    font-weight: 600;
+  }
+  .sim-cta[disabled] {
+    opacity: 0.85;
+    cursor: default;
+  }
+  .sim-erro {
+    margin: 0.8rem 0 0;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: var(--vermelho);
+    text-align: center;
+  }
+  .sim-zap-nota {
+    margin: 0 0 1.1rem;
+    font-size: 0.92rem;
+    color: var(--tinta-suave);
+  }
+  .sim-zap-consent {
+    margin: 0.75rem 0 0;
+    font-size: 0.72rem;
+    line-height: 1.4;
+    text-align: center;
+    color: var(--tinta-suave);
+    opacity: 0.85;
+  }
+  .sim-zap-consent a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .sim-cta.sim-zap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+  }
+  .sim-zap svg {
+    width: 1.3rem;
+    height: 1.3rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  /* Passo 3: contato. Agora um handoff direto para o WhatsApp com a simulação. */
+  .sim-contato {
+    margin-top: 1.6rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--linha-clara);
+  }
+  .sim-campo {
+    display: block;
+    margin-bottom: 0.7rem;
+  }
+  .sim-campo span {
+    display: block;
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--tinta-suave);
+    margin-bottom: 0.3rem;
+  }
+  .sim-campo input {
+    width: 100%;
+    font: inherit;
+    font-size: 0.95rem;
+    color: var(--tinta);
+    padding: 0.7rem 0.85rem;
+    border: 1px solid rgba(1, 33, 105, 0.25);
+    border-radius: 12px;
+    background: var(--branco);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .sim-campo input::placeholder {
+    color: rgba(1, 33, 105, 0.32);
+  }
+  .sim-campo input:focus-visible {
+    outline: none;
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(1, 33, 105, 0.12);
+  }
+  .sim-campo-dupla {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem;
+  }
+  .sim-mel {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+  .sim-contato .sim-cta {
+    margin-top: 1rem;
+    border-radius: 999px;
+    padding: 0.95rem 1.5rem;
+  }
+  /* Estado de sucesso após o envio do lead */
+  .sim-sucesso {
+    text-align: center;
+    padding: 1.5rem 0.5rem;
+  }
+  .sim-check {
+    display: grid;
+    place-items: center;
+    width: 3.4rem;
+    height: 3.4rem;
+    margin: 0 auto 1.1rem;
+    border-radius: 50%;
+    background: var(--navy);
+  }
+  .sim-check::after {
+    content: '';
+    width: 1.1rem;
+    height: 0.6rem;
+    border-left: 3px solid var(--branco);
+    border-bottom: 3px solid var(--branco);
+    transform: translateY(-2px) rotate(-45deg);
+  }
+  .sim-sucesso h3 {
+    color: var(--navy);
+    font-size: 1.8rem;
+    margin: 0 0 0.6rem;
+  }
+  .sim-sucesso p {
+    color: var(--tinta-suave);
+    max-width: 28rem;
+    margin: 0 auto 1.5rem;
+  }
+  .sim-sucesso strong {
+    color: var(--navy);
+  }
+  .sim-zap-aviso {
+    margin: 0.9rem 0 0;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--tinta-suave);
+    text-align: center;
+  }
+  .sim-zap-link {
+    color: var(--tinta-suave);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .sim-zap-link:hover {
+    color: var(--vermelho);
+  }
+  .sim-nota {
+    font-size: 0.75rem;
+    color: var(--tinta-suave);
+    margin: 0.9rem 0 0;
+    line-height: 1.5;
+  }
+  .sim-aguarde p {
+    color: var(--tinta-suave);
+    margin: 0 0 1.25rem;
+  }
+  .sim-aguarde-titulo {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 1.6rem;
+    color: var(--navy) !important;
+    margin: 0.25rem 0 0.6rem !important;
+  }
+  .cta-inverso {
+    background: var(--branco);
+    color: var(--vermelho);
+  }
+  .cta-inverso:hover {
+    background: var(--navy-escuro);
+    color: var(--branco);
+  }
+  .contato-acoes {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .contato-alt {
+    font-size: 0.95rem;
+  }
+  .contato-garantias {
+    list-style: none;
+    margin: 0 0 1.75rem;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.1rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .contato-garantias li + li::before {
+    content: '· ';
+    margin-right: 1.1rem;
+    opacity: 0.6;
+  }
+  .contato-nota {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem !important;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.75) !important;
+    margin-top: 2.5rem !important;
+  }
+
+  /* Rodapé */
+  /* Rodapé: manifesto à esquerda com redes sociais, grade de quatro blocos
+     à direita, faixa legal embaixo. No mobile vira coluna única limpa. */
+  .rodape {
+    background: var(--navy-escuro);
+    padding: 4.5rem 2.5rem 7rem;
+    border-top: 1px solid var(--linha);
+    position: relative;
+    overflow: hidden;
+  }
+  .rodape::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--vermelho) 30%, var(--vermelho) 70%, transparent);
+    opacity: 0.4;
+  }
+  .rodape-manifesto {
+    max-width: 78rem;
+    margin: 0 auto 3.5rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 2.5rem;
+    align-items: end;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--linha);
+  }
+  .rodape-manifesto img {
+    height: 2.4rem;
+    width: auto;
+    margin-bottom: 1.1rem;
+    grid-column: 1;
+    align-self: start;
+    justify-self: start;
+  }
+  .rodape-frase {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+    line-height: 1.2;
+    margin: 0;
+    color: var(--branco);
+    max-width: 22ch;
+    grid-column: 1;
+  }
+  .rodape-frase em {
+    color: var(--vermelho);
+    font-style: italic;
+  }
+  .rodape-redes {
+    list-style: none;
+    display: flex;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    grid-column: 2;
+    justify-self: end;
+    align-self: end;
+  }
+  .rodape-redes a {
+    display: grid;
+    place-items: center;
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: 50%;
+    border: 1px solid var(--linha);
+    color: var(--gelo);
+    transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+  }
+  .rodape-redes a:hover {
+    background: var(--vermelho);
+    border-color: var(--vermelho);
+    color: var(--branco);
+    transform: translateY(-2px);
+  }
+  .rodape-redes svg {
+    width: 1.2rem;
+    height: 1.2rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .rodape-redes svg path[d^="M14.5"] {
+    fill: currentColor;
+    stroke: none;
+  }
+  .rodape-grade {
+    max-width: 78rem;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.5rem;
+  }
+  .rodape-bloco h3 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--vermelho);
+    margin: 0 0 1.1rem;
+  }
+  .rodape-bloco a,
+  .rodape-bloco > button,
+  .rodape-bloco > p {
+    display: block;
+    color: var(--gelo);
+    text-decoration: none;
+    font-size: 0.92rem;
+    margin: 0 0 0.55rem;
+    background: none;
+    border: 0;
+    padding: 0;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .rodape-bloco a:hover,
+  .rodape-bloco > button:hover {
+    color: var(--branco);
+  }
+  .rodape-canal {
+    display: grid;
+    gap: 0.15rem;
+    margin: 0 0 0.85rem !important;
+  }
+  .rodape-rotulo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+  }
+  .rodape-canal a {
+    color: var(--branco) !important;
+    font-weight: 600;
+    margin: 0 !important;
+  }
+  .rodape-credenciais p {
+    margin: 0 0 0.8rem !important;
+  }
+  .rodape-credenciais img {
+    height: 2rem;
+    width: auto;
+    filter: brightness(0) invert(1);
+    opacity: 0.85;
+  }
+  .rodape-cred-frase {
+    color: var(--branco) !important;
+    font-weight: 600;
+    font-size: 0.88rem !important;
+  }
+  .rodape-cred-oficio {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem !important;
+    letter-spacing: 0.12em;
+    color: rgba(255, 255, 255, 0.55) !important;
+  }
+  .rodape-perfil {
+    margin-top: 0.75rem !important;
+    border: 1px solid var(--linha) !important;
+    padding: 0.45rem 0.85rem !important;
+    border-radius: 999px !important;
+    font-size: 0.78rem !important;
+    color: var(--gelo) !important;
+    text-align: center !important;
+    transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  }
+  .rodape-perfil:hover {
+    background: var(--branco);
+    color: var(--navy-escuro) !important;
+    border-color: var(--branco) !important;
+  }
+  .rodape-legal {
+    max-width: 78rem;
+    margin: 3rem auto 0;
+    border-top: 1px solid var(--linha);
+    padding-top: 1.25rem;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Dock flutuante: a navegação mora na zona do polegar. Colunas de largura
+     igual (flex-basis 0) dão ritmo regular, independente do tamanho da palavra. */
+  /* Dock recolhível: por padrão guardado, só "Menu" com três pauzinhos, bem
+     translúcido; ao clicar, expande para a barra completa. */
+  .dock {
+    position: fixed;
+    left: 50%;
+    bottom: 1.1rem;
+    transform: translateX(-50%);
+    z-index: 70;
+    max-width: calc(100% - 2rem);
+    display: flex;
+    align-items: stretch;
+    background: rgba(1, 16, 47, 0.42);
+    backdrop-filter: blur(18px) saturate(120%);
+    -webkit-backdrop-filter: blur(18px) saturate(120%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    padding: 0.4rem 0.45rem;
+    box-shadow: 0 24px 60px -20px rgba(1, 10, 30, 0.7);
+    transition: background 0.3s ease;
+  }
+  .dock.aberto {
+    background: rgba(1, 16, 47, 0.62);
+  }
+  .dock-toggle {
+    position: relative;
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    color: var(--gelo);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 0.65rem 0.85rem;
+    border-radius: 999px;
+    transition: color 0.2s ease, background 0.2s ease, padding 0.3s ease;
+  }
+  .dock-toggle:hover {
+    color: var(--branco);
+    background: rgba(255, 255, 255, 0.09);
+  }
+  .dock.aberto .dock-toggle {
+    padding: 0.55rem 0.55rem;
+  }
+  .dock.aberto .dock-toggle-label {
+    display: none;
+  }
+  /* Autoexplicação discreta: uma mãozinha dá um toque suave em looping no
+     "Menu", ensinando que é só clicar; some quando abre ou após o 1o uso. */
+  .dock-mao {
+    position: absolute;
+    right: 0.15rem;
+    bottom: -0.35rem;
+    width: 0.95rem;
+    height: 0.95rem;
+    color: var(--branco);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .dock-mao svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+  }
+  .dock.aberto .dock-mao,
+  .dock.dock-usado .dock-mao {
+    display: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .dock:not(.aberto):not(.dock-usado) .dock-mao {
+      animation: dockTap 3.2s ease-in-out infinite;
+    }
+  }
+  @keyframes dockTap {
+    0%, 58%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+    70% { transform: translateY(2px) scale(0.84); opacity: 1; }
+    82% { transform: translateY(0) scale(1); opacity: 0.75; }
+  }
+  .dock-itens {
+    display: flex;
+    align-items: stretch;
+    min-width: 0;
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-width 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+  }
+  .dock.aberto .dock-itens {
+    max-width: 32rem;
+    opacity: 1;
+  }
+  .dock-itens > button,
+  .dock-itens > a {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.26rem;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    color: var(--gelo);
+    text-decoration: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.56rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 0.55rem 0.7rem;
+    border-radius: 999px;
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+  .dock-itens > button:hover,
+  .dock-itens > a:not(.dock-cta):hover {
+    color: var(--branco);
+    background: rgba(255, 255, 255, 0.09);
+  }
+  .dock svg {
+    width: 1.35rem;
+    height: 1.35rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  /* Simular: mesma coluna dos demais, destacado por cor, sem saltar para fora;
+     assim o dock não cria um eixo central que o site assimétrico não tem. */
+  .dock-itens > .dock-cta {
+    background: var(--vermelho);
+    color: var(--branco);
+  }
+  .dock-itens > .dock-cta:hover {
+    background: #e21236;
+    color: var(--branco);
+  }
+  .dock-cta svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  /* Folhas: o conteúdo de apoio sobe em lâminas, fora da rolagem principal */
+  .folha-fundo {
+    position: fixed;
+    inset: 0;
+    z-index: 75;
+    background: rgba(1, 8, 24, 0.6);
+    backdrop-filter: blur(3px);
+  }
+  .folha {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: min(46rem, 100%);
+    max-height: 86svh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    z-index: 80;
+    background: var(--papel);
+    color: var(--tinta);
+    border-radius: 22px 22px 0 0;
+    padding: 1.4rem 2rem 2.5rem;
+    box-shadow: 0 -30px 80px rgba(1, 10, 30, 0.5);
+  }
+  .folha-cabeca {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.9rem;
+  }
+  .folha .indice {
+    color: #8a90a0;
+    margin: 0;
+  }
+  .folha-fechar {
+    border: 0;
+    background: rgba(1, 33, 105, 0.08);
+    color: var(--navy);
+    width: 2.3rem;
+    height: 2.3rem;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .folha-fechar:hover {
+    background: var(--navy);
+    color: var(--branco);
+  }
+  .folha h2 {
+    color: var(--navy);
+    font-size: clamp(1.8rem, 3.4vw, 2.5rem);
+    border-top: 2px solid var(--navy);
+    padding-top: 1rem;
+    position: relative;
+    margin-bottom: 1.25rem;
+  }
+  .folha h2::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 0;
+    width: 4rem;
+    height: 2px;
+    background: var(--vermelho);
+  }
+  .folha h3 {
+    color: var(--navy);
+  }
+  .folha .statement {
+    font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  }
+  .folha .vantagens {
+    margin-top: 2.25rem;
+  }
+  .folha .apoio {
+    color: var(--tinta-suave);
+    margin: -0.5rem 0 2rem;
+  }
+  .folha-vantagens {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .folha-vantagens li {
+    transform: none;
+  }
+  .folha .metodo-fio {
+    left: -1.1rem;
+  }
+  .folha-numeros {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    border-top: 1px solid var(--linha-clara);
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+  }
+  .folha-numeros strong {
+    display: block;
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    font-size: 2rem;
+    color: var(--navy);
+  }
+  .folha-numeros span {
+    color: var(--tinta-suave);
+    font-size: 0.85rem;
+  }
+  .folha-sub {
+    margin: 2.25rem 0 0.75rem !important;
+  }
+  .folha-acao {
+    margin: 2.25rem 0 0;
+    color: var(--tinta-suave);
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .folha-acao-topo {
+    margin: 0 0 1.75rem;
+  }
+  .cta-navy {
+    background: var(--navy);
+  }
+  .cta-navy:hover {
+    background: #032a82;
+    box-shadow: 0 14px 28px -14px rgba(1, 33, 105, 0.6);
+  }
+  .link-navy {
+    color: var(--navy);
+    font-weight: 600;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font-size: inherit;
+    font-family: inherit;
+    padding: 0 0 2px;
+    text-align: left;
+  }
+  .cliente-atalhos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.9rem;
+    border-top: 1px solid var(--linha-clara);
+    padding-top: 1.5rem;
+  }
+  .folha-nota {
+    margin: 2rem 0 0;
+    padding-top: 1.25rem;
+    border-top: 1px dotted var(--linha-clara);
+    color: var(--tinta-suave);
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  /* Botões que se vestem de link (gatilhos das folhas) */
+  .topo nav button.sub,
+  .rodape button.sub,
+  button.link-claro {
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font: inherit;
+    padding: 0;
+    padding-bottom: 2px;
+    text-align: left;
+  }
+  .topo nav button.sub {
+    color: var(--tinta-suave);
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .topo nav button.sub:hover {
+    color: var(--navy);
+  }
+  .rodape button.sub {
+    display: block;
+    width: fit-content;
+    color: var(--gelo);
+    font-size: 0.92rem;
+    margin: 0 0 0.55rem;
+  }
+  .rodape button.sub:hover {
+    color: var(--branco);
+  }
+
+  @media (max-width: 60rem) {
+    .topo {
+      padding: 0.7rem 1rem;
+      gap: 0.75rem;
+    }
+    .topo nav {
+      display: none;
+    }
+    .topo-marca img {
+      height: 1.7rem;
+    }
+    .acesso span {
+      display: none;
+    }
+    .acesso {
+      padding: 0.5rem;
+    }
+    .acesso svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+    .topo-cta {
+      margin-left: 0;
+    }
+    .hero {
+      padding: 6.5rem 1.25rem 7.5rem;
+    }
+    .hero-grade {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+    .hero-coord {
+      display: none;
+    }
+    .hero-visual {
+      justify-items: center;
+      grid-template-columns: 1fr;
+    }
+    .cartao-palco {
+      gap: 0.2rem;
+    }
+    .cartao-carrossel {
+      height: calc(min(70vw, 19rem) / 1.586);
+    }
+    .cartao-slot {
+      width: min(70vw, 19rem);
+    }
+    .cartao-seta {
+      width: 2.2rem;
+      height: 2.2rem;
+    }
+    .hero-scroll {
+      display: none;
+    }
+    .claro {
+      padding: 4.5rem 1.25rem;
+    }
+    .vantagens-lista {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .vantagens-lista li {
+      transform: none;
+    }
+    .jornada {
+      padding: 4rem 1.25rem 4.5rem;
+    }
+    .jornada-cabeca {
+      margin-bottom: 2.5rem;
+    }
+    /* Trilha vira timeline vertical: linha à esquerda, marcos sobre ela */
+    .trilha {
+      grid-template-columns: 1fr;
+      gap: 2.25rem;
+      padding-left: 3.2rem;
+      max-width: 30rem;
+    }
+    .trilha-fio {
+      top: 1rem;
+      bottom: 1rem;
+      left: 1.15rem;
+      right: auto;
+      width: 2px;
+      height: auto;
+    }
+    .trilha-fio i {
+      width: 100%;
+      height: 100%;
+      transform: scaleY(0);
+      transform-origin: center top;
+    }
+    .estacao {
+      justify-items: start;
+      text-align: left;
+      padding-top: 0;
+      padding-left: 0;
+      gap: 0.4rem;
+      min-height: 2.3rem;
+    }
+    .estacao-marco {
+      left: -3.2rem;
+      top: 0;
+      transform: none;
+    }
+    .estacao p,
+    .estacao-segs {
+      justify-content: flex-start;
+    }
+    .estacao p {
+      max-width: none;
+    }
+    .metodo-lista li {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .metodo-fio {
+      display: none;
+    }
+    .dock {
+      bottom: 0.75rem;
+      padding: 0.3rem 0.3rem;
+      max-width: calc(100% - 0.6rem);
+    }
+    /* Aberto no mobile, o dock ocupa a largura e as colunas dividem o espaço,
+       senão os rótulos longos (Contemplação) vazam e colam nos vizinhos. */
+    .dock.aberto {
+      width: calc(100% - 0.6rem);
+    }
+    .dock.aberto .dock-toggle {
+      padding: 0.5rem 0.35rem;
+    }
+    .dock.aberto .dock-itens {
+      flex: 1 1 auto;
+      max-width: 100%;
+    }
+    .dock-itens > button,
+    .dock-itens > a {
+      padding: 0.5rem 0.1rem;
+      gap: 0.26rem;
+      font-size: 0.47rem;
+      letter-spacing: 0.01em;
+    }
+    .dock svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+    .folha {
+      padding: 1.25rem 1.25rem 2rem;
+      border-radius: 18px 18px 0 0;
+    }
+    .folha-numeros {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .sim-grade {
+      gap: 1.5rem;
+    }
+    .sim-cabeca {
+      display: none;
+    }
+    .sim-card {
+      padding: 1.35rem;
+    }
+    .cred-divisa {
+      display: none;
+    }
+    .credibilidade {
+      flex-direction: column;
+      text-align: center;
+      gap: 1rem;
+    }
+    .cred-abac {
+      flex-direction: column;
+      text-align: center;
+      gap: 0.6rem;
+    }
+    .numeros {
+      grid-template-columns: 1fr;
+    }
+    .numeros-grande + .numeros-grande {
+      border-left: 0;
+      border-top: 1px solid var(--linha);
+    }
+    .diferenciais-lista li {
+      grid-template-columns: 1fr;
+      gap: 0.6rem;
+    }
+    .rodape {
+      padding: 3.5rem 1.25rem 7rem;
+    }
+    .rodape-manifesto {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      padding-bottom: 2rem;
+      margin-bottom: 2.5rem;
+    }
+    .rodape-redes {
+      grid-column: 1;
+      justify-self: start;
+    }
+    .rodape-grade {
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem 1.5rem;
+    }
+    .rodape-credenciais {
+      grid-column: 1 / -1;
+      border-top: 1px solid var(--linha);
+      padding-top: 1.5rem;
+    }
+  }
+</style>

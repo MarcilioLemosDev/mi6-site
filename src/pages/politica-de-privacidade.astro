@@ -1,0 +1,439 @@
+---
+import '@fontsource/instrument-serif';
+import '@fontsource/instrument-serif/400-italic.css';
+import '@fontsource-variable/archivo';
+import '@fontsource/ibm-plex-mono';
+
+// Política de Privacidade da MI6. Conteúdo institucional fornecido por
+// Marcílio (versão 1.1, 23/06/2026). Texto fiel; sem travessões (padrão
+// de escrita do projeto). Página estática, linkada pelo rodapé.
+const finalidades = [
+  'Execução de contratos e prestação de serviços;',
+  'Cumprimento de obrigações legais e regulatórias;',
+  'Proteção ao crédito e prevenção a fraudes;',
+  'Atendimento e suporte ao cliente;',
+  'Gestão administrativa e documental;',
+  'Desenvolvimento e aprimoramento de produtos e serviços;',
+  'Processos de prospecção e negociais;',
+  'Envio de informações institucionais e comerciais;',
+  'Abertura de protocolos de reclamação;',
+  'Estrito cumprimento de requisições de autoridades administrativas, regulatórias e judiciais.',
+];
+const direitos = [
+  'Confirmar a existência de tratamento;',
+  'Acessar seus dados;',
+  'Solicitar correção ou atualização;',
+  'Requerer exclusão ou bloqueio;',
+  'Solicitar portabilidade a outro prestador;',
+  'Revogar consentimento previamente concedido.',
+];
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Política de Privacidade · MI6 Consórcio Nacional</title>
+    <meta name="description" content="Como a M.I6 Administradora de Consórcio Ltda. trata e protege seus dados pessoais, em conformidade com a LGPD." />
+  </head>
+  <body>
+    <header class="topo">
+      <a class="topo-logo" href="/" aria-label="MI6 Consórcio Nacional">
+        <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="60" />
+      </a>
+    </header>
+
+    <main class="doc">
+      <p class="kicker">Privacidade e proteção de dados</p>
+      <h1>Política de Privacidade</h1>
+      <p class="lead">Saiba como tratamos seus dados pessoais e garantimos sua segurança em primeiro lugar.</p>
+
+      <section>
+        <h2>Introdução</h2>
+        <p>
+          A presente Política de Privacidade tem como objetivo informar, de forma clara e transparente,
+          como a M.I6 Administradora de Consórcio Ltda. trata os dados pessoais de clientes, parceiros,
+          fornecedores e demais pessoas que se relacionam conosco.
+        </p>
+        <p>
+          Nosso compromisso é proteger os dados coletados e utilizados, garantindo tratamento ético,
+          responsável e seguro em todo o ciclo de vida da informação, em conformidade com a Lei Geral de
+          Proteção de Dados Pessoais (LGPD, Lei Federal nº 13.709/2018) e demais legislações aplicáveis.
+        </p>
+      </section>
+
+      <section>
+        <h2>Público-Alvo</h2>
+        <p>Esta Política aplica-se a:</p>
+        <ul>
+          <li>Clientes e potenciais clientes;</li>
+          <li>Sócios, representantes legais e procuradores;</li>
+          <li>Colaboradores, fornecedores e parceiros comerciais;</li>
+          <li>Qualquer pessoa que interaja com a M.I6 Administradora de Consórcio Ltda. por meio de nossos canais oficiais (site, telefone, e-mail ou atendimento presencial).</li>
+        </ul>
+        <p>
+          Além disso, se você está apenas visitando nosso site ou teve algum contato conosco por meio de
+          nossos canais oficiais de atendimento, esta Política também é para você.
+        </p>
+        <p>
+          Queremos estar cada vez mais próximos de você. Por isso, nossa Política de Privacidade foi
+          construída usando uma linguagem simples, direta e objetiva. Ainda assim, se restarem dúvidas, você
+          pode falar conosco pelos nossos canais de atendimento ou pelo e-mail
+          <a href="mailto:privacidade@mi6consorcio.com.br">privacidade@mi6consorcio.com.br</a>.
+        </p>
+      </section>
+
+      <section>
+        <h2>Estrutura de Governança</h2>
+        <p>
+          A M.I6 Administradora de Consórcio Ltda. possui uma estrutura de governança voltada à privacidade
+          e proteção de dados pessoais, com foco constante na sua segurança, seguindo diretrizes, normas e
+          procedimentos alinhados às melhores práticas de mercado.
+        </p>
+        <p>Essa estrutura garante que:</p>
+        <ul>
+          <li>O tratamento de dados seja realizado de forma ética e transparente;</li>
+          <li>Os processos internos sejam constantemente revisados e aprimorados;</li>
+          <li>A alta administração participe da supervisão e acompanhamento das práticas de privacidade;</li>
+          <li>Haja monitoramento contínuo para prevenir incidentes de segurança.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Definições</h2>
+        <dl class="defs">
+          <dt>Dados pessoais</dt>
+          <dd>informações que identificam ou podem identificar uma pessoa natural.</dd>
+          <dt>Dados pessoais sensíveis</dt>
+          <dd>informações que exigem maior proteção, como dados de saúde, origem racial ou convicções religiosas.</dd>
+          <dt>Titular</dt>
+          <dd>pessoa natural a quem pertencem os dados pessoais.</dd>
+          <dt>Tratamento</dt>
+          <dd>qualquer operação realizada com dados pessoais (coleta, uso, armazenamento, eliminação etc.).</dd>
+          <dt>Controlador</dt>
+          <dd>responsável pelas decisões sobre o tratamento dos dados.</dd>
+          <dt>Operador</dt>
+          <dd>quem realiza o tratamento em nome do controlador.</dd>
+        </dl>
+      </section>
+
+      <section>
+        <h2>Finalidades do Tratamento</h2>
+        <p>A M.I6 Administradora de Consórcio Ltda. trata dados pessoais para:</p>
+        <ul>
+          {finalidades.map((f) => <li>{f}</li>)}
+        </ul>
+      </section>
+
+      <section>
+        <h2>Dados Coletados</h2>
+        <p>Podem ser coletados:</p>
+        <ul>
+          <li>Nome completo, CPF, RG, endereço, telefone, e-mail;</li>
+          <li>Dados bancários e comprovantes de renda;</li>
+          <li>Informações de veículos (IPVA) ou imóveis (IPTU);</li>
+          <li>Estado civil, profissão e nacionalidade;</li>
+          <li>Dados de navegação em nosso site (IP, cookies, geolocalização, mediante autorização).</li>
+        </ul>
+        <p>
+          Outras informações que podem ser consideradas dados pessoais, quando associadas aos respectivos
+          titulares, também poderão ser tratadas pela M.I6 Administradora de Consórcio Ltda., tais como:
+        </p>
+        <ul>
+          <li>Informações referentes aos seus dispositivos eletrônicos (telefone celular, computadores, entre outros);</li>
+          <li>Informações sobre hábitos de navegação (como páginas acessadas em nosso site ou preferências de uso digital);</li>
+          <li>Dados relativos à sua situação financeira, incluindo consultas a sistemas de crédito e histórico de adimplência.</li>
+        </ul>
+        <p>
+          Também podemos receber dados de fontes legítimas, como órgãos públicos, cartórios e parceiros
+          comerciais, sempre em conformidade com a LGPD.
+        </p>
+      </section>
+
+      <section>
+        <h2>Simulação e contato pelo WhatsApp</h2>
+        <p>
+          Ao usar o simulador do site e optar por falar no WhatsApp, você nos informa nome, telefone e
+          e-mail. Esses dados são utilizados para entrar em contato e apresentar condições de consórcio
+          adequadas ao seu interesse.
+        </p>
+        <p>
+          A sua simulação e os seus dados de contato são enviados por meio do WhatsApp e por e-mail à nossa
+          equipe, e ficam registrados para o atendimento comercial. O envio depende do seu consentimento,
+          manifestado ao acionar o botão de contato.
+        </p>
+      </section>
+
+      <section>
+        <h2>Compartilhamento de Dados</h2>
+        <p>
+          Para viabilizar a oferta, a contratação e a execução dos serviços de consórcio, a M.I6
+          Administradora de Consórcio Ltda. poderá compartilhar seus dados pessoais com parceiros comerciais,
+          fornecedores e terceiros que mantenham relacionamento legítimo com a empresa.
+        </p>
+        <p>
+          Podemos compartilhar seus dados pessoais com fornecedores e prestadores de serviços contratados
+          pela M.I6 Administradora de Consórcio Ltda. com o objetivo de aprimorar, viabilizar e executar
+          atividades complementares aos negócios que realizamos, como suporte tecnológico, análise de crédito
+          e serviços de atendimento.
+        </p>
+        <p>
+          Em determinadas situações, pode ser necessário o compartilhamento de seus dados pessoais com órgãos
+          reguladores, fiscalizadores, autoridades competentes, órgãos oficiais ou auditorias externas, com o
+          propósito de cumprir a legislação vigente e atender exigências legais ou regulatórias.
+        </p>
+        <p>
+          Ao compartilhar seus dados com terceiros, enviamos apenas as informações estritamente necessárias,
+          com a máxima segurança, obedecendo rigorosamente à legislação aplicável e às boas práticas de
+          governança.
+        </p>
+        <p>
+          Exigimos que nossos parceiros comerciais, fornecedores e prestadores de serviços adotem políticas e
+          práticas adequadas de proteção de dados pessoais, em conformidade com a LGPD e demais normas
+          aplicáveis, e que atuem de acordo com os termos desta Política de Privacidade.
+        </p>
+        <p>
+          A M.I6 Administradora de Consórcio Ltda. celebra contratos e instrumentos formais com terceiros
+          contendo cláusulas específicas de privacidade e proteção de dados pessoais, garantindo que os
+          tratamentos realizados limitem-se às finalidades declaradas, estabelecendo responsabilidades,
+          limitações e o cumprimento desta Política.
+        </p>
+        <p>
+          Em todos os casos, o compartilhamento é realizado de forma limitada e proporcional, sempre em
+          benefício da prestação adequada dos serviços de consórcio.
+        </p>
+      </section>
+
+      <section>
+        <h2>Armazenamento e Segurança</h2>
+        <p>
+          Seus dados permanecem armazenados durante a relação contratual ou pelo prazo exigido por lei, de
+          forma segura, ética e sob constante vigilância, garantindo máxima proteção contra riscos e acessos
+          indevidos.
+        </p>
+        <p>Adotamos medidas como:</p>
+        <ul>
+          <li>Criptografia e backups periódicos;</li>
+          <li>Controle de acessos restritos;</li>
+          <li>Atualização constante de sistemas de segurança;</li>
+          <li>Seleção criteriosa de prestadores de serviços de nuvem;</li>
+          <li>Monitoramento contínuo para prevenir acessos não autorizados, fraudes ou incidentes.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Responsabilidade do Titular</h2>
+        <p>Para garantir ainda mais a segurança, é importante que o titular também:</p>
+        <ul>
+          <li>Utilize apenas canais oficiais da M.I6 Administradora de Consórcio Ltda.;</li>
+          <li>Mantenha seus dispositivos atualizados com antivírus e navegadores;</li>
+          <li>Não compartilhe senhas ou dados pessoais com terceiros;</li>
+          <li>Atualize seus dados sempre que houver alteração.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Direitos dos Titulares</h2>
+        <p>Nos termos da LGPD, você pode:</p>
+        <ul>
+          {direitos.map((d) => <li>{d}</li>)}
+        </ul>
+        <div class="callout">
+          <p>
+            Solicitações devem ser enviadas para
+            <a href="mailto:privacidade@mi6consorcio.com.br">privacidade@mi6consorcio.com.br</a>.
+          </p>
+          <p>O prazo de resposta é de até 15 dias.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Cookies</h2>
+        <p>
+          Cookies são pequenos arquivos de texto armazenados no navegador do usuário quando ele visita um
+          site. Eles funcionam como identificadores que permitem reconhecer o dispositivo em acessos futuros
+          e guardar certas preferências, tornando a navegação mais eficiente.
+        </p>
+        <p>Na M.I6 Administradora de Consórcio Ltda., podemos utilizar cookies para:</p>
+        <ul>
+          <li>Autenticação e segurança;</li>
+          <li>Personalização de atendimento;</li>
+          <li>Melhorar a experiência de navegação.</li>
+        </ul>
+        <p>
+          Atualmente, este site utiliza apenas armazenamento local de primeira parte, estritamente
+          funcional, para lembrar preferências de navegação, como a forma de entrada escolhida. Não
+          usamos cookies de rastreamento, de publicidade ou de terceiros, nem ferramentas de analytics
+          neste site.
+        </p>
+        <p>
+          Você pode bloquear ou excluir cookies diretamente no navegador, mas algumas funcionalidades do site
+          podem ser impactadas, reduzindo a experiência completa de navegação.
+        </p>
+      </section>
+
+      <section>
+        <h2>Alterações na Política</h2>
+        <p>
+          Esta Política poderá ser atualizada periodicamente. Alterações relevantes serão comunicadas por
+          meio do site ou e-mail cadastrado.
+        </p>
+      </section>
+
+      <section>
+        <h2>Histórico de Revisões</h2>
+        <ul class="revisoes">
+          <li><span>Versão</span> 1.1</li>
+          <li><span>Data</span> 23/06/2026</li>
+          <li><span>Responsável</span> M.I6 Administrador</li>
+          <li><span>Alteração</span> esclarecimento sobre cookies e inclusão da seção de simulação e contato</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="rodape">
+      <a class="voltar" href="/">Voltar ao site</a>
+      <p>© M.I6 Administradora de Consórcio Ltda. Administradora de consórcios autorizada pelo Banco Central do Brasil, Lei nº 11.795/2008. Filiada à ABAC.</p>
+    </footer>
+  </body>
+</html>
+
+<style>
+  :root {
+    --navy: #012169;
+    --red: #c8102e;
+    --ink: #18202f;
+    --muted: #58616f;
+    --line: #e6e3da;
+    --paper: #ffffff;
+    --soft: #f6f3ec;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Archivo Variable', -apple-system, 'Segoe UI', Arial, sans-serif;
+    line-height: 1.65;
+  }
+  .topo {
+    border-bottom: 1px solid var(--line);
+    padding: 1.1rem 1.5rem;
+  }
+  .topo-logo img {
+    height: 2.1rem;
+    width: auto;
+    display: block;
+  }
+  .doc {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 4rem;
+  }
+  .kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin: 0 0 0.6rem;
+  }
+  h1 {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(2.2rem, 5vw, 3rem);
+    line-height: 1.1;
+    color: var(--navy);
+    margin: 0 0 0.6rem;
+  }
+  .lead {
+    font-size: 1.1rem;
+    color: var(--muted);
+    margin: 0 0 1rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid var(--navy);
+  }
+  section { margin: 2.4rem 0; }
+  h2 {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    font-size: 1.6rem;
+    color: var(--navy);
+    margin: 0 0 0.6rem;
+  }
+  p { margin: 0.7rem 0; }
+  a { color: var(--red); font-weight: 600; }
+  ul {
+    margin: 0.7rem 0;
+    padding-left: 0;
+    list-style: none;
+  }
+  ul li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin: 0.35rem 0;
+  }
+  ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--red);
+  }
+  .defs {
+    margin: 0.7rem 0;
+    display: grid;
+    gap: 0.7rem;
+  }
+  .defs dt {
+    font-weight: 700;
+    color: var(--navy);
+  }
+  .defs dd {
+    margin: 0.1rem 0 0;
+    color: var(--ink);
+  }
+  .callout {
+    margin: 1.2rem 0 0;
+    background: var(--soft);
+    border-left: 4px solid var(--red);
+    border-radius: 0 10px 10px 0;
+    padding: 1rem 1.2rem;
+  }
+  .callout p { margin: 0.3rem 0; }
+  .revisoes { display: grid; gap: 0.4rem; }
+  .revisoes li { padding-left: 0; }
+  .revisoes li::before { display: none; }
+  .revisoes span {
+    display: inline-block;
+    min-width: 7rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .rodape {
+    border-top: 1px solid var(--line);
+    background: var(--soft);
+    padding: 2rem 1.5rem 3rem;
+    text-align: center;
+  }
+  .voltar {
+    display: inline-block;
+    margin-bottom: 0.9rem;
+    color: var(--navy);
+  }
+  .rodape p {
+    max-width: 46rem;
+    margin: 0 auto;
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+</style>

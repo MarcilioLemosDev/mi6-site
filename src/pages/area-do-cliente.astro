@@ -1,0 +1,279 @@
+---
+import '@fontsource/instrument-serif';
+import '@fontsource/instrument-serif/400-italic.css';
+import '@fontsource-variable/archivo';
+import '@fontsource/ibm-plex-mono';
+
+// Antessala da Área do Cliente: em vez de um splash, um painel com a cara de
+// um portal do consorciado (atalhos, ar de dashboard). Planta a experiência
+// MI6 antes do login. Todo atalho leva ao ambiente seguro de autoatendimento;
+// o login acontece lá, sem capturar senha aqui.
+const LOGIN_EVERTEC = 'https://mi6.evertecinc.com.br/autoatendimento';
+const servicos = [
+  {
+    t: 'Segunda via de boleto',
+    d: 'Gere e pague em segundos',
+    icon: '<rect x="4" y="4" width="16" height="16" rx="1.6"/><path d="M7.5 9v6M10 9v6M11.5 9v6M14 9v6M16.5 9v6"/>',
+  },
+  {
+    t: 'Ofertar lance',
+    d: 'Livre, fixo e embutido',
+    icon: '<path d="M4 17l5-5 3 3 7-7"/><path d="M16 8h5v5"/>',
+  },
+  {
+    t: 'Minha contemplação',
+    d: 'Acompanhe a sua vez',
+    icon: '<path d="M8 4h8v4a4 4 0 0 1-8 0z"/><path d="M16 5h2.4v1.4A2.4 2.4 0 0 1 16 9"/><path d="M8 5H5.6v1.4A2.4 2.4 0 0 0 8 9"/><path d="M10 13h4l-.5 3h-3z"/><path d="M9 20h6"/>',
+  },
+  {
+    t: 'Extrato e pagamentos',
+    d: 'Seu histórico completo',
+    icon: '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>',
+  },
+  {
+    t: 'Meus contratos',
+    d: 'Documentos sempre à mão',
+    icon: '<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M10 13h5M10 16.5h5"/>',
+  },
+];
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Área do Cliente · MI6 Consórcio Nacional</title>
+    <meta name="description" content="O ambiente do consorciado MI6: boletos, lances, contemplação, extrato e contratos em um só lugar." />
+  </head>
+  <body>
+    <header class="topo">
+      <a class="topo-logo" href="/" aria-label="MI6 Consórcio Nacional">
+        <img src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
+      </a>
+      <span class="topo-tag">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
+        Ambiente do consorciado
+      </span>
+    </header>
+
+    <main class="palco">
+      <div class="painel">
+        <section class="tile tile-hero">
+          <p class="kicker">Área do Cliente</p>
+          <h1>Bem-vindo de volta</h1>
+          <p class="lead">
+            Lances com opção de embutido, parcelas em dia, contemplação e
+            contratos. Tudo o que é seu, reunido em um só lugar.
+          </p>
+          <a class="entrar" href={LOGIN_EVERTEC} rel="noopener">
+            Entrar na minha conta
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </a>
+        </section>
+
+        {servicos.map((s) => (
+          <a class="tile tile-servico" href={LOGIN_EVERTEC} rel="noopener">
+            <span class="tile-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" set:html={s.icon} />
+            </span>
+            <span class="tile-txt">
+              <strong>{s.t}</strong>
+              <small>{s.d}</small>
+            </span>
+            <svg class="tile-seta" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+          </a>
+        ))}
+      </div>
+
+      <a class="voltar" href="/">Voltar ao site</a>
+    </main>
+
+    <p class="coord" aria-hidden="true">30°02′S 51°13′W · PORTO ALEGRE · BRASIL</p>
+  </body>
+</html>
+
+<style>
+  :root {
+    --navy: #012169;
+    --red: #c8102e;
+    --branco: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100svh;
+    color: var(--branco);
+    font-family: 'Archivo Variable', -apple-system, 'Segoe UI', Arial, sans-serif;
+    line-height: 1.6;
+    position: relative;
+    overflow-x: hidden;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 31px, rgba(130, 175, 255, 0.06) 31px 32px),
+      repeating-linear-gradient(90deg, transparent 0 31px, rgba(130, 175, 255, 0.06) 31px 32px),
+      repeating-linear-gradient(0deg, transparent 0 159px, rgba(130, 175, 255, 0.09) 159px 160px),
+      repeating-linear-gradient(90deg, transparent 0 159px, rgba(130, 175, 255, 0.09) 159px 160px),
+      radial-gradient(120% 80% at 50% 0%, rgba(2, 33, 105, 0.95), rgba(1, 16, 47, 1) 72%);
+  }
+  .topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.2rem 1.6rem;
+  }
+  .topo-logo img { height: 1.85rem; width: auto; display: block; }
+  .topo-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.66);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    padding: 0.4rem 0.8rem;
+  }
+  .topo-tag svg { width: 0.95rem; height: 0.95rem; fill: none; stroke: #6fe0a0; stroke-width: 1.6; }
+  .palco {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 1.5rem 1.3rem 4rem;
+  }
+  .painel {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 8.6rem;
+    gap: 0.9rem;
+  }
+  /* Vidro coerente com o conceito blueprint */
+  .tile {
+    position: relative;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background:
+      linear-gradient(150deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03)),
+      linear-gradient(150deg, rgba(10, 44, 102, 0.5), rgba(1, 17, 47, 0.4));
+    backdrop-filter: blur(14px) saturate(135%);
+    -webkit-backdrop-filter: blur(14px) saturate(135%);
+    box-shadow: 0 24px 50px -34px rgba(1, 10, 30, 0.9);
+  }
+  .tile-hero {
+    grid-column: span 2;
+    grid-row: span 2;
+    padding: 2rem 2rem 1.9rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #ff8a98;
+    margin: 0 0 0.5rem;
+  }
+  h1 {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(2.1rem, 5vw, 2.9rem);
+    line-height: 1.04;
+    margin: 0 0 0.6rem;
+  }
+  .lead {
+    margin: 0;
+    max-width: 28rem;
+    color: rgba(255, 255, 255, 0.78);
+  }
+  .entrar {
+    margin-top: auto;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--red);
+    color: var(--branco);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.85rem 1.4rem;
+    border-radius: 12px;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .entrar svg {
+    width: 1.2rem; height: 1.2rem;
+    fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    transition: transform 0.2s ease;
+  }
+  .entrar:hover { background: #e21236; }
+  .entrar:hover svg { transform: translateX(3px); }
+  /* Atalhos do portal */
+  .tile-servico {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 1.1rem 1.2rem;
+    text-decoration: none;
+    color: var(--branco);
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.3s ease;
+  }
+  .tile-servico:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+  .tile-ico {
+    flex: none;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 11px;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+  }
+  .tile-ico svg {
+    width: 1.4rem; height: 1.4rem;
+    fill: none; stroke: #fff; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .tile-txt { display: grid; gap: 0.1rem; }
+  .tile-txt strong { font-weight: 700; font-size: 0.98rem; }
+  .tile-txt small { font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); }
+  .tile-seta {
+    margin-left: auto;
+    width: 1.1rem; height: 1.1rem; flex: none;
+    fill: none; stroke: rgba(255, 255, 255, 0.4); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    transition: transform 0.2s ease, stroke 0.2s ease;
+  }
+  .tile-servico:hover .tile-seta { stroke: #ff8a98; transform: translateX(3px); }
+  .voltar {
+    display: inline-block;
+    margin-top: 1.6rem;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.66);
+  }
+  .coord {
+    position: fixed;
+    top: 50%;
+    right: 0.9rem;
+    transform: translateY(-50%);
+    margin: 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    color: rgba(255, 255, 255, 0.3);
+    writing-mode: vertical-rl;
+  }
+  @media (max-width: 56rem) {
+    .painel { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 8.2rem; }
+    .tile-hero { grid-column: span 2; grid-row: span 1; min-height: 13rem; }
+    .coord { display: none; }
+  }
+  @media (max-width: 34rem) {
+    .painel { grid-template-columns: 1fr; grid-auto-rows: auto; }
+    .tile-hero { grid-column: span 1; min-height: 0; }
+    .topo-tag { display: none; }
+  }
+</style>

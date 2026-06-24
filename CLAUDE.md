@@ -15,6 +15,12 @@ Site institucional da MI6 Consórcio Nacional. Remodelagem do site atual
 - Branco: #FFFFFF (fundo)
 - Neutros de apoio: tons de cinza para texto secundário e divisórias
 - Logo: https://mi6consorcio.com.br/wp-content/themes/mi6/assets/imgs/logo-att.png
+- Versões da marca (regra de Marcílio, 12/06/2026): a primária é o logo
+  completo nas cores oficiais (navy + vermelho), para fundo claro (ex.:
+  barra do topo). As secundárias se resumem ao símbolo, ou nome + símbolo,
+  sempre 100% em branco; quem varia é o fundo (azul, vermelho ou preto).
+  Nunca recolorir parcialmente (proibido, por exemplo, M branco com barra
+  vermelha sobre navy).
 
 Conceito de marca: MI6 remete a inteligência britânica. A identidade visual
 bebe da Union Jack (azul, vermelho, branco) e o tom deve transmitir confianca,
