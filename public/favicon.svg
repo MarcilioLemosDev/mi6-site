@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" fill="#012169"/>
-  <rect width="64" height="5" fill="#C8102E"/>
-  <text x="32" y="48" font-family="Georgia, 'Times New Roman', serif" font-size="46" fill="#ffffff" text-anchor="middle">6</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="MI6">
+  <rect x="1.5" y="1.5" width="61" height="61" rx="12" fill="#ffffff" stroke="#012169" stroke-width="3"/>
+  <text x="32" y="43" text-anchor="middle" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-weight="800" font-size="30" letter-spacing="-1">
+    <tspan fill="#012169">MI</tspan><tspan fill="#C8102E">6</tspan>
+  </text>
 </svg>
