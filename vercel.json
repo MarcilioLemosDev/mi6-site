@@ -1,16 +1,16 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
-    { "source": "/motos/:path*", "destination": "/", "permanent": true },
-    { "source": "/carros/:path*", "destination": "/", "permanent": true },
-    { "source": "/pesados/:path*", "destination": "/", "permanent": true },
-    { "source": "/imoveis/:path*", "destination": "/", "permanent": true },
-    { "source": "/servicos/:path*", "destination": "/", "permanent": true },
-    { "source": "/eletro/:path*", "destination": "/", "permanent": true },
-    { "source": "/sobre/:path*", "destination": "/", "permanent": true },
-    { "source": "/blog/:path*", "destination": "/", "permanent": true },
-    { "source": "/category/:path*", "destination": "/", "permanent": true },
-    { "source": "/contato/:path*", "destination": "/#contato", "permanent": true }
+    { "source": "/motos(/.*)?", "destination": "/", "permanent": true },
+    { "source": "/carros(/.*)?", "destination": "/", "permanent": true },
+    { "source": "/pesados(/.*)?", "destination": "/", "permanent": true },
+    { "source": "/imoveis(/.*)?", "destination": "/", "permanent": true },
+    { "source": "/servicos(/.*)?", "destination": "/", "permanent": true },
+    { "source": "/eletro(/.*)?", "destination": "/", "permanent": true },
+    { "source": "/sobre(/.*)?", "destination": "/", "permanent": true },
+    { "source": "/blog(/.*)?", "destination": "/", "permanent": true },
+    { "source": "/category(/.*)?", "destination": "/", "permanent": true },
+    { "source": "/contato(/.*)?", "destination": "/#contato", "permanent": true }
   ],
   "headers": [
     {
