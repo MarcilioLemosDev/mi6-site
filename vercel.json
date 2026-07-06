@@ -1,11 +1,16 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
-    { "source": "/:seg(motos|carros|pesados|imoveis|servicos|eletro)/:rest*", "destination": "/", "permanent": true },
-    { "source": "/sobre/:rest*", "destination": "/", "permanent": true },
-    { "source": "/blog/:rest*", "destination": "/", "permanent": true },
-    { "source": "/contato/:rest*", "destination": "/#contato", "permanent": true },
-    { "source": "/category/:rest*", "destination": "/", "permanent": true }
+    { "source": "/motos/:path*", "destination": "/", "permanent": true },
+    { "source": "/carros/:path*", "destination": "/", "permanent": true },
+    { "source": "/pesados/:path*", "destination": "/", "permanent": true },
+    { "source": "/imoveis/:path*", "destination": "/", "permanent": true },
+    { "source": "/servicos/:path*", "destination": "/", "permanent": true },
+    { "source": "/eletro/:path*", "destination": "/", "permanent": true },
+    { "source": "/sobre/:path*", "destination": "/", "permanent": true },
+    { "source": "/blog/:path*", "destination": "/", "permanent": true },
+    { "source": "/category/:path*", "destination": "/", "permanent": true },
+    { "source": "/contato/:path*", "destination": "/#contato", "permanent": true }
   ],
   "headers": [
     {
