@@ -1,5 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    { "source": "/:seg(motos|carros|pesados|imoveis|servicos|eletro)/:rest*", "destination": "/", "permanent": true },
+    { "source": "/sobre/:rest*", "destination": "/", "permanent": true },
+    { "source": "/blog/:rest*", "destination": "/", "permanent": true },
+    { "source": "/contato/:rest*", "destination": "/#contato", "permanent": true },
+    { "source": "/category/:rest*", "destination": "/", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/(.*)",
