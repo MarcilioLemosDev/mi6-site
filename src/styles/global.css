@@ -1,0 +1,63 @@
+/* =========================================================================
+   Tema retrô — handheld "tijolão" / Nokia antigo, tela LCD monocromática.
+   Tokens centralizados: mudar a paleta aqui reflete no site inteiro.
+   ========================================================================= */
+
+@font-face {
+  font-family: 'Press Start 2P';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/press-start-2p.woff2') format('woff2');
+}
+
+:root {
+  /* Tela LCD — monocromática em navy da MI6 sobre fundo claro */
+  --lcd-bg: #d3e0fb;        /* fundo claro azulado da tela */
+  --lcd-dim: #aec3ef;       /* pixel "meio aceso" */
+  --lcd-dark: #3a5bb0;      /* pixel médio (comida / sub-texto) */
+  --lcd-ink: #012169;       /* tinta navy (texto / cobrinha) */
+
+  /* Corpo do aparelho — navy institucional da MI6 */
+  --shell: #012169;         /* carcaça navy */
+  --shell-dark: #001845;
+  --shell-shadow: #9fb2d8;  /* texto pequeno claro sobre a carcaça navy */
+  --btn: #c8102e;           /* botões vermelhos (D-pad / redes) */
+  --btn-face: #e21236;
+  --accent: #c8102e;        /* vermelho de destaque (LED) */
+
+  --font-pixel: 'Press Start 2P', 'Courier New', monospace;
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: env(safe-area-inset-top) 1rem env(safe-area-inset-bottom);
+  background: radial-gradient(circle at 50% 0%, #05173d 0%, #01081f 100%);
+  font-family: var(--font-pixel);
+  color: var(--lcd-ink);
+  -webkit-font-smoothing: none;
+  image-rendering: pixelated;
+  overflow: hidden;
+}
+
+/* Evita seleção acidental de texto ao "jogar" no toque */
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
