@@ -10,8 +10,7 @@
     { "source": "/sobre(/.*)?", "destination": "/", "permanent": true },
     { "source": "/blog(/.*)?", "destination": "/", "permanent": true },
     { "source": "/category(/.*)?", "destination": "/", "permanent": true },
-    { "source": "/contato(/.*)?", "destination": "/#contato", "permanent": true },
-    { "source": "/links(/.*)?", "destination": "/primeiropasso", "permanent": true }
+    { "source": "/contato(/.*)?", "destination": "/#contato", "permanent": true }
   ],
   "headers": [
     {
