@@ -1,22 +1,22 @@
 {
-  "descricao": "Espelho local da tabela de grupos. Fonte de verdade: T.I_Marcilio/04_Areas/Desenvolvimento/Automacoes/001_Processos/003_Site_Mi6_v.1/001_Bases_Site/001_Grupos_Simulador.xlsx (Excel 365). A casa foi organizada em 15/06/2026 seguindo o padrao das automacoes do CRM e do BACEN. Na fase 3 este JSON passa a ser gerado pelo Power Automate a partir do arquivo oficial; ate la, sincronizacao manual com a planilha.",
+  "descricao": "Espelho local da tabela de grupos. Fonte de verdade: T.I_Marcilio/04_Areas/Desenvolvimento/Automacoes/001_Processos/003_Site_Mi6_v.1/001_Bases_Site/001_Grupos_Simulador.xlsx (Excel 365). A casa foi organizada em 15/06/2026 seguindo o padrao das automacoes do CRM e do BACEN. Na fase 3 este JSON passa a ser gerado pelo Power Automate a partir do arquivo oficial; ate la, sincronizacao manual com a planilha. Ordem: imovel, carro, moto (define o segmento inicial do simulador da home).",
   "atualizado_em": "2026-07-10",
   "grupos": [
     {
-      "grupo": "M-01",
-      "segmento": "motos",
+      "grupo": "I-01",
+      "segmento": "imoveis",
       "status": "ativo",
-      "prazo_total_meses": 97,
-      "prazo_restante_meses": 97,
-      "primeira_assembleia": "2026-06-20",
-      "dia_assembleia": 20,
-      "taxa_administracao": 0.2,
-      "fundo_reserva": 0.04,
+      "prazo_total_meses": 240,
+      "prazo_restante_meses": 240,
+      "primeira_assembleia": "2026-07-25",
+      "dia_assembleia": 25,
+      "taxa_administracao": 0.22,
+      "fundo_reserva": 0.03,
       "seguro_prestamista_mes": 0.0008,
-      "credito_min": 15000,
-      "credito_max": 30000,
-      "passo_credito": 1000,
-      "credito_padrao": 15000
+      "credito_min": 100000,
+      "credito_max": 200000,
+      "passo_credito": 10000,
+      "credito_padrao": 100000
     },
     {
       "grupo": "C-01",
@@ -35,20 +35,20 @@
       "credito_padrao": 50000
     },
     {
-      "grupo": "I-01",
-      "segmento": "imoveis",
+      "grupo": "M-01",
+      "segmento": "motos",
       "status": "ativo",
-      "prazo_total_meses": 240,
-      "prazo_restante_meses": 240,
-      "primeira_assembleia": "2026-07-25",
-      "dia_assembleia": 25,
-      "taxa_administracao": 0.22,
-      "fundo_reserva": 0.03,
+      "prazo_total_meses": 97,
+      "prazo_restante_meses": 97,
+      "primeira_assembleia": "2026-06-20",
+      "dia_assembleia": 20,
+      "taxa_administracao": 0.2,
+      "fundo_reserva": 0.04,
       "seguro_prestamista_mes": 0.0008,
-      "credito_min": 100000,
-      "credito_max": 200000,
-      "passo_credito": 10000,
-      "credito_padrao": 100000
+      "credito_min": 15000,
+      "credito_max": 30000,
+      "passo_credito": 1000,
+      "credito_padrao": 15000
     }
   ]
 }
