@@ -1,0 +1,309 @@
+---
+import dados from '../dados/grupos.json';
+
+// Simulador dedicado por segmento (usado nas páginas /simulecarro, /simulecasa,
+// /simulemoto). Auto-contido: mesmo cálculo, mesma mensagem de WhatsApp e mesmo
+// registro de lead da home (via /api/lead), porém travado num único segmento e
+// sem os enfeites do site.
+
+interface Props {
+  seg: string; // 'carros' | 'imoveis' | 'motos' | ...
+}
+const { seg } = Astro.props;
+
+const grupo = dados.grupos.find((g) => g.segmento === seg && g.status === 'ativo');
+if (!grupo) throw new Error(`Simulador: nenhum grupo ativo para o segmento "${seg}".`);
+
+const temas: Record<string, [string, string]> = {
+  carros: ['#0a2c66', '#02112e'],
+  motos: ['#06204e', '#4e0f1c'],
+  imoveis: ['#103a72', '#05152f'],
+};
+const [c1, c2] = temas[seg] ?? ['#012169', '#01112f'];
+
+const nomeSeg: Record<string, string> = {
+  carros: 'carro',
+  motos: 'moto',
+  imoveis: 'imóvel',
+};
+const nome = nomeSeg[seg] ?? seg;
+
+const num = (v: number) =>
+  v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const base = grupo.credito_padrao * (1 + grupo.taxa_administracao + grupo.fundo_reserva);
+const parcelaInicial = num(base / grupo.prazo_restante_meses + base * grupo.seguro_prestamista_mes);
+const taxaMensal = num((grupo.taxa_administracao / grupo.prazo_restante_meses) * 100);
+---
+
+<form
+  class="simd-card"
+  aria-label={`Simulador de consórcio de ${nome}`}
+  data-seg={seg}
+  data-prazo={grupo.prazo_restante_meses}
+  data-txadm={grupo.taxa_administracao}
+  data-fres={grupo.fundo_reserva}
+  data-seguro={grupo.seguro_prestamista_mes}
+  data-origem={`site/mi6/simule-${seg}`}
+  style={`--c1:${c1};--c2:${c2}`}
+>
+  <p class="simd-passo">01 · Quanto vale essa conquista?</p>
+  <p class="simd-credito">
+    <span class="simd-moeda">R$</span><output id="simd-valor" for="simd-credito"
+      >{grupo.credito_padrao.toLocaleString('pt-BR')}</output
+    >
+  </p>
+  <input
+    type="range"
+    id="simd-credito"
+    min={grupo.credito_min}
+    max={grupo.credito_max}
+    step={grupo.passo_credito}
+    value={grupo.credito_padrao}
+    aria-label="Valor do bem desejado"
+  />
+  <div class="simd-extremos" aria-hidden="true">
+    <span>R$ {grupo.credito_min.toLocaleString('pt-BR')}</span>
+    <span>R$ {grupo.credito_max.toLocaleString('pt-BR')}</span>
+  </div>
+
+  <div class="simd-resultado">
+    <p class="simd-res-rotulo">A sua parcela, sem juros</p>
+    <p class="simd-res-valor">
+      <span class="simd-moeda-sm">R$</span><span id="simd-parcela">{parcelaInicial}</span><span
+        class="simd-res-mes">por mês</span
+      >
+    </p>
+  </div>
+  <p class="simd-taxa">
+    <span>Taxa de administração</span>
+    <span class="simd-taxa-val">{taxaMensal}% ao mês</span>
+  </p>
+
+  <p class="simd-passo simd-passo-2">02 · Deixe seus dados e fale com a gente</p>
+  <label class="simd-campo">
+    <span>Nome</span>
+    <input type="text" name="nome" autocomplete="name" placeholder="Seu nome" required />
+  </label>
+  <div class="simd-dupla">
+    <label class="simd-campo">
+      <span>Telefone</span>
+      <input type="tel" name="telefone" autocomplete="tel" placeholder="(11) 90000-0000" required />
+    </label>
+    <label class="simd-campo">
+      <span>E-mail</span>
+      <input type="email" name="email" autocomplete="email" placeholder="voce@email.com" required />
+    </label>
+  </div>
+  <input type="text" name="confirme" class="simd-mel" tabindex="-1" autocomplete="off" aria-hidden="true" />
+  <button type="submit" class="simd-zap">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.7 13.7L3 21l4.5-1.2A9 9 0 1 0 12 3z" /><circle cx="9" cy="12" r="1" fill="currentColor" stroke="none" /><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" /><circle cx="15" cy="12" r="1" fill="currentColor" stroke="none" /></svg>
+    Falar no WhatsApp
+  </button>
+  <p class="simd-aviso" id="simd-aviso" hidden>
+    Abrimos o WhatsApp com a sua simulação. <a id="simd-fallback" href="#" target="_blank" rel="noopener">Não abriu? Toque para abrir.</a>
+  </p>
+  <p class="simd-consent">
+    Ao enviar, você concorda que a MI6 use os dados informados para entrar em contato sobre o consórcio, conforme a <a href="/politica-de-privacidade/">Política de Privacidade</a>.
+  </p>
+</form>
+
+<style>
+  .simd-card {
+    display: block;
+    width: 100%;
+    max-width: 30rem;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #e4e8f0;
+    border-radius: 18px;
+    padding: 1.6rem 1.5rem 1.5rem;
+    box-shadow: 0 24px 60px -34px rgba(1, 16, 47, 0.4);
+  }
+  .simd-passo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #6b7688;
+    margin: 0 0 0.7rem;
+  }
+  .simd-passo-2 { margin-top: 1.6rem; }
+  .simd-credito {
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    color: var(--navy, #012169);
+  }
+  .simd-moeda { font-size: 1.1rem; font-weight: 700; }
+  #simd-valor {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(2.4rem, 9vw, 3.2rem);
+    line-height: 1;
+  }
+  input[type='range'] {
+    width: 100%;
+    margin: 0.6rem 0 0.3rem;
+    accent-color: var(--vermelho, #c8102e);
+  }
+  .simd-extremos {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #6b7688;
+  }
+  .simd-resultado {
+    margin: 1.1rem 0 0.6rem;
+    border-radius: 14px;
+    padding: 1.1rem 1.2rem;
+    color: #fff;
+    background: linear-gradient(150deg, var(--c1), var(--c2));
+  }
+  .simd-res-rotulo {
+    margin: 0 0 0.2rem;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .simd-res-valor { margin: 0; display: flex; align-items: baseline; gap: 0.35rem; }
+  .simd-moeda-sm { font-size: 1.1rem; font-weight: 700; }
+  #simd-parcela {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(2.6rem, 10vw, 3.4rem);
+    line-height: 1;
+  }
+  .simd-res-mes { font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); }
+  .simd-taxa {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    font-size: 0.9rem;
+    color: #4a5568;
+  }
+  .simd-taxa-val { font-weight: 700; color: var(--navy, #012169); }
+  .simd-campo { display: block; margin-top: 0.7rem; }
+  .simd-campo span {
+    display: block;
+    font-size: 0.78rem;
+    color: #4a5568;
+    margin-bottom: 0.25rem;
+  }
+  .simd-campo input {
+    width: 100%;
+    padding: 0.75rem 0.85rem;
+    border: 1px solid #cfd6e2;
+    border-radius: 10px;
+    font: inherit;
+  }
+  .simd-campo input:focus-visible { outline: 2px solid var(--navy, #012169); outline-offset: 1px; }
+  .simd-dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+  .simd-mel { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .simd-zap {
+    width: 100%;
+    margin-top: 1.1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    background: var(--vermelho, #c8102e);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 0.95rem 1.2rem;
+    font: inherit;
+    font-weight: 700;
+    font-size: 1.05rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .simd-zap:hover { background: #e21236; }
+  .simd-zap svg { width: 1.3rem; height: 1.3rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .simd-aviso { margin: 0.7rem 0 0; font-size: 0.85rem; color: #2f7d4f; text-align: center; }
+  .simd-aviso a { color: inherit; }
+  .simd-consent { margin: 0.9rem 0 0; font-size: 0.72rem; line-height: 1.4; color: #6b7688; text-align: center; }
+  .simd-consent a { color: inherit; }
+  @media (max-width: 30rem) {
+    .simd-dupla { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  const card = document.querySelector<HTMLFormElement>('.simd-card');
+  if (card) {
+    const PRAZO = parseInt(card.dataset.prazo ?? '100', 10);
+    const TX = parseFloat(card.dataset.txadm ?? '0.18');
+    const FR = parseFloat(card.dataset.fres ?? '0.02');
+    const SEG = parseFloat(card.dataset.seguro ?? '0.0008');
+    const seg = card.dataset.seg ?? '';
+    const origem = card.dataset.origem ?? 'site/mi6/simulador';
+    const num = (v: number) =>
+      v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const credito = document.getElementById('simd-credito') as HTMLInputElement | null;
+    const elValor = document.getElementById('simd-valor');
+    const elParcela = document.getElementById('simd-parcela');
+
+    const pintar = () => {
+      const c = parseInt(credito?.value ?? '0', 10);
+      const base = c * (1 + TX + FR);
+      if (elValor) elValor.textContent = c.toLocaleString('pt-BR');
+      if (elParcela) elParcela.textContent = num(base / PRAZO + base * SEG);
+    };
+    credito?.addEventListener('input', pintar);
+
+    const WHATSAPP = ((import.meta.env.PUBLIC_WHATSAPP as string | undefined) ?? '').replace(/\D/g, '');
+    const nomeSeg: Record<string, string> = { carros: 'carro', motos: 'moto', imoveis: 'imóvel' };
+
+    card.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const mel = card.querySelector<HTMLInputElement>('.simd-mel');
+      if (mel && mel.value) return;
+      const campo = (n: string) =>
+        (card.querySelector<HTMLInputElement>(`[name="${n}"]`)?.value ?? '').trim();
+      const nome = campo('nome');
+      const telefone = campo('telefone');
+      const email = campo('email');
+      const segCap = (nomeSeg[seg] ?? seg).replace(/^./, (m) => m.toUpperCase());
+      const creditoRaw = credito?.value ?? '';
+      const creditoFmt = creditoRaw ? Number(creditoRaw).toLocaleString('pt-BR') : '';
+      const parcela = elParcela?.textContent?.trim() ?? '';
+      const msg = [
+        nome
+          ? `Olá! Sou ${nome}. Fiz uma simulação no site da MI6 e quero falar com um consultor.`
+          : 'Olá! Fiz uma simulação no site da MI6 e quero falar com um consultor.',
+        '',
+        `Carta de crédito: ${segCap}`,
+        creditoFmt ? `Crédito: R$ ${creditoFmt}` : '',
+        parcela ? `Parcela: R$ ${parcela} por mês, sem juros` : '',
+        telefone ? `Telefone: ${telefone}` : '',
+        email ? `E-mail: ${email}` : '',
+      ].filter(Boolean).join('\n');
+      const urlZap = WHATSAPP ? `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}` : '';
+      if (urlZap) window.open(urlZap, '_blank', 'noopener,noreferrer');
+
+      const lead = {
+        data_hora: new Date().toISOString(),
+        nome,
+        telefone,
+        email,
+        segmento: seg,
+        credito: creditoRaw,
+        parcela,
+        resumo: msg,
+        origem,
+        confirme: mel?.value ?? '',
+      };
+      fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(lead),
+      })
+        .then((r) => { if (!r.ok) console.warn('[MI6] registro de lead retornou', r.status); })
+        .catch((err) => console.error('[MI6] falha ao registrar lead:', err));
+
+      const aviso = document.getElementById('simd-aviso');
+      const fallback = document.getElementById('simd-fallback') as HTMLAnchorElement | null;
+      if (fallback && urlZap) fallback.href = urlZap;
+      aviso?.removeAttribute('hidden');
+    });
+  }
+</script>

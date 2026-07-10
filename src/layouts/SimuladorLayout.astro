@@ -1,0 +1,125 @@
+---
+import '@fontsource/instrument-serif';
+import '@fontsource-variable/archivo';
+import '@fontsource/ibm-plex-mono';
+import Simulador from '../components/Simulador.astro';
+
+// Layout enxuto das páginas dedicadas de simulação (só o simulador do
+// segmento). Navegação separada do site completo: topo com logo levando ao
+// site, o simulador, e um rodapé mínimo.
+interface Props {
+  seg: string;
+  titulo: string;
+  subtitulo: string;
+  description: string;
+}
+const { seg, titulo, subtitulo, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>{titulo} · MI6 Consórcio Nacional</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#012169" />
+  </head>
+  <body>
+    <header class="topo">
+      <a class="topo-logo" href="/" aria-label="MI6 Consórcio Nacional">
+        <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
+      </a>
+      <a class="topo-site" href="/">Ver site completo</a>
+    </header>
+
+    <main class="palco">
+      <p class="palco-kicker">Consórcio sem juros, sem entrada</p>
+      <h1>{titulo}</h1>
+      <p class="palco-sub">{subtitulo}</p>
+      <Simulador seg={seg} />
+    </main>
+
+    <footer class="rodape">
+      <p>Administradora autorizada pelo Banco Central do Brasil.</p>
+      <a href="/politica-de-privacidade/">Política de Privacidade</a>
+    </footer>
+
+    <style>
+      :root {
+        --navy: #012169;
+        --vermelho: #c8102e;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100svh;
+        font-family: 'Archivo Variable', -apple-system, 'Segoe UI', Arial, sans-serif;
+        color: #1a2233;
+        background:
+          radial-gradient(120% 60% at 50% 0%, #eef2fb, #f6f8fc 60%);
+        display: flex;
+        flex-direction: column;
+      }
+      .topo {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem 1.3rem;
+        max-width: 34rem;
+        width: 100%;
+        margin: 0 auto;
+      }
+      .topo-logo img { height: 1.7rem; width: auto; display: block; }
+      .topo-site {
+        font-size: 0.82rem;
+        color: var(--navy);
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+      }
+      .topo-site:hover { border-color: var(--navy); }
+      .palco {
+        flex: 1;
+        width: 100%;
+        max-width: 34rem;
+        margin: 0 auto;
+        padding: 1rem 1.3rem 2.5rem;
+        text-align: center;
+      }
+      .palco-kicker {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--vermelho);
+        margin: 0 0 0.4rem;
+      }
+      h1 {
+        font-family: 'Instrument Serif', Georgia, serif;
+        font-weight: 400;
+        font-size: clamp(2.2rem, 8vw, 3rem);
+        line-height: 1.05;
+        color: var(--navy);
+        margin: 0 0 0.5rem;
+      }
+      .palco-sub {
+        margin: 0 auto 1.6rem;
+        max-width: 26rem;
+        color: #4a5568;
+      }
+      .rodape {
+        text-align: center;
+        padding: 1.5rem 1.3rem 2rem;
+        color: #6b7688;
+        font-size: 0.8rem;
+      }
+      .rodape p { margin: 0 0 0.3rem; }
+      .rodape a { color: #6b7688; }
+    </style>
+  </body>
+</html>

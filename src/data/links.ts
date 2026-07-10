@@ -27,10 +27,21 @@ export const links: MenuLink[] = [
     locked: false,
   },
   {
-    id: 'simular',
-    label: 'Simule agora',
-    sublabel: 'Veja o valor da parcela',
-    url: 'https://mi6consorcio.com.br/#contato',
+    id: 'carro',
+    label: 'Simule agora seu carro 0Km',
+    url: 'https://mi6consorcio.com.br/simulecarro',
+    locked: false,
+  },
+  {
+    id: 'casa',
+    label: 'Simule agora sua casa nova',
+    url: 'https://mi6consorcio.com.br/simulecasa',
+    locked: false,
+  },
+  {
+    id: 'moto',
+    label: 'Simule agora sua moto 0Km',
+    url: 'https://mi6consorcio.com.br/simulemoto',
     locked: false,
   },
   {

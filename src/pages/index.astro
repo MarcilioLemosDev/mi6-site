@@ -14,20 +14,22 @@ import marca from '../dados/mi6-traco.json';
 // circular no hero, ritmo claro/escuro entre seções, fotos que ganham cor
 // ao toque. Texto: o do site atual, com ajuste fino.
 
+// Ordem de exibição (jornada e simulador): imóvel, carro, moto e depois os
+// demais. Os cartões do hero têm ordem própria (ordemHome).
 const segmentos = [
   {
     n: '01',
+    id: 'imoveis',
+    nome: 'Consórcio de imóveis',
+    img: '/play-assets/imoveis.webp',
+    alt: 'Pessoas conversam em um apartamento vazio de janelas amplas',
+  },
+  {
+    n: '02',
     id: 'carros',
     nome: 'Consórcio de carros',
     img: '/play-assets/carros.webp',
     alt: 'Casal observa um carro em uma concessionária',
-  },
-  {
-    n: '02',
-    id: 'pesados',
-    nome: 'Consórcio de pesados',
-    img: '/play-assets/pesados.webp',
-    alt: 'Motorista conversa na cabine de um caminhão',
   },
   {
     n: '03',
@@ -38,10 +40,10 @@ const segmentos = [
   },
   {
     n: '04',
-    id: 'imoveis',
-    nome: 'Consórcio de imóveis',
-    img: '/play-assets/imoveis.webp',
-    alt: 'Pessoas conversam em um apartamento vazio de janelas amplas',
+    id: 'pesados',
+    nome: 'Consórcio de pesados',
+    img: '/play-assets/pesados.webp',
+    alt: 'Motorista conversa na cabine de um caminhão',
   },
   {
     n: '05',
@@ -118,9 +120,15 @@ const faq = [
   },
 ];
 
-// Grupo ativo de motos: parâmetros vêm do espelho da tabela verdade
-// (src/dados/grupos.json), que na fase 3 será alimentado pelo Excel do 365.
-const grupoMotos = dados.grupos.find((g) => g.segmento === 'motos' && g.status === 'ativo')!;
+// Grupo inicial do simulador da home (imóvel, o 1º segmento). Parâmetros vêm
+// do espelho (src/dados/grupos.json); na fase 3 o Excel do 365 alimenta o JSON.
+const grupoInicial =
+  dados.grupos.find((g) => g.segmento === 'imoveis' && g.status === 'ativo') ??
+  dados.grupos.find((g) => g.status === 'ativo')!;
+// Conjunto de segmentos com grupo ativo (para trancar os demais com cadeado).
+const ativos = new Set(
+  dados.grupos.filter((g) => g.status === 'ativo').map((g) => g.segmento)
+);
 const brlServidor = (v: number) =>
   'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const pct = (v: number) => (v * 100).toLocaleString('pt-BR');
@@ -129,19 +137,19 @@ const numServidor = (v: number) =>
 
 // Conta enxuta: a parcela e a taxa de administração convertida a taxa mensal.
 // Tudo derivado do grupo no banco (grupos.json), sem números fixos no código.
-const calcParcela = (g: typeof grupoMotos, credito: number) =>
+const calcParcela = (g: typeof grupoInicial, credito: number) =>
   (credito * (1 + g.taxa_administracao + g.fundo_reserva)) / g.prazo_restante_meses;
-const calcComSeguro = (g: typeof grupoMotos, credito: number) => {
+const calcComSeguro = (g: typeof grupoInicial, credito: number) => {
   const base = credito * (1 + g.taxa_administracao + g.fundo_reserva);
   return base / g.prazo_restante_meses + base * g.seguro_prestamista_mes;
 };
-const taxaMensal = (g: typeof grupoMotos) => (g.taxa_administracao / g.prazo_restante_meses) * 100;
+const taxaMensal = (g: typeof grupoInicial) => (g.taxa_administracao / g.prazo_restante_meses) * 100;
 
 const simInicial = {
-  credito: grupoMotos.credito_padrao.toLocaleString('pt-BR'),
+  credito: grupoInicial.credito_padrao.toLocaleString('pt-BR'),
   // Parcela exibida sempre com seguro prestamista (regra do produto: obrigatório).
-  parcela: numServidor(calcComSeguro(grupoMotos, grupoMotos.credito_padrao)),
-  taxaMensal: numServidor(taxaMensal(grupoMotos)),
+  parcela: numServidor(calcComSeguro(grupoInicial, grupoInicial.credito_padrao)),
+  taxaMensal: numServidor(taxaMensal(grupoInicial)),
 };
 
 // Ticket do hero "parcelas a partir de": menor parcela entre os grupos ativos,
@@ -236,10 +244,9 @@ const gruposSim = Object.fromEntries(
     ])
 );
 
-// No hero, enxugamos: mostramos só o cronograma real, o ativo (motos) e os
-// próximos (imóveis e carros) como "Em breve". A trilha "O seu caminho"
-// segue com todos os seis segmentos.
-const ordemHome = ['motos', 'imoveis', 'carros'];
+// Hero: imóvel, carro e moto (os três ativos). A trilha "O seu caminho" segue
+// com todos os seis segmentos, os inativos aparecem trancados (cadeado).
+const ordemHome = ['imoveis', 'carros', 'motos'];
 const cartoesHome = ordemHome
   .map((id) => cartoes.find((c) => c.seg === id))
   .filter((c): c is (typeof cartoes)[number] => Boolean(c));
@@ -510,8 +517,11 @@ const schemaSeo = {
             <div class="estacao-segs" id="jornada-segs" role="group" aria-label="Segmentos">
               {
                 segmentos.map((s) => (
-                  <button type="button" data-segmento={s.id} aria-pressed={s.id === cartaoInicial.seg ? 'true' : 'false'}>
+                  <button type="button" data-segmento={s.id} aria-pressed={s.id === cartaoInicial.seg ? 'true' : 'false'} class:list={{ trancado: !ativos.has(s.id) }} aria-disabled={!ativos.has(s.id)}>
                     <span>{s.nome.replace('Consórcio de ', '')}</span>
+                    {!ativos.has(s.id) && (
+                      <svg class="cadeado" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
+                    )}
                   </button>
                 ))
               }
@@ -567,13 +577,13 @@ const schemaSeo = {
           <form
             class="sim-card"
             aria-label="Simulação e contato"
-            data-prazo={grupoMotos.prazo_restante_meses}
-            data-txadm={grupoMotos.taxa_administracao}
-            data-fres={grupoMotos.fundo_reserva}
-            data-seguro={grupoMotos.seguro_prestamista_mes}
-            data-credito-padrao={grupoMotos.credito_padrao}
-            data-grupo={grupoMotos.grupo}
-            data-dia={grupoMotos.dia_assembleia}
+            data-prazo={grupoInicial.prazo_restante_meses}
+            data-txadm={grupoInicial.taxa_administracao}
+            data-fres={grupoInicial.fundo_reserva}
+            data-seguro={grupoInicial.seguro_prestamista_mes}
+            data-credito-padrao={grupoInicial.credito_padrao}
+            data-grupo={grupoInicial.grupo}
+            data-dia={grupoInicial.dia_assembleia}
           >
             <div class="sim-corpo" id="sim-corpo">
               <p class="sim-passo">01 · O que você vai conquistar hoje?</p>
@@ -583,10 +593,14 @@ const schemaSeo = {
                     <button
                       type="button"
                       data-segmento={s.id}
-                      aria-pressed={s.id === 'motos' ? 'true' : 'false'}
+                      aria-pressed={s.id === cartaoInicial.seg ? 'true' : 'false'}
+                      class:list={{ trancado: !ativos.has(s.id) }}
                       style={`--seg-cor:${(temas[s.id] ?? ['#012169'])[0]}`}
                     >
                       {s.nome.replace('Consórcio de ', '')}
+                      {!ativos.has(s.id) && (
+                        <svg class="cadeado" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
+                      )}
                     </button>
                   ))
                 }
@@ -600,15 +614,15 @@ const schemaSeo = {
                 <input
                   type="range"
                   id="sim-credito"
-                  min={grupoMotos.credito_min}
-                  max={grupoMotos.credito_max}
-                  step={grupoMotos.passo_credito}
-                  value={grupoMotos.credito_padrao}
+                  min={grupoInicial.credito_min}
+                  max={grupoInicial.credito_max}
+                  step={grupoInicial.passo_credito}
+                  value={grupoInicial.credito_padrao}
                   aria-label="Valor do bem desejado"
                 />
                 <div class="sim-extremos" aria-hidden="true">
-                  <span>R$ {grupoMotos.credito_min.toLocaleString('pt-BR')}</span>
-                  <span>R$ {grupoMotos.credito_max.toLocaleString('pt-BR')}</span>
+                  <span>R$ {grupoInicial.credito_min.toLocaleString('pt-BR')}</span>
+                  <span>R$ {grupoInicial.credito_max.toLocaleString('pt-BR')}</span>
                 </div>
                 <div class="sim-resultado" id="sim-resultado" style={`--c1:${cartaoInicial.c1};--c2:${cartaoInicial.c2}`}>
                   <p class="sim-res-rotulo">A sua parcela, sem juros</p>
@@ -1263,7 +1277,9 @@ const schemaSeo = {
           return;
         }
         const fotos = lente ? Array.from(lente.querySelectorAll<HTMLElement>('.caminho-foto')) : [];
-        const ordem = lista.map((c) => c.seg);
+        // Só os segmentos ativos entram no carrossel/seleção; os trancados
+        // ficam com cadeado nas chips e nunca exibem "Em breve" na carta.
+        const ordem = lista.filter((c) => c.ativo).map((c) => c.seg);
         const aplicar = (seg: string) => {
           const c = lista.find((x) => x.seg === seg);
           if (!c) return;
@@ -1300,7 +1316,8 @@ const schemaSeo = {
         };
         segs.addEventListener('click', (e) => {
           const b = (e.target as HTMLElement).closest('button');
-          if (b?.dataset.segmento) {
+          // Ignora chips trancadas (segmento sem grupo ativo).
+          if (b?.dataset.segmento && ordem.includes(b.dataset.segmento)) {
             escolheu = true;
             parar();
             i = ordem.indexOf(b.dataset.segmento);
@@ -1309,7 +1326,7 @@ const schemaSeo = {
         });
         cartao.addEventListener('click', () => {
           const ativo = segs.querySelector('button[aria-pressed="true"]') as HTMLElement | null;
-          escolherSegmento(ativo?.dataset.segmento ?? 'motos');
+          escolherSegmento(ativo?.dataset.segmento ?? ordem[0] ?? 'imoveis');
         });
         const estacao = lente?.closest('.estacao');
         estacao?.addEventListener('mouseenter', parar);
@@ -2320,9 +2337,10 @@ const schemaSeo = {
   .cartao-valor {
     font-family: 'Geist Variable', sans-serif;
     font-weight: 600;
-    font-size: clamp(1.4rem, 2.5vw, 1.8rem);
-    line-height: 1.05;
-    letter-spacing: -0.005em;
+    /* Cabe o valor mais longo ("R$ 100.000 a 200.000") com folga no cartão. */
+    font-size: clamp(0.95rem, 3vw, 1.15rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
     margin: 0;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
@@ -2800,6 +2818,27 @@ const schemaSeo = {
     border-color: var(--navy);
     color: var(--branco);
   }
+  /* Segmentos ainda sem grupo: trancados com cadeado, em vez de "Em breve". */
+  .estacao-segs button.trancado,
+  .sim-card .chips button.trancado {
+    opacity: 0.5;
+  }
+  .estacao-segs button.trancado {
+    display: inline-flex;
+    align-items: center;
+  }
+  .cadeado {
+    width: 0.82em;
+    height: 0.82em;
+    margin-left: 0.35em;
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vertical-align: -0.12em;
+  }
   .jornada-cartao {
     display: grid;
     gap: 0.25rem;
@@ -2826,9 +2865,10 @@ const schemaSeo = {
   }
   .jornada-cartao-valor {
     font-family: 'Instrument Serif', Georgia, serif;
-    font-size: 1.45rem;
-    line-height: 1.05;
+    font-size: clamp(1.05rem, 4.5vw, 1.35rem);
+    line-height: 1.1;
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
   .jornada-cartao-tag {
     font-size: 0.7rem;
