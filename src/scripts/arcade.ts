@@ -30,6 +30,16 @@ const GAMES: GameEntry[] = [
   { name: 'CITY BLOXX', factory: createCityBloxx, hiKey: 'ml.city.hi' },
 ];
 
+// Vitrine institucional na tela de atração (o jogo não rouba a cena). Texto
+// sem acento: a fonte pixel Press Start 2P não tem glifos acentuados.
+const VITRINE: string[][] = [
+  ['COMPRA', 'SEM JUROS'],
+  ['AUTORIZADO', 'PELO BACEN'],
+  ['MOTO, CARRO', 'E CASA'],
+  ['SEM ENTRADA'],
+  ['PRIMEIRO', 'PASSO'],
+];
+
 export interface Arcade {
   press(button: Button): void;
   destroy(): void;
@@ -49,6 +59,8 @@ export function createArcade(opts: ArcadeOptions): Arcade {
   let blinkOn = true;
   let blinkRaf = 0;
   let blinkLast = 0;
+  let vitIdx = 0;
+  let vitLast = 0;
 
   const pad = (n: number) => String(n).padStart(4, '0');
   const showScore = (n: number) => {
@@ -57,6 +69,12 @@ export function createArcade(opts: ArcadeOptions): Arcade {
   const loadHi = (key: string) => Number(localStorage.getItem(key) || 0);
   const showHi = (v: number) => {
     if (hiEl) hiEl.textContent = `HI ${pad(v)}`;
+  };
+  // Placar (HI/score) fica escondido nas telas institucionais (atração/fim),
+  // para parecer menos "fliperama" e mais MI6.
+  const hud = scoreEl?.parentElement ?? null;
+  const setHud = (visivel: boolean) => {
+    if (hud) hud.style.visibility = visivel ? 'visible' : 'hidden';
   };
 
   // ---- desenho das telas ----
@@ -78,7 +96,8 @@ export function createArcade(opts: ArcadeOptions): Arcade {
   function drawOverlay(): void {
     clearBg();
     if (state === 'start') {
-      if (blinkOn) text(['PRESS', 'START'], cell * 1.0, H / 2);
+      text(VITRINE[vitIdx], cell * 0.8, H * 0.42);
+      if (blinkOn) text(['APERTE P/ JOGAR'], cell * 0.42, H * 0.82);
     } else if (state === 'choose') {
       text(['ESCOLHA'], cell * 0.7, H * 0.16);
       GAMES.forEach((g, i) => {
@@ -87,8 +106,8 @@ export function createArcade(opts: ArcadeOptions): Arcade {
       });
       if (blinkOn) text(['TOQUE P/ JOGAR'], cell * 0.45, H * 0.86);
     } else if (state === 'over') {
-      text(['GAME', 'OVER'], cell * 1.0, H * 0.36);
-      if (blinkOn) text(['PRESS START'], cell * 0.55, H * 0.72);
+      text(['SEU SONHO', 'TE ESPERA'], cell * 0.8, H * 0.4);
+      if (blinkOn) text(['SIMULE AGORA'], cell * 0.5, H * 0.74);
     }
   }
 
@@ -98,6 +117,13 @@ export function createArcade(opts: ArcadeOptions): Arcade {
     if (ts - blinkLast >= 500) {
       blinkLast = ts;
       blinkOn = !blinkOn;
+    }
+    if (state === 'start') {
+      if (!vitLast) vitLast = ts;
+      if (ts - vitLast >= 2800) {
+        vitLast = ts;
+        vitIdx = (vitIdx + 1) % VITRINE.length;
+      }
     }
     drawOverlay();
     blinkRaf = requestAnimationFrame(overlayLoop);
@@ -131,6 +157,7 @@ export function createArcade(opts: ArcadeOptions): Arcade {
       showHi(n);
     }
     state = 'over';
+    setHud(false);
     startOverlay();
   }
 
@@ -141,6 +168,7 @@ export function createArcade(opts: ArcadeOptions): Arcade {
       game = null;
     }
     state = 'choose';
+    setHud(true);
     showScore(0);
     showHi(loadHi(GAMES[sel].hiKey));
     startOverlay();
@@ -150,6 +178,7 @@ export function createArcade(opts: ArcadeOptions): Arcade {
     stopOverlay();
     sel = i;
     state = 'playing';
+    setHud(true);
     showScore(0);
     showHi(loadHi(GAMES[i].hiKey));
     game = GAMES[i].factory(makeCtx(GAMES[i].hiKey));
@@ -182,6 +211,7 @@ export function createArcade(opts: ArcadeOptions): Arcade {
   }
 
   // ---- init ----
+  setHud(false);
   showScore(0);
   showHi(loadHi(GAMES[0].hiKey));
   startOverlay();
