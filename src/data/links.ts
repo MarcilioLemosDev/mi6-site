@@ -22,19 +22,21 @@ export const links: MenuLink[] = [
   {
     id: 'site',
     label: 'Acesse nosso site',
+    sublabel: 'Conheça a MI6',
     url: 'https://mi6consorcio.com.br',
     locked: false,
   },
   {
     id: 'simular',
     label: 'Simule agora',
+    sublabel: 'Veja o valor da parcela',
     url: 'https://mi6consorcio.com.br/#contato',
     locked: false,
   },
   {
     id: 'franqueado',
     label: 'Seja um Franqueado MI6',
-    sublabel: 'em breve',
+    sublabel: 'Em breve',
     url: null,
     locked: true,
   },
