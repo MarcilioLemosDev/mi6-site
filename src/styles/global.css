@@ -25,10 +25,27 @@
   --btn: #c8102e;           /* botões vermelhos (D-pad / redes) */
   --btn-face: #e21236;
   --accent: #c8102e;        /* vermelho de destaque (LED) */
+  --led-hi: #ff7d90;        /* brilho claro do LED */
 
   --font-pixel: 'Press Start 2P', 'Courier New', monospace;
 
   color-scheme: dark;
+}
+
+/* UNIDADE CAMPINAS: paleta invertida (vermelho dominante, navy como acento).
+   O jogo (LCD) lê estas vars via getComputedStyle, então inverte junto. */
+:root[data-tema='campinas'] {
+  --lcd-bg: #fbd8de;
+  --lcd-dim: #efb9c2;
+  --lcd-dark: #b03a4f;
+  --lcd-ink: #c8102e;
+  --shell: #c8102e;
+  --shell-dark: #4a0a15;
+  --shell-shadow: #f0c7cf;
+  --btn: #012169;
+  --btn-face: #0a2f7a;
+  --accent: #012169;
+  --led-hi: #7d90ff;
 }
 
 * {
@@ -53,6 +70,10 @@ body {
   -webkit-font-smoothing: none;
   image-rendering: pixelated;
   overflow: hidden;
+}
+
+:root[data-tema='campinas'] body {
+  background: radial-gradient(circle at 50% 0%, #3a0a12 0%, #1a0308 100%);
 }
 
 /* Evita seleção acidental de texto ao "jogar" no toque */

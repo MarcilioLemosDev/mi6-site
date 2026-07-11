@@ -1,5 +1,11 @@
 ---
-import { links } from '../data/links';
+import { links as linksPadrao, type MenuLink } from '../data/links';
+
+interface Props {
+  links?: MenuLink[];
+}
+// Sem prop, usa os links da matriz (comportamento preservado).
+const { links = linksPadrao } = Astro.props;
 ---
 
 <nav class="menu no-select" aria-label="Menu de links">
