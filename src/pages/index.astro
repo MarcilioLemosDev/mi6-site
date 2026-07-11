@@ -139,16 +139,12 @@ const numServidor = (v: number) =>
 // Tudo derivado do grupo no banco (grupos.json), sem números fixos no código.
 const calcParcela = (g: typeof grupoInicial, credito: number) =>
   (credito * (1 + g.taxa_administracao + g.fundo_reserva)) / g.prazo_restante_meses;
-const calcComSeguro = (g: typeof grupoInicial, credito: number) => {
-  const base = credito * (1 + g.taxa_administracao + g.fundo_reserva);
-  return base / g.prazo_restante_meses + base * g.seguro_prestamista_mes;
-};
 const taxaMensal = (g: typeof grupoInicial) => (g.taxa_administracao / g.prazo_restante_meses) * 100;
 
 const simInicial = {
   credito: grupoInicial.credito_padrao.toLocaleString('pt-BR'),
-  // Parcela exibida sempre com seguro prestamista (regra do produto: obrigatório).
-  parcela: numServidor(calcComSeguro(grupoInicial, grupoInicial.credito_padrao)),
+  // Parcela exibida SEM o seguro prestamista (o seguro nao entra no valor mostrado).
+  parcela: numServidor(calcParcela(grupoInicial, grupoInicial.credito_padrao)),
   taxaMensal: numServidor(taxaMensal(grupoInicial)),
 };
 
@@ -161,7 +157,7 @@ const nomeSeg: Record<string, string> = {
 };
 const grupoDestaque = dados.grupos
   .filter((g) => g.status === 'ativo')
-  .map((g) => ({ g, p: calcComSeguro(g, g.credito_min) }))
+  .map((g) => ({ g, p: calcParcela(g, g.credito_min) }))
   .sort((a, b) => a.p - b.p)[0];
 const ticket = grupoDestaque
   ? {
@@ -1092,8 +1088,8 @@ const schemaSeo = {
           if (el) el.textContent = v;
         };
         por('sim-valor', Math.round(c).toLocaleString('pt-BR'));
-        // Parcela com seguro embutido (obrigatório).
-        por('sim-parcela', num(base / PRAZO + base * SEGURO));
+        // Parcela exibida SEM o seguro prestamista.
+        por('sim-parcela', num(base / PRAZO));
       }
       const credito = document.getElementById('sim-credito') as HTMLInputElement | null;
       credito?.addEventListener('input', () => {
