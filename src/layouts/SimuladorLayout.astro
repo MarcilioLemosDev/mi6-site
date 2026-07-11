@@ -12,12 +12,17 @@ interface Props {
   titulo: string;
   subtitulo: string;
   description: string;
+  tema?: 'padrao' | 'campinas';
+  unidade?: string;
 }
-const { seg, titulo, subtitulo, description } = Astro.props;
+const { seg, titulo, subtitulo, description, tema = 'padrao', unidade = '' } = Astro.props;
+// Unidade Campinas: navegacao propria (volta para /unidadecampinas) e tema
+// vermelho. Sem unidade, comporta-se como a matriz (default preservado).
+const inicio = unidade === 'campinas' ? '/unidadecampinas' : '/';
 ---
 
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-tema={tema}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -27,21 +32,21 @@ const { seg, titulo, subtitulo, description } = Astro.props;
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <title>{titulo} · MI6 Consórcio Nacional</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#012169" />
+    <meta name="theme-color" content={tema === 'campinas' ? '#c8102e' : '#012169'} />
   </head>
   <body>
     <header class="topo">
-      <a class="topo-logo" href="/" aria-label="MI6 Consórcio Nacional">
+      <a class="topo-logo" href={inicio} aria-label="MI6 Consórcio Nacional">
         <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
       </a>
-      <a class="topo-site" href="/">Ver site completo</a>
+      <a class="topo-site" href={inicio}>Ver site completo</a>
     </header>
 
     <main class="palco">
       <p class="palco-kicker">Consórcio sem juros, sem entrada</p>
       <h1>{titulo}</h1>
       <p class="palco-sub">{subtitulo}</p>
-      <Simulador seg={seg} />
+      <Simulador seg={seg} tema={tema} unidade={unidade} />
     </main>
 
     <footer class="rodape">
@@ -56,6 +61,14 @@ const { seg, titulo, subtitulo, description } = Astro.props;
       :root {
         --navy: #012169;
         --vermelho: #c8102e;
+      }
+      /* Unidade Campinas: paleta invertida (vermelho dominante, navy acento). */
+      :root[data-tema='campinas'] {
+        --navy: #c8102e;
+        --vermelho: #012169;
+      }
+      :root[data-tema='campinas'] body {
+        background: radial-gradient(120% 60% at 50% 0%, #fbeef0, #fcf6f7 60%);
       }
       *,
       *::before,

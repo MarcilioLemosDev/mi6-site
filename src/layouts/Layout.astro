@@ -2,18 +2,20 @@
 interface Props {
   title?: string;
   description?: string;
+  tema?: 'padrao' | 'campinas';
 }
 
 const {
   title = 'MI6 Consórcio Nacional',
   description = 'Links da MI6 Consórcio Nacional: acesse o site, simule seu consórcio e fale com a gente.',
+  tema = 'padrao',
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-tema={tema}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -23,7 +25,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#012169" />
+    <meta name="theme-color" content={tema === 'campinas' ? '#c8102e' : '#012169'} />
 
     <!-- Open Graph / preview no Instagram, WhatsApp etc. -->
     <meta property="og:type" content="website" />
