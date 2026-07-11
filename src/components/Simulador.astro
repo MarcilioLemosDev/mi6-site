@@ -8,18 +8,32 @@ import dados from '../dados/grupos.json';
 
 interface Props {
   seg: string; // 'carros' | 'imoveis' | 'motos' | ...
+  tema?: 'padrao' | 'campinas'; // 'campinas' inverte a paleta (vermelho dominante)
+  unidade?: string; // ex.: 'campinas' -> roteia o lead para a planilha da unidade
 }
-const { seg } = Astro.props;
+const { seg, tema = 'padrao', unidade = '' } = Astro.props;
 
 const grupo = dados.grupos.find((g) => g.segmento === seg && g.status === 'ativo');
 if (!grupo) throw new Error(`Simulador: nenhum grupo ativo para o segmento "${seg}".`);
 
-const temas: Record<string, [string, string]> = {
-  carros: ['#0a2c66', '#02112e'],
-  motos: ['#06204e', '#4e0f1c'],
-  imoveis: ['#103a72', '#05152f'],
+// Gradiente do cartao de resultado por segmento. Na unidade Campinas, a familia
+// vermelha (espelha os azuis da matriz).
+const temasPorTema: Record<string, Record<string, [string, string]>> = {
+  padrao: {
+    carros: ['#0a2c66', '#02112e'],
+    motos: ['#06204e', '#4e0f1c'],
+    imoveis: ['#103a72', '#05152f'],
+  },
+  campinas: {
+    carros: ['#8a1226', '#2c0208'],
+    motos: ['#7a1020', '#3a0812'],
+    imoveis: ['#9c1330', '#2f0510'],
+  },
 };
-const [c1, c2] = temas[seg] ?? ['#012169', '#01112f'];
+const temas = temasPorTema[tema] ?? temasPorTema.padrao;
+const [c1, c2] = temas[seg] ?? (tema === 'campinas' ? ['#c8102e', '#2f050f'] : ['#012169', '#01112f']);
+// Origem/roteamento do lead: marca a unidade quando houver.
+const origemLead = unidade === 'campinas' ? `site/mi6/campinas/simule-${seg}` : `site/mi6/simule-${seg}`;
 
 const nomeSeg: Record<string, string> = {
   carros: 'carro',
@@ -43,7 +57,8 @@ const taxaMensal = num((grupo.taxa_administracao / grupo.prazo_restante_meses) *
   data-txadm={grupo.taxa_administracao}
   data-fres={grupo.fundo_reserva}
   data-seguro={grupo.seguro_prestamista_mes}
-  data-origem={`site/mi6/simule-${seg}`}
+  data-origem={origemLead}
+  data-unidade={unidade}
   style={`--c1:${c1};--c2:${c2}`}
 >
   <p class="simd-passo">01 · Quanto vale essa conquista?</p>
@@ -236,6 +251,7 @@ const taxaMensal = num((grupo.taxa_administracao / grupo.prazo_restante_meses) *
     const SEG = parseFloat(card.dataset.seguro ?? '0.0008');
     const seg = card.dataset.seg ?? '';
     const origem = card.dataset.origem ?? 'site/mi6/simulador';
+    const unidade = card.dataset.unidade ?? '';
     const num = (v: number) =>
       v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const credito = document.getElementById('simd-credito') as HTMLInputElement | null;
@@ -290,6 +306,7 @@ const taxaMensal = num((grupo.taxa_administracao / grupo.prazo_restante_meses) *
         parcela,
         resumo: msg,
         origem,
+        unidade,
         confirme: mel?.value ?? '',
       };
       fetch('/api/lead', {

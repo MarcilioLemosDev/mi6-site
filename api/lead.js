@@ -28,8 +28,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ ok: false, erro: 'metodo nao permitido' });
   }
 
-  const endpoint = process.env.LEAD_ENDPOINT;
-  if (!endpoint) {
+  const endpointBase = process.env.LEAD_ENDPOINT;
+  if (!endpointBase) {
     return res.status(503).json({ ok: false, erro: 'LEAD_ENDPOINT nao configurado' });
   }
 
@@ -86,13 +86,24 @@ export default async function handler(req, res) {
 
   const lead = sanitizarLead(corpo);
 
+  // Roteamento por unidade: um lead de unidade (ex.: Campinas) vai para o fluxo
+  // e a planilha proprios quando LEAD_ENDPOINT_CAMPINAS estiver configurado;
+  // senao cai no fluxo base (nada se perde), ja marcado por unidade e origem.
+  const endpoint =
+    lead.unidade === 'campinas' && process.env.LEAD_ENDPOINT_CAMPINAS
+      ? process.env.LEAD_ENDPOINT_CAMPINAS
+      : endpointBase;
+
   try {
     const resposta = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(lead),
     });
-    registrar(resposta.ok ? 'repassado' : 'falha-repasse', req, { segmento: lead.segmento });
+    registrar(resposta.ok ? 'repassado' : 'falha-repasse', req, {
+      segmento: lead.segmento,
+      unidade: lead.unidade || 'matriz',
+    });
     return res.status(resposta.ok ? 200 : 502).json({ ok: resposta.ok });
   } catch (e) {
     registrar('falha-repasse', req, { motivo: 'excecao' });

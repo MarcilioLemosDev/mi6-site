@@ -20,6 +20,7 @@ beforeEach(() => {
 });
 afterEach(() => {
   global.fetch = fetchOriginal;
+  delete process.env.LEAD_ENDPOINT_CAMPINAS;
 });
 
 function fakeRes() {
@@ -119,4 +120,39 @@ test('SEC-04 lead valido -> repassa 1x, ja sanitizado', async () => {
   const enviado = JSON.parse(fetchCalls[0].opts.body);
   assert.ok(enviado.nome.startsWith("'"), `nome deveria ir neutralizado: ${enviado.nome}`);
   assert.equal(enviado.confirme, undefined); // honeypot não vaza ao fluxo
+});
+
+// Roteamento por unidade (Campinas): planilha/fluxo proprio quando configurado.
+const ENDPOINT_CAMPINAS = 'https://fluxo-campinas.invalido/post';
+
+test('unidade=campinas COM endpoint proprio -> roteia para o fluxo de Campinas', async () => {
+  process.env.LEAD_ENDPOINT_CAMPINAS = ENDPOINT_CAMPINAS;
+  const res = fakeRes();
+  await handler(reqJson({ ...leadBom, unidade: 'campinas', origem: 'site/mi6/campinas' }), res);
+  assert.equal(res.statusCode, 200);
+  assert.equal(fetchCalls.length, 1);
+  assert.equal(fetchCalls[0].url, ENDPOINT_CAMPINAS, 'deveria ir ao fluxo de Campinas');
+  const enviado = JSON.parse(fetchCalls[0].opts.body);
+  assert.equal(enviado.unidade, 'campinas'); // unidade repassada ao fluxo
+});
+
+test('unidade=campinas SEM endpoint proprio -> fallback ao fluxo base (nada se perde)', async () => {
+  // LEAD_ENDPOINT_CAMPINAS ausente (limpo no afterEach)
+  const res = fakeRes();
+  await handler(reqJson({ ...leadBom, unidade: 'campinas' }), res);
+  assert.equal(res.statusCode, 200);
+  assert.equal(fetchCalls.length, 1);
+  assert.equal(fetchCalls[0].url, ENDPOINT, 'sem endpoint proprio, cai no fluxo base');
+  const enviado = JSON.parse(fetchCalls[0].opts.body);
+  assert.equal(enviado.unidade, 'campinas'); // segue marcado como Campinas
+});
+
+test('matriz (sem unidade) -> fluxo base, unidade vazia', async () => {
+  process.env.LEAD_ENDPOINT_CAMPINAS = ENDPOINT_CAMPINAS; // mesmo com Campinas configurado
+  const res = fakeRes();
+  await handler(reqJson({ ...leadBom }), res);
+  assert.equal(res.statusCode, 200);
+  assert.equal(fetchCalls[0].url, ENDPOINT, 'lead da matriz nao vai para Campinas');
+  const enviado = JSON.parse(fetchCalls[0].opts.body);
+  assert.equal(enviado.unidade, ''); // matriz nao carrega unidade
 });
