@@ -45,7 +45,8 @@ const nome = nomeSeg[seg] ?? seg;
 const num = (v: number) =>
   v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const base = grupo.credito_padrao * (1 + grupo.taxa_administracao + grupo.fundo_reserva);
-const parcelaInicial = num(base / grupo.prazo_restante_meses + base * grupo.seguro_prestamista_mes);
+// Parcela exibida SEM o seguro prestamista (o seguro nao entra no valor mostrado).
+const parcelaInicial = num(base / grupo.prazo_restante_meses);
 const taxaMensal = num((grupo.taxa_administracao / grupo.prazo_restante_meses) * 100);
 ---
 
@@ -262,7 +263,8 @@ const taxaMensal = num((grupo.taxa_administracao / grupo.prazo_restante_meses) *
       const c = parseInt(credito?.value ?? '0', 10);
       const base = c * (1 + TX + FR);
       if (elValor) elValor.textContent = c.toLocaleString('pt-BR');
-      if (elParcela) elParcela.textContent = num(base / PRAZO + base * SEG);
+      // Parcela exibida SEM o seguro prestamista.
+      if (elParcela) elParcela.textContent = num(base / PRAZO);
     };
     credito?.addEventListener('input', pintar);
 
