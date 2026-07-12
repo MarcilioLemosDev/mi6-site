@@ -63,17 +63,14 @@ body {
   min-height: 100dvh;
   display: grid;
   place-items: center;
-  padding: env(safe-area-inset-top) 1rem env(safe-area-inset-bottom);
-  background: radial-gradient(circle at 50% 0%, #05173d 0%, #01081f 100%);
-  font-family: var(--font-pixel);
-  color: var(--lcd-ink);
-  -webkit-font-smoothing: none;
-  image-rendering: pixelated;
-  overflow: hidden;
-}
-
-:root[data-tema='campinas'] body {
-  background: radial-gradient(circle at 50% 0%, #3a0a12 0%, #1a0308 100%);
+  padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  /* Fundo premium de "product shot": escuro com leve brilho da cor dominante
+     (--shell: navy na matriz, vermelho em Campinas). */
+  background: radial-gradient(circle at 50% 28%, color-mix(in srgb, var(--shell) 24%, #05070c), #05070c 68%);
+  font-family: 'Inter Variable', system-ui, sans-serif;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 /* Evita seleção acidental de texto ao "jogar" no toque */
