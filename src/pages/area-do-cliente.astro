@@ -3,6 +3,7 @@ import '@fontsource/instrument-serif';
 import '@fontsource/instrument-serif/400-italic.css';
 import '@fontsource-variable/archivo';
 import '@fontsource/ibm-plex-mono';
+import Analytics from '@vercel/analytics/astro';
 
 // Antessala da Área do Cliente: em vez de um splash, um painel com a cara de
 // um portal do consorciado (atalhos, ar de dashboard). Planta a experiência
@@ -93,6 +94,7 @@ const servicos = [
     </main>
 
     <p class="coord" aria-hidden="true">30°02′S 51°13′W · PORTO ALEGRE · BRASIL</p>
+    <Analytics />
   </body>
 </html>
 

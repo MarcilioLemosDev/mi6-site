@@ -3,6 +3,7 @@ import '@fontsource/instrument-serif';
 import '@fontsource-variable/archivo';
 import '@fontsource/ibm-plex-mono';
 import Simulador from '../components/Simulador.astro';
+import Analytics from '@vercel/analytics/astro';
 
 // Layout enxuto das páginas dedicadas de simulação (só o simulador do
 // segmento). Navegação separada do site completo: topo com logo levando ao
@@ -53,6 +54,8 @@ const inicio = unidade === 'campinas' ? '/unidadecampinas' : '/';
       <p>Administradora autorizada pelo Banco Central do Brasil.</p>
       <a href="/politica-de-privacidade/">Política de Privacidade</a>
     </footer>
+
+    <Analytics />
 
     <style is:global>
       /* Reset de página: precisa ser global para alcançar o componente

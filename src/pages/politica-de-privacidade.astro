@@ -3,6 +3,7 @@ import '@fontsource/instrument-serif';
 import '@fontsource/instrument-serif/400-italic.css';
 import '@fontsource-variable/archivo';
 import '@fontsource/ibm-plex-mono';
+import Analytics from '@vercel/analytics/astro';
 
 // Política de Privacidade da MI6. Conteúdo institucional fornecido por
 // Marcílio (versão 1.1, 23/06/2026). Texto fiel; sem travessões (padrão
@@ -267,8 +268,10 @@ const direitos = [
         <p>
           Atualmente, este site utiliza apenas armazenamento local de primeira parte, estritamente
           funcional, para lembrar preferências de navegação, como a forma de entrada escolhida. Não
-          usamos cookies de rastreamento, de publicidade ou de terceiros, nem ferramentas de analytics
-          neste site.
+          usamos cookies de rastreamento, de publicidade ou de terceiros. Para entender o volume de
+          acesso, usamos uma ferramenta de estatística agregada e sem cookies (Vercel Web Analytics),
+          que mede as visitas de forma anônima, não cria perfil individual, não compartilha dados com
+          anunciantes e não identifica você.
         </p>
         <p>
           Você pode bloquear ou excluir cookies diretamente no navegador, mas algumas funcionalidades do site
@@ -299,6 +302,7 @@ const direitos = [
       <a class="voltar" href="/">Voltar ao site</a>
       <p>© M.I6 Administradora de Consórcio Ltda. Administradora de consórcios autorizada pelo Banco Central do Brasil, Lei nº 11.795/2008. Filiada à ABAC.</p>
     </footer>
+    <Analytics />
   </body>
 </html>
 

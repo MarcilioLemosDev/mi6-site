@@ -7,6 +7,7 @@ import '@fontsource/ibm-plex-mono';
 import '@fontsource/ibm-plex-mono/500.css';
 import dados from '../dados/grupos.json';
 import marca from '../dados/mi6-traco.json';
+import Analytics from '@vercel/analytics/astro';
 
 // CONCEITO A, DOSSIÊ (v2.1)
 // Refino pós-feedback: mantém a modernidade navy cinematográfica e ganha a
@@ -1560,6 +1561,7 @@ const schemaSeo = {
         }
       });
     </script>
+    <Analytics />
   </body>
 </html>
 
