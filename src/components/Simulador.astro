@@ -83,7 +83,7 @@ const taxaMensal = num((grupo.taxa_administracao / grupo.prazo_restante_meses) *
   </div>
 
   <div class="simd-resultado">
-    <p class="simd-res-rotulo">A sua parcela, sem juros*</p>
+    <p class="simd-res-rotulo">A sua parcela, sem juros</p>
     <p class="simd-res-valor">
       <span class="simd-moeda-sm">R$</span><span id="simd-parcela">{parcelaInicial}</span><span
         class="simd-res-mes">por mês</span
@@ -94,7 +94,6 @@ const taxaMensal = num((grupo.taxa_administracao / grupo.prazo_restante_meses) *
     <span>Taxa de administração</span>
     <span class="simd-taxa-val">{taxaMensal}% ao mês</span>
   </p>
-  <p class="simd-nota">* Valor de parcela sem seguro.</p>
 
   <p class="simd-passo simd-passo-2">02 · Deixe seus dados e fale com a gente</p>
   <label class="simd-campo">
@@ -198,7 +197,6 @@ const taxaMensal = num((grupo.taxa_administracao / grupo.prazo_restante_meses) *
     color: #4a5568;
   }
   .simd-taxa-val { font-weight: 700; color: var(--navy, #012169); }
-  .simd-nota { margin: 0.55rem 0 0; font-size: 0.72rem; color: #6b7688; }
   .simd-campo { display: block; margin-top: 0.7rem; }
   .simd-campo span {
     display: block;
