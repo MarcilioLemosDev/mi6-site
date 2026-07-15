@@ -622,7 +622,7 @@ const schemaSeo = {
                   <span>R$ {grupoInicial.credito_max.toLocaleString('pt-BR')}</span>
                 </div>
                 <div class="sim-resultado" id="sim-resultado" style={`--c1:${cartaoInicial.c1};--c2:${cartaoInicial.c2}`}>
-                  <p class="sim-res-rotulo">A sua parcela, sem juros*</p>
+                  <p class="sim-res-rotulo">A sua parcela, sem juros</p>
                   <p class="sim-res-valor">
                     <span class="sim-moeda-sm">R$</span><span id="sim-parcela">{simInicial.parcela}</span><span class="sim-res-mes">por mês</span>
                   </p>
@@ -631,7 +631,6 @@ const schemaSeo = {
                   <span class="sim-taxa-rot">Taxa de administração</span>
                   <span class="sim-taxa-val">{simInicial.taxaMensal}% ao mês</span>
                 </p>
-                <p class="sim-nota">* Valor de parcela sem seguro.</p>
               </div>
 
               <div class="sim-aguarde" id="sim-aguarde" hidden>
