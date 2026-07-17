@@ -1,11 +1,8 @@
 ---
-// Gamelink da MI6 reimaginado: um iPhone moderno (moldura de titânio, Dynamic
-// Island, botões laterais) cuja TELA roda o "app" da MI6. A alma retrô fica
-// preservada e contida numa "telinha antiga" (LCD pixelado) embutida no app; o
-// resto (menu de links) é interface moderna. O jogo é jogado por toque/swipe na
-// telinha (sem D-pad físico). Tema (navy/vermelho) via variáveis do global.css.
+// Link da bio da MI6: um iPhone moderno (moldura de titânio, Dynamic Island,
+// botões laterais) cuja TELA roda o "app" da MI6, direto ao ponto: marca +
+// menu de links. Tema (navy/vermelho) via variáveis do global.css.
 import '@fontsource-variable/inter';
-import Screen from './Screen.astro';
 import Menu from './Menu.astro';
 import Footer from './Footer.astro';
 import { type MenuLink } from '../data/links';
@@ -27,7 +24,7 @@ const { links } = Astro.props;
     <div class="tela">
       <!-- Status bar do iOS -->
       <div class="statusbar">
-        <span class="hora">9:41</span>
+        <span class="hora">sem juros</span>
         <span class="sinais" aria-hidden="true">
           <svg class="ic-sinal" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
           <svg class="ic-wifi" viewBox="0 0 16 12"><path d="M8 11.2 9.6 9.3a2.1 2.1 0 0 0-3.2 0L8 11.2Zm0-4.8a5 5 0 0 1 3.8 1.8l1.5-1.8a7.4 7.4 0 0 0-10.6 0l1.5 1.8A5 5 0 0 1 8 6.4Zm0-4.5c2.7 0 5.2 1 7.1 2.8L16.5 2A11.8 11.8 0 0 0 8 -1.5 11.8 11.8 0 0 0-.5 2L.9 3.9A10.1 10.1 0 0 1 8 1.9Z"/></svg>
@@ -43,16 +40,6 @@ const { links } = Astro.props;
           <img class="app-logo" src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
           <p class="app-linha">Primeiro passo</p>
         </header>
-
-        <!-- Telinha antiga (LCD retrô) embutida no app moderno -->
-        <section class="retro" aria-label="Mini-game retrô da MI6">
-          <div class="retro-cabeca">
-            <span class="retro-marca">Mini-game</span>
-            <span class="retro-led" aria-hidden="true"></span>
-          </div>
-          <Screen />
-          <p class="retro-dica">Toque para jogar · deslize para virar</p>
-        </section>
 
         <Menu links={links} />
         <Footer />
@@ -180,10 +167,11 @@ const { links } = Astro.props;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    padding: 0.4rem 1.15rem 1.1rem;
+    padding: 0.8rem 1.15rem 1.1rem;
     display: flex;
     flex-direction: column;
-    gap: 1.15rem;
+    justify-content: center;
+    gap: 1.35rem;
   }
   .app::-webkit-scrollbar { display: none; }
 
@@ -198,46 +186,6 @@ const { links } = Astro.props;
     color: rgba(255, 255, 255, 0.5);
     padding-left: 0.35em;
   }
-
-  /* ===== Módulo do mini-game: card MODERNO que emoldura a telinha retrô.
-     Só o LCD quadrado (dentro) é retrô; a moldura e os textos são modernos. */
-  .retro {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.09);
-    border-radius: 22px;
-    padding: 0.85rem 0.85rem 0.7rem;
-    box-shadow: 0 12px 28px -18px rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(6px);
-  }
-  .retro-cabeca {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 0.2rem 0.6rem;
-  }
-  .retro-marca {
-    font-family: 'Inter Variable', system-ui, sans-serif;
-    font-size: 0.6rem;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.5);
-  }
-  .retro-led {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, var(--led-hi, #ff7d90), var(--accent));
-    box-shadow: 0 0 6px var(--accent);
-    animation: led-pulse 2.4s ease-in-out infinite;
-  }
-  .retro-dica {
-    margin: 0.55rem 0 0;
-    text-align: center;
-    font-family: 'Inter Variable', system-ui, sans-serif;
-    font-size: 0.55rem;
-    letter-spacing: 0.02em;
-    color: rgba(255, 255, 255, 0.38);
-  }
-  @keyframes led-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-  @media (prefers-reduced-motion: reduce) { .retro-led { animation: none; } }
 
   .home-ind {
     position: absolute;
