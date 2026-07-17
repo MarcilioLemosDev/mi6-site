@@ -10,8 +10,9 @@ interface Props {
   seg: string; // 'carros' | 'imoveis' | 'motos' | ...
   tema?: 'padrao' | 'campinas'; // 'campinas' inverte a paleta (vermelho dominante)
   unidade?: string; // ex.: 'campinas' -> roteia o lead para a planilha da unidade
+  origem?: string; // sobrescreve a origem do lead (ex.: landing de SEO)
 }
-const { seg, tema = 'padrao', unidade = '' } = Astro.props;
+const { seg, tema = 'padrao', unidade = '', origem: origemProp } = Astro.props;
 
 const grupo = dados.grupos.find((g) => g.segmento === seg && g.status === 'ativo');
 if (!grupo) throw new Error(`Simulador: nenhum grupo ativo para o segmento "${seg}".`);
@@ -32,8 +33,9 @@ const temasPorTema: Record<string, Record<string, [string, string]>> = {
 };
 const temas = temasPorTema[tema] ?? temasPorTema.padrao;
 const [c1, c2] = temas[seg] ?? (tema === 'campinas' ? ['#c8102e', '#2f050f'] : ['#012169', '#01112f']);
-// Origem/roteamento do lead: marca a unidade quando houver.
-const origemLead = unidade === 'campinas' ? `site/mi6/campinas/simule-${seg}` : `site/mi6/simule-${seg}`;
+// Origem/roteamento do lead: prop explícita (landings) > unidade > padrão.
+const origemLead =
+  origemProp ?? (unidade === 'campinas' ? `site/mi6/campinas/simule-${seg}` : `site/mi6/simule-${seg}`);
 
 const nomeSeg: Record<string, string> = {
   carros: 'carro',
@@ -253,6 +255,34 @@ const taxaMensal = num((grupo.taxa_administracao / grupo.prazo_restante_meses) *
     const seg = card.dataset.seg ?? '';
     const origem = card.dataset.origem ?? 'site/mi6/simulador';
     const unidade = card.dataset.unidade ?? '';
+
+    // Canal de entrada da sessão (atribuição do lead): utm_source > referrer.
+    // Gravado uma vez por sessão, na primeira página visitada; vai anexado à
+    // origem (origem|canal), então cai na coluna existente da planilha.
+    let canal = 'direto';
+    try {
+      const salvo = sessionStorage.getItem('mi6-canal');
+      if (salvo) {
+        canal = salvo;
+      } else {
+        const utm = new URLSearchParams(location.search).get('utm_source');
+        const ref = document.referrer ? new URL(document.referrer).hostname : '';
+        canal = utm
+          ? utm.toLowerCase().slice(0, 12)
+          : !ref || ref.endsWith('mi6consorcio.com.br')
+            ? 'direto'
+            : ref.includes('google.')
+              ? 'google'
+              : ref.includes('instagram')
+                ? 'instagram'
+                : ref.includes('bing.')
+                  ? 'bing'
+                  : 'outro';
+        sessionStorage.setItem('mi6-canal', canal);
+      }
+    } catch {
+      /* atribuição é best-effort */
+    }
     const num = (v: number) =>
       v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const credito = document.getElementById('simd-credito') as HTMLInputElement | null;
@@ -307,7 +337,7 @@ const taxaMensal = num((grupo.taxa_administracao / grupo.prazo_restante_meses) *
         credito: creditoRaw,
         parcela,
         resumo: msg,
-        origem,
+        origem: `${origem}|${canal}`,
         unidade,
         confirme: mel?.value ?? '',
       };

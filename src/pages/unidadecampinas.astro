@@ -953,6 +953,28 @@ const schemaSeo = {
       const motionOk = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
       if (!motionOk) document.querySelector('.veu')?.remove();
 
+      // Canal de entrada da sessão (atribuição do lead), capturado no load.
+      try {
+        if (!sessionStorage.getItem('mi6-canal')) {
+          const utm = new URLSearchParams(location.search).get('utm_source');
+          const ref = document.referrer ? new URL(document.referrer).hostname : '';
+          const canalEntrada = utm
+            ? utm.toLowerCase().slice(0, 12)
+            : !ref || ref.endsWith('mi6consorcio.com.br')
+              ? 'direto'
+              : ref.includes('google.')
+                ? 'google'
+                : ref.includes('instagram')
+                  ? 'instagram'
+                  : ref.includes('bing.')
+                    ? 'bing'
+                    : 'outro';
+          sessionStorage.setItem('mi6-canal', canalEntrada);
+        }
+      } catch {
+        /* atribuição é best-effort */
+      }
+
       // Perfil guardado de visitas anteriores reordena os destaques.
       const perfilSalvo = localStorage.getItem('mi6b-perfil');
       if (perfilSalvo === 'cliente' || perfilSalvo === 'novo') {
@@ -1231,7 +1253,15 @@ const schemaSeo = {
           credito: creditoRaw,
           parcela,
           resumo: msg,
-          origem: 'site/mi6/campinas',
+          origem:
+            'site/mi6/campinas|' +
+            (() => {
+              try {
+                return sessionStorage.getItem('mi6-canal') || 'direto';
+              } catch {
+                return 'direto';
+              }
+            })(),
           unidade: 'campinas',
           // Campo isca (honeypot): vazio para humano; validado no servidor.
           confirme: simCard.querySelector('.sim-mel')?.value ?? '',
