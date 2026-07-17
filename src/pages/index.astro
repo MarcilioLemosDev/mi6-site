@@ -119,6 +119,14 @@ const faq = [
     p: 'Consórcio vale a pena?',
     r: 'Sim, principalmente para quem deseja planejar a compra sem pagar juros. No Consórcio Nacional MI6, você pode adquirir imóveis, veículos, equipamentos ou eletroeletrônicos com parcelas acessíveis e flexibilidade para ofertar lances e antecipar a contemplação.',
   },
+  {
+    p: 'O que é a taxa de administração?',
+    r: 'É a remuneração da administradora pela gestão do grupo, definida em contrato e diluída nas parcelas ao longo do prazo. No consórcio ela ocupa o lugar dos juros; nos grupos ativos da MI6 varia de 18% a 22% no total, conforme o segmento e o prazo.',
+  },
+  {
+    p: 'Como funciona a contemplação?',
+    r: 'Todo mês, na assembleia do grupo, participantes são contemplados por sorteio e por lance, e recebem a carta de crédito para comprar o bem à vista. Não existe prazo garantido de contemplação; ofertar lances, inclusive o lance embutido da própria carta, aumenta as chances de antecipar.',
+  },
 ];
 
 // Grupo inicial do simulador da home (imóvel, o 1º segmento). Parâmetros vêm
@@ -714,6 +722,9 @@ const schemaSeo = {
 
         <nav class="rodape-bloco" aria-label="Consórcio">
           <h3>Consórcio</h3>
+          <a class="sub" href="/consorcio-de-imoveis/">Consórcio de imóveis</a>
+          <a class="sub" href="/consorcio-de-carros/">Consórcio de carros</a>
+          <a class="sub" href="/consorcio-de-motos/">Consórcio de motos</a>
           <button type="button" class="sub" data-folha="funciona">Como funciona</button>
           <button type="button" class="sub" data-folha="contemplacao">Contemplação</button>
           <button type="button" class="sub" data-folha="duvidas">Perguntas frequentes</button>
@@ -952,6 +963,30 @@ const schemaSeo = {
 
       const motionOk = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
       if (!motionOk) document.querySelector('.veu')?.remove();
+
+      // Canal de entrada da sessão (atribuição do lead): utm_source > referrer.
+      // Capturado no CARREGAMENTO (antes de navegação interna apagar o rastro)
+      // e gravado uma vez por sessão; o submit do simulador anexa à origem.
+      try {
+        if (!sessionStorage.getItem('mi6-canal')) {
+          const utm = new URLSearchParams(location.search).get('utm_source');
+          const ref = document.referrer ? new URL(document.referrer).hostname : '';
+          const canalEntrada = utm
+            ? utm.toLowerCase().slice(0, 12)
+            : !ref || ref.endsWith('mi6consorcio.com.br')
+              ? 'direto'
+              : ref.includes('google.')
+                ? 'google'
+                : ref.includes('instagram')
+                  ? 'instagram'
+                  : ref.includes('bing.')
+                    ? 'bing'
+                    : 'outro';
+          sessionStorage.setItem('mi6-canal', canalEntrada);
+        }
+      } catch {
+        /* atribuição é best-effort */
+      }
 
       // Perfil guardado de visitas anteriores reordena os destaques.
       const perfilSalvo = localStorage.getItem('mi6b-perfil');
@@ -1222,6 +1257,13 @@ const schemaSeo = {
         // Registro do lead via função serverless (/api/lead), mesma origem, que
         // repassa ao fluxo do Power Automate mantendo a URL como segredo de
         // servidor e devolvendo sucesso/erro de verdade.
+        // Canal de entrada capturado no carregamento (atribuição do lead).
+        let canal = 'direto';
+        try {
+          canal = sessionStorage.getItem('mi6-canal') || 'direto';
+        } catch {
+          /* atribuição é best-effort */
+        }
         const lead = {
           data_hora: new Date().toISOString(),
           nome,
@@ -1231,7 +1273,7 @@ const schemaSeo = {
           credito: creditoRaw,
           parcela,
           resumo: msg,
-          origem: 'site/mi6/simulador',
+          origem: 'site/mi6/simulador|' + canal,
           // Campo isca (honeypot): vazio para humano; validado no servidor.
           confirme: simCard.querySelector('.sim-mel')?.value ?? '',
         };

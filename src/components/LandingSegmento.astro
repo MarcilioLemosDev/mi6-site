@@ -1,0 +1,538 @@
+---
+import '@fontsource/instrument-serif';
+import '@fontsource/instrument-serif/400-italic.css';
+import '@fontsource-variable/archivo';
+import '@fontsource/ibm-plex-mono';
+import dados from '../dados/grupos.json';
+import Simulador from './Simulador.astro';
+import Analytics from '@vercel/analytics/astro';
+
+// Landing indexável por segmento (SEO): casa a intenção de busca exata
+// ("consórcio de imóveis", "consórcio de carros", "consórcio de motos") com
+// uma página dedicada. Todo número vem do grupos.json (nada fixo no código);
+// FAQ e comparativo honestos (YMYL): admitem o tradeoff da contemplação.
+interface Props {
+  seg: 'imoveis' | 'carros' | 'motos';
+}
+const { seg } = Astro.props;
+const SITE = 'https://mi6consorcio.com.br';
+
+const grupo = dados.grupos.find((g) => g.segmento === seg && g.status === 'ativo');
+if (!grupo) throw new Error(`LandingSegmento: nenhum grupo ativo para "${seg}".`);
+
+const brl0 = (v: number) => 'R$ ' + v.toLocaleString('pt-BR');
+const brl2 = (v: number) =>
+  'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const pct = (v: number) =>
+  v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+const parcelaMin = (grupo.credito_min * (1 + grupo.taxa_administracao + grupo.fundo_reserva)) / grupo.prazo_restante_meses;
+const taxaTotalPct = (grupo.taxa_administracao * 100).toLocaleString('pt-BR');
+const taxaMesPct = pct((grupo.taxa_administracao / grupo.prazo_restante_meses) * 100);
+
+const meta: Record<string, {
+  slug: string; nomeBem: string; tituloBem: string; h1: string; foto: string; alt: string;
+  usoCarta: string; faqExtra: { p: string; r: string }[];
+}> = {
+  imoveis: {
+    slug: 'consorcio-de-imoveis',
+    nomeBem: 'imóvel',
+    tituloBem: 'Consórcio de Imóveis',
+    h1: 'Consórcio de imóveis, sem juros e sem entrada',
+    foto: '/play-assets/imoveis.webp',
+    alt: 'Pessoas conversam em um apartamento vazio de janelas amplas',
+    usoCarta:
+      'A carta de crédito imobiliária compra imóvel novo ou usado, constrói e reforma, conforme o regulamento do grupo. Contemplado, você negocia à vista.',
+    faqExtra: [
+      {
+        p: 'Posso usar o FGTS no consórcio de imóveis?',
+        r: 'Sim. No consórcio imobiliário o FGTS pode ser usado para ofertar lance, complementar a carta de crédito ou amortizar o saldo, conforme as regras vigentes do FGTS.',
+      },
+      {
+        p: 'A carta de crédito serve para construir ou reformar?',
+        r: 'Sim. Além da compra de imóvel novo ou usado, a carta de crédito pode ser usada para construção e reforma, conforme o regulamento do grupo.',
+      },
+    ],
+  },
+  carros: {
+    slug: 'consorcio-de-carros',
+    nomeBem: 'carro',
+    tituloBem: 'Consórcio de Carros',
+    h1: 'Consórcio de carros, sem juros e sem entrada',
+    foto: '/play-assets/carros.webp',
+    alt: 'Casal observa um carro em uma concessionária',
+    usoCarta:
+      'Contemplado, a carta de crédito paga o carro à vista na concessionária ou com o vendedor, o que dá força de negociação no preço final.',
+    faqExtra: [
+      {
+        p: 'Consórcio de carro tem entrada?',
+        r: 'Não. Você entra no grupo pagando a primeira parcela e já participa das assembleias de contemplação, por sorteio e lance.',
+      },
+      {
+        p: 'Como recebo o carro do consórcio?',
+        r: 'Ao ser contemplado por sorteio ou lance, você recebe a carta de crédito e compra o carro à vista onde preferir, com a documentação aprovada pela administradora.',
+      },
+    ],
+  },
+  motos: {
+    slug: 'consorcio-de-motos',
+    nomeBem: 'moto',
+    tituloBem: 'Consórcio de Motos',
+    h1: 'Consórcio de motos, sem juros e sem entrada',
+    foto: '/play-assets/moto.webp',
+    alt: 'Homem de jaqueta ajusta uma moto em uma garagem',
+    usoCarta:
+      'Contemplado, a carta de crédito paga a moto à vista na loja que você escolher, com força de negociação no preço final.',
+    faqExtra: [
+      {
+        p: 'Consórcio de moto tem entrada?',
+        r: 'Não. Você entra no grupo pagando a primeira parcela e já participa das assembleias de contemplação, por sorteio e lance.',
+      },
+      {
+        p: 'Em quanto tempo posso ser contemplado?',
+        r: 'Todo mês há contemplações por sorteio e por lance, mas não existe prazo garantido; quem oferta lance, inclusive o lance embutido da própria carta, aumenta as chances de antecipar.',
+      },
+    ],
+  },
+};
+const m = meta[seg];
+
+const faq = [
+  {
+    p: `Qual o valor do consórcio de ${m.nomeBem === 'imóvel' ? 'imóveis' : m.nomeBem + 's'} da MI6?`,
+    r: `As cartas de crédito do grupo ${grupo.grupo} vão de ${brl0(grupo.credito_min)} a ${brl0(grupo.credito_max)}, com prazo de ${grupo.prazo_restante_meses} meses e parcelas a partir de ${brl2(parcelaMin)}, sem juros. Valores sujeitos à disponibilidade do grupo.`,
+  },
+  {
+    p: `Consórcio de ${m.nomeBem} tem juros?`,
+    r: `Não. Em vez de juros, você paga a taxa de administração de ${taxaTotalPct}% diluída em ${grupo.prazo_restante_meses} meses, cerca de ${taxaMesPct}% ao mês, além do fundo de reserva do grupo.`,
+  },
+  ...m.faqExtra,
+];
+
+const titulo = `${m.tituloBem} sem Juros | MI6 Consórcio Nacional`;
+const descricao = `${m.tituloBem} da MI6: cartas de crédito de ${brl0(grupo.credito_min)} a ${brl0(grupo.credito_max)}, parcelas a partir de ${brl2(parcelaMin)} sem juros e sem entrada. Administradora autorizada pelo Banco Central.`;
+// Barra final: mesma forma do sitemap (uma URL canônica só).
+const url = `${SITE}/${m.slug}/`;
+
+const outros = (['imoveis', 'carros', 'motos'] as const)
+  .filter((s) => s !== seg)
+  .map((s) => ({ nome: meta[s].tituloBem, href: `/${meta[s].slug}/` }));
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Início', item: `${SITE}/` },
+        { '@type': 'ListItem', position: 2, name: m.tituloBem, item: url },
+      ],
+    },
+    {
+      '@type': 'Service',
+      '@id': `${url}#servico`,
+      name: `${m.tituloBem} MI6`,
+      serviceType: m.tituloBem,
+      description: descricao,
+      url,
+      provider: { '@id': `${SITE}/#organizacao` },
+      areaServed: { '@type': 'Country', name: 'Brasil' },
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${url}#faq`,
+      mainEntity: faq.map((i) => ({
+        '@type': 'Question',
+        name: i.p,
+        acceptedAnswer: { '@type': 'Answer', text: i.r },
+      })),
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="canonical" href={url} />
+    <meta name="theme-color" content="#012169" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>{titulo}</title>
+    <meta name="description" content={descricao} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="MI6 Consórcio Nacional" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:url" content={url} />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descricao} />
+    <meta property="og:image" content={`${SITE}/og.png`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </head>
+  <body>
+    <header class="topo">
+      <a class="topo-logo" href="/" aria-label="MI6 Consórcio Nacional, página inicial">
+        <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
+      </a>
+      <nav class="topo-nav" aria-label="Navegação">
+        <a href="/">Site completo</a>
+        <a class="topo-cta" href="#simular">Simular agora</a>
+      </nav>
+    </header>
+
+    <nav class="trilha" aria-label="Você está em">
+      <a href="/">Início</a><span aria-hidden="true">/</span><span>{m.tituloBem}</span>
+    </nav>
+
+    <main>
+      <section class="hero">
+        <div class="hero-texto">
+          <p class="kicker">{m.tituloBem} · MI6</p>
+          <h1>{m.h1}</h1>
+          <p class="hero-sub">
+            Cartas de crédito de <strong>{brl0(grupo.credito_min)}</strong> a
+            <strong>{brl0(grupo.credito_max)}</strong> com parcelas a partir de
+            <strong>{brl2(parcelaMin)}</strong> por mês. Em vez de juros, uma taxa de
+            administração de {taxaTotalPct}% diluída em {grupo.prazo_restante_meses} meses.
+          </p>
+          <div class="hero-acoes">
+            <a class="cta" href="#simular">Simule sua parcela</a>
+            <a class="cta-fantasma" href="#faq">Tire suas dúvidas</a>
+          </div>
+          <p class="hero-prova">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3z" /><path d="m8.5 12 2.5 2.5 4.5-5" /></svg>
+            Administradora autorizada pelo Banco Central do Brasil, ofício nº 33.288/2024. Filiada à ABAC.
+          </p>
+        </div>
+        <figure class="hero-foto">
+          <img src={m.foto} alt={m.alt} width="640" height="800" loading="eager" fetchpriority="high" />
+        </figure>
+      </section>
+
+      <section class="numeros" aria-label={`Números do grupo ${grupo.grupo}`}>
+        <div class="num">
+          <p class="num-rotulo">Carta de crédito</p>
+          <p class="num-valor">{brl0(grupo.credito_min)} a {brl0(grupo.credito_max)}</p>
+        </div>
+        <div class="num">
+          <p class="num-rotulo">Parcela a partir de</p>
+          <p class="num-valor">{brl2(parcelaMin)} <span>/ mês</span></p>
+        </div>
+        <div class="num">
+          <p class="num-rotulo">Taxa de administração</p>
+          <p class="num-valor">{taxaMesPct}% <span>ao mês ({taxaTotalPct}% em {grupo.prazo_restante_meses}x)</span></p>
+        </div>
+        <div class="num">
+          <p class="num-rotulo">Prazo do grupo</p>
+          <p class="num-valor">{grupo.prazo_restante_meses} <span>meses</span></p>
+        </div>
+      </section>
+
+      <section class="secao">
+        <h2>Como funciona</h2>
+        <ol class="passos">
+          <li>
+            <strong>Você escolhe a carta de crédito.</strong>
+            Define o valor do {m.nomeBem} que quer conquistar, entre {brl0(grupo.credito_min)} e {brl0(grupo.credito_max)}, e entra no grupo sem entrada.
+          </li>
+          <li>
+            <strong>Paga parcelas sem juros.</strong>
+            A parcela reúne o fundo comum, o fundo de reserva e a taxa de administração. Pagando em dia, você concorre todo mês.
+          </li>
+          <li>
+            <strong>É contemplado por sorteio ou lance.</strong>
+            {m.usoCarta}
+          </li>
+        </ol>
+      </section>
+
+      <section class="secao">
+        <h2>Consórcio ou financiamento?</h2>
+        <p class="secao-sub">Comparação honesta: cada modalidade serve a um momento diferente.</p>
+        <div class="tabela-scroll">
+          <table>
+            <thead>
+              <tr><th scope="col">Critério</th><th scope="col">Consórcio MI6</th><th scope="col">Financiamento</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Juros</th>
+                <td>Não tem. Taxa de administração de {taxaTotalPct}% diluída em {grupo.prazo_restante_meses} meses</td>
+                <td>Sim, juros compostos sobre o saldo devedor, todos os meses</td>
+              </tr>
+              <tr>
+                <th scope="row">Entrada</th>
+                <td>Não exige</td>
+                <td>Normalmente exigida</td>
+              </tr>
+              <tr>
+                <th scope="row">Quando você recebe o bem</th>
+                <td>Na contemplação, por sorteio mensal ou lance</td>
+                <td>Imediatamente, após aprovação do crédito</td>
+              </tr>
+              <tr>
+                <th scope="row">Poder de compra</th>
+                <td>Carta de crédito paga à vista, com força de negociação</td>
+                <td>Valor liberado ao vendedor</td>
+              </tr>
+              <tr>
+                <th scope="row">Indicado para</th>
+                <td>Quem pode planejar a conquista e quer pagar menos</td>
+                <td>Quem precisa do bem imediatamente</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="secao secao-sim" id="simular">
+        <h2>Simule agora a sua parcela</h2>
+        <p class="secao-sub">Valores reais do grupo {grupo.grupo}, direto da nossa base.</p>
+        <Simulador seg={seg} origem={`site/mi6/lp-${seg}`} />
+      </section>
+
+      <section class="secao" id="faq">
+        <h2>Perguntas frequentes</h2>
+        <div class="faq">
+          {faq.map((item) => (
+            <details>
+              <summary>{item.p}</summary>
+              <p>{item.r}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section class="secao outros">
+        <h2>Outros caminhos na MI6</h2>
+        <div class="outros-links">
+          {outros.map((o) => (
+            <a href={o.href}>{o.nome} <span aria-hidden="true">→</span></a>
+          ))}
+          <a href="/">Conhecer a MI6 <span aria-hidden="true">→</span></a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="rodape">
+      <p>
+        M.I6 Administradora de Consórcio Ltda. Autorizada e fiscalizada pelo Banco Central do
+        Brasil, Lei nº 11.795/2008, ofício nº 33.288/2024. Filiada à ABAC.
+      </p>
+      <p>SAC 0800 000 5228 · Ouvidoria 0800 000 5267</p>
+      <p><a href="/politica-de-privacidade/">Política de Privacidade</a></p>
+    </footer>
+
+    <Analytics />
+
+    <style is:global>
+      /* Reset global: precisa alcançar o componente Simulador (styles scoped
+         do Astro não cruzam a fronteira do componente). */
+      :root {
+        --navy: #012169;
+        --vermelho: #c8102e;
+        --tinta: #101728;
+        --tinta-suave: #525a68;
+        --papel: #f6f3ec;
+        --linha: rgba(1, 33, 105, 0.14);
+      }
+      *,
+      *::before,
+      *::after { box-sizing: border-box; }
+    </style>
+    <style>
+      body {
+        margin: 0;
+        font-family: 'Archivo Variable', 'Helvetica Neue', Arial, sans-serif;
+        color: var(--tinta);
+        background: #fff;
+        line-height: 1.6;
+      }
+      main { max-width: 68rem; margin: 0 auto; padding: 0 1.3rem; }
+
+      .topo {
+        max-width: 68rem;
+        margin: 0 auto;
+        padding: 1.1rem 1.3rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .topo-logo img { height: 1.8rem; width: auto; display: block; }
+      .topo-nav { display: flex; align-items: center; gap: 1.1rem; }
+      .topo-nav a { color: var(--navy); text-decoration: none; font-size: 0.9rem; }
+      .topo-cta {
+        background: var(--vermelho);
+        color: #fff !important;
+        padding: 0.5rem 0.95rem;
+        border-radius: 8px;
+        font-weight: 600;
+      }
+      .trilha {
+        max-width: 68rem;
+        margin: 0 auto;
+        padding: 0 1.3rem 0.4rem;
+        font-size: 0.78rem;
+        color: var(--tinta-suave);
+        display: flex;
+        gap: 0.45rem;
+      }
+      .trilha a { color: inherit; }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+        gap: 2.5rem;
+        align-items: center;
+        padding: 2.2rem 0 2.6rem;
+      }
+      .kicker {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.68rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--vermelho);
+        margin: 0 0 0.6rem;
+      }
+      h1 {
+        font-family: 'Instrument Serif', Georgia, serif;
+        font-weight: 400;
+        font-size: clamp(2.3rem, 5.4vw, 3.6rem);
+        line-height: 1.04;
+        color: var(--navy);
+        margin: 0 0 1rem;
+        max-width: 16ch;
+      }
+      .hero-sub { margin: 0 0 1.5rem; max-width: 46ch; color: var(--tinta-suave); font-size: 1.05rem; }
+      .hero-sub strong { color: var(--tinta); }
+      .hero-acoes { display: flex; flex-wrap: wrap; gap: 0.9rem; align-items: center; }
+      .cta {
+        background: var(--vermelho);
+        color: #fff;
+        text-decoration: none;
+        font-weight: 700;
+        padding: 0.85rem 1.4rem;
+        border-radius: 10px;
+      }
+      .cta:hover { background: #e21236; }
+      .cta-fantasma { color: var(--navy); text-decoration: none; border-bottom: 1px solid var(--navy); padding-bottom: 2px; }
+      .hero-prova {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 1.6rem 0 0;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.66rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--tinta-suave);
+      }
+      .hero-prova svg { width: 1.05rem; height: 1.05rem; flex: none; fill: none; stroke: var(--vermelho); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+      .hero-foto { margin: 0; }
+      .hero-foto img {
+        width: 100%;
+        height: auto;
+        max-height: 26rem;
+        object-fit: cover;
+        border-radius: 16px;
+        display: block;
+        filter: saturate(0.9);
+      }
+
+      .numeros {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border-top: 2px solid var(--navy);
+        border-bottom: 1px solid var(--linha);
+      }
+      .num { padding: 1.1rem 1rem 1.2rem; border-left: 1px solid var(--linha); }
+      .num:first-child { border-left: 0; padding-left: 0; }
+      .num-rotulo {
+        margin: 0 0 0.25rem;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.62rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--tinta-suave);
+      }
+      .num-valor { margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 1.35rem; color: var(--navy); line-height: 1.25; }
+      .num-valor span { font-family: 'Archivo Variable', sans-serif; font-size: 0.78rem; color: var(--tinta-suave); }
+
+      .secao { padding: 2.6rem 0 0.4rem; }
+      h2 {
+        font-family: 'Instrument Serif', Georgia, serif;
+        font-weight: 400;
+        font-size: clamp(1.7rem, 3.4vw, 2.3rem);
+        color: var(--navy);
+        margin: 0 0 0.5rem;
+      }
+      .secao-sub { margin: 0 0 1.4rem; color: var(--tinta-suave); }
+
+      .passos { margin: 1rem 0 0; padding: 0 0 0 1.2rem; max-width: 56ch; display: grid; gap: 0.9rem; }
+      .passos li::marker { color: var(--vermelho); font-weight: 700; }
+      .passos strong { color: var(--navy); display: block; }
+
+      .tabela-scroll { overflow-x: auto; }
+      table { border-collapse: collapse; width: 100%; min-width: 38rem; font-size: 0.95rem; }
+      thead th {
+        text-align: left;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.66rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--tinta-suave);
+        border-bottom: 2px solid var(--navy);
+        padding: 0 0.9rem 0.5rem 0;
+      }
+      tbody th { text-align: left; color: var(--navy); padding: 0.8rem 0.9rem 0.8rem 0; vertical-align: top; width: 11rem; }
+      tbody td { padding: 0.8rem 0.9rem 0.8rem 0; border-bottom: 1px solid var(--linha); vertical-align: top; color: var(--tinta); }
+      tbody tr th { border-bottom: 1px solid var(--linha); }
+      tbody td:nth-child(2) { font-weight: 600; }
+
+      .secao-sim { background: var(--papel); margin: 2.6rem -1.3rem 0; padding: 2.6rem 1.3rem 2.8rem; }
+      .secao-sim h2, .secao-sim .secao-sub { text-align: center; }
+
+      .faq { max-width: 56ch; display: grid; gap: 0.6rem; margin-top: 1.2rem; }
+      details { border: 1px solid var(--linha); border-radius: 12px; padding: 0.9rem 1.1rem; }
+      summary { cursor: pointer; font-weight: 600; color: var(--navy); }
+      details p { margin: 0.7rem 0 0.2rem; color: var(--tinta-suave); }
+
+      .outros { padding-bottom: 2.8rem; }
+      .outros-links { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1rem; }
+      .outros-links a {
+        border: 1.5px solid var(--navy);
+        color: var(--navy);
+        text-decoration: none;
+        font-weight: 600;
+        padding: 0.65rem 1.05rem;
+        border-radius: 999px;
+        font-size: 0.92rem;
+      }
+      .outros-links a:hover { background: var(--navy); color: #fff; }
+
+      .rodape {
+        border-top: 1px solid var(--linha);
+        margin-top: 1rem;
+        padding: 1.6rem 1.3rem 2.2rem;
+        text-align: center;
+        font-size: 0.8rem;
+        color: var(--tinta-suave);
+      }
+      .rodape p { max-width: 68rem; margin: 0 auto 0.4rem; }
+      .rodape a { color: inherit; }
+
+      @media (max-width: 52rem) {
+        .hero { grid-template-columns: 1fr; gap: 1.6rem; padding-top: 1.2rem; }
+        .hero-foto img { max-height: 15rem; }
+        .numeros { grid-template-columns: 1fr 1fr; }
+        .num:nth-child(odd) { border-left: 0; padding-left: 0; }
+        .num:nth-child(even) { padding-left: 1rem; }
+      }
+    </style>
+  </body>
+</html>

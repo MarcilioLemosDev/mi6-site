@@ -1,10 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
-    { "source": "/motos(/.*)?", "destination": "/", "permanent": true },
-    { "source": "/carros(/.*)?", "destination": "/", "permanent": true },
+    { "source": "/motos(/.*)?", "destination": "/consorcio-de-motos/", "permanent": true },
+    { "source": "/carros(/.*)?", "destination": "/consorcio-de-carros/", "permanent": true },
     { "source": "/pesados(/.*)?", "destination": "/", "permanent": true },
-    { "source": "/imoveis(/.*)?", "destination": "/", "permanent": true },
+    { "source": "/imoveis(/.*)?", "destination": "/consorcio-de-imoveis/", "permanent": true },
     { "source": "/servicos(/.*)?", "destination": "/", "permanent": true },
     { "source": "/eletro(/.*)?", "destination": "/", "permanent": true },
     { "source": "/sobre(/.*)?", "destination": "/", "permanent": true },
