@@ -958,35 +958,15 @@ const schemaSeo = {
       import { SplitText } from 'gsap/SplitText';
       import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
       import Lenis from 'lenis';
+      import { canalEntrada } from '../scripts/canal';
 
       gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin);
 
       const motionOk = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
       if (!motionOk) document.querySelector('.veu')?.remove();
 
-      // Canal de entrada da sessão (atribuição do lead): utm_source > referrer.
-      // Capturado no CARREGAMENTO (antes de navegação interna apagar o rastro)
-      // e gravado uma vez por sessão; o submit do simulador anexa à origem.
-      try {
-        if (!sessionStorage.getItem('mi6-canal')) {
-          const utm = new URLSearchParams(location.search).get('utm_source');
-          const ref = document.referrer ? new URL(document.referrer).hostname : '';
-          const canalEntrada = utm
-            ? utm.toLowerCase().slice(0, 12)
-            : !ref || ref.endsWith('mi6consorcio.com.br')
-              ? 'direto'
-              : ref.includes('google.')
-                ? 'google'
-                : ref.includes('instagram')
-                  ? 'instagram'
-                  : ref.includes('bing.')
-                    ? 'bing'
-                    : 'outro';
-          sessionStorage.setItem('mi6-canal', canalEntrada);
-        }
-      } catch {
-        /* atribuição é best-effort */
-      }
+      // Canal de entrada (atribuição do lead): captura no load, cacheia na sessão.
+      canalEntrada();
 
       // Perfil guardado de visitas anteriores reordena os destaques.
       const perfilSalvo = localStorage.getItem('mi6b-perfil');
@@ -1257,13 +1237,6 @@ const schemaSeo = {
         // Registro do lead via função serverless (/api/lead), mesma origem, que
         // repassa ao fluxo do Power Automate mantendo a URL como segredo de
         // servidor e devolvendo sucesso/erro de verdade.
-        // Canal de entrada capturado no carregamento (atribuição do lead).
-        let canal = 'direto';
-        try {
-          canal = sessionStorage.getItem('mi6-canal') || 'direto';
-        } catch {
-          /* atribuição é best-effort */
-        }
         const lead = {
           data_hora: new Date().toISOString(),
           nome,
@@ -1273,7 +1246,7 @@ const schemaSeo = {
           credito: creditoRaw,
           parcela,
           resumo: msg,
-          origem: 'site/mi6/simulador|' + canal,
+          origem: 'site/mi6/simulador|' + canalEntrada(),
           // Campo isca (honeypot): vazio para humano; validado no servidor.
           confirme: simCard.querySelector('.sim-mel')?.value ?? '',
         };

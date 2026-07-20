@@ -1,15 +1,7 @@
 /* =========================================================================
-   Tema retrô — handheld "tijolão" / Nokia antigo, tela LCD monocromática.
-   Tokens centralizados: mudar a paleta aqui reflete no site inteiro.
+   Tokens do "gamelink" (aparelho iPhone). A cor dominante (--shell) e a de
+   acao (--accent) alimentam o app; o tema por unidade inverte via data-tema.
    ========================================================================= */
-
-@font-face {
-  font-family: 'Press Start 2P';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/press-start-2p.woff2') format('woff2');
-}
 
 :root {
   /* Tela LCD — monocromática em navy da MI6 sobre fundo claro */
@@ -26,8 +18,6 @@
   --btn-face: #e21236;
   --accent: #c8102e;        /* vermelho de destaque (LED) */
   --led-hi: #ff7d90;        /* brilho claro do LED */
-
-  --font-pixel: 'Press Start 2P', 'Courier New', monospace;
 
   color-scheme: dark;
 }
