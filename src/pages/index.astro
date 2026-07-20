@@ -3312,6 +3312,20 @@ const schemaSeo = {
     color: var(--tinta-suave);
     margin-bottom: 1.4rem;
   }
+  /* Compacto no MOBILE: aperta espaçamentos e a fonte do valor para o simulador
+     não virar uma seção rolável no celular (o layout 2-colunas é só desktop). */
+  @media (max-width: 49.99rem) {
+    .sim-grade { gap: 1.35rem; }
+    .sim-cabeca h2 { margin-bottom: 0.5rem; }
+    .sim-card { padding: 1.3rem; }
+    .sim-card .chips { margin-bottom: 1rem; }
+    .sim-passo { margin-bottom: 0.6rem; }
+    .sim-credito { margin: 0.1rem 0 0.25rem; }
+    .sim-credito output { font-size: 2.15rem; }
+    .sim-extremos { margin-bottom: 1rem; }
+    .sim-resultado { margin: 0.3rem 0 1rem; padding: 0.85rem 1rem; }
+    .sim-contato { margin-top: 1.1rem; padding-top: 1.1rem; }
+  }
   /* Resultado enxuto: a parcela é a estrela */
   /* O resultado da simulação ganha a pele da carta de crédito: bloco navy
      com chip, fixando o conceito sem aumentar a altura do simulador. */
