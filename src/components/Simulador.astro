@@ -246,6 +246,8 @@ const taxaMensal = num((grupo.taxa_administracao / grupo.prazo_restante_meses) *
 </style>
 
 <script>
+  import { canalEntrada } from '../scripts/canal';
+
   const card = document.querySelector<HTMLFormElement>('.simd-card');
   if (card) {
     const PRAZO = parseInt(card.dataset.prazo ?? '100', 10);
@@ -255,34 +257,8 @@ const taxaMensal = num((grupo.taxa_administracao / grupo.prazo_restante_meses) *
     const seg = card.dataset.seg ?? '';
     const origem = card.dataset.origem ?? 'site/mi6/simulador';
     const unidade = card.dataset.unidade ?? '';
-
-    // Canal de entrada da sessão (atribuição do lead): utm_source > referrer.
-    // Gravado uma vez por sessão, na primeira página visitada; vai anexado à
-    // origem (origem|canal), então cai na coluna existente da planilha.
-    let canal = 'direto';
-    try {
-      const salvo = sessionStorage.getItem('mi6-canal');
-      if (salvo) {
-        canal = salvo;
-      } else {
-        const utm = new URLSearchParams(location.search).get('utm_source');
-        const ref = document.referrer ? new URL(document.referrer).hostname : '';
-        canal = utm
-          ? utm.toLowerCase().slice(0, 12)
-          : !ref || ref.endsWith('mi6consorcio.com.br')
-            ? 'direto'
-            : ref.includes('google.')
-              ? 'google'
-              : ref.includes('instagram')
-                ? 'instagram'
-                : ref.includes('bing.')
-                  ? 'bing'
-                  : 'outro';
-        sessionStorage.setItem('mi6-canal', canal);
-      }
-    } catch {
-      /* atribuição é best-effort */
-    }
+    // Canal de entrada (atribuição do lead): captura no load, cacheia na sessão.
+    canalEntrada();
     const num = (v: number) =>
       v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const credito = document.getElementById('simd-credito') as HTMLInputElement | null;
@@ -337,7 +313,7 @@ const taxaMensal = num((grupo.taxa_administracao / grupo.prazo_restante_meses) *
         credito: creditoRaw,
         parcela,
         resumo: msg,
-        origem: `${origem}|${canal}`,
+        origem: `${origem}|${canalEntrada()}`,
         unidade,
         confirme: mel?.value ?? '',
       };
