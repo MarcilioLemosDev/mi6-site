@@ -604,7 +604,12 @@ const schemaSeo = {
               </div>
 
               <div class="sim-vivo" id="sim-vivo">
-                <p class="sim-passo">02 · Quanto vale essa conquista?</p>
+                <div class="sim-modo" role="group" aria-label="Simular por">
+                  <span class="sim-modo-selo"></span>
+                  <button type="button" class="sim-modo-btn" data-modo="credito" aria-pressed="true">Crédito</button>
+                  <button type="button" class="sim-modo-btn" data-modo="parcela" aria-pressed="false">Parcela</button>
+                </div>
+                <p class="sim-passo" id="sim-passo2">02 · Quanto vale essa conquista?</p>
                 <p class="sim-credito">
                   <span class="sim-moeda">R$</span><output id="sim-valor" for="sim-credito">{simInicial.credito}</output>
                 </p>
@@ -622,9 +627,9 @@ const schemaSeo = {
                   <span>R$ {grupoInicial.credito_max.toLocaleString('pt-BR')}</span>
                 </div>
                 <div class="sim-resultado" id="sim-resultado" style={`--c1:${cartaoInicial.c1};--c2:${cartaoInicial.c2}`}>
-                  <p class="sim-res-rotulo">A sua parcela, sem juros</p>
+                  <p class="sim-res-rotulo" id="sim-res-rotulo">A sua parcela, sem juros</p>
                   <p class="sim-res-valor">
-                    <span class="sim-moeda-sm">R$</span><span id="sim-parcela">{simInicial.parcela}</span><span class="sim-res-mes">por mês</span>
+                    <span class="sim-moeda-sm">R$</span><span id="sim-parcela">{simInicial.parcela}</span><span class="sim-res-mes" id="sim-res-mes">por mês</span>
                   </p>
                 </div>
                 <p class="sim-taxa">
@@ -1085,26 +1090,77 @@ const schemaSeo = {
       const exib = { c: parseInt(simCard?.dataset.creditoPadrao ?? '15000', 10) };
       const num = (v: number) =>
         v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const int0 = (v: number) => Math.round(v).toLocaleString('pt-BR');
+      const por = (id: string, v: string) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = v;
+      };
+      let modoSim: 'credito' | 'parcela' = 'credito';
+      let grupoAtual: any = null;
+      const parcelaDe = (c: number) => (c * (1 + TX_ADM + F_RES)) / PRAZO;
+      const creditoDe = (p: number) => (p * PRAZO) / (1 + TX_ADM + F_RES);
       function pintarSim() {
-        const c = exib.c;
-        const base = c * (1 + TX_ADM + F_RES);
-        const por = (id: string, v: string) => {
-          const el = document.getElementById(id);
-          if (el) el.textContent = v;
-        };
-        por('sim-valor', Math.round(c).toLocaleString('pt-BR'));
-        // Parcela exibida SEM o seguro prestamista.
-        por('sim-parcela', num(base / PRAZO));
+        if (modoSim === 'credito') {
+          por('sim-valor', int0(exib.c));
+          por('sim-parcela', num(parcelaDe(exib.c)));
+        } else {
+          por('sim-valor', num(exib.c));
+          por('sim-parcela', int0(creditoDe(exib.c)));
+        }
       }
       const credito = document.getElementById('sim-credito') as HTMLInputElement | null;
+      function aplicarModo() {
+        const g = grupoAtual;
+        if (!g || !credito) return;
+        const passo2 = document.getElementById('sim-passo2');
+        const rot = document.getElementById('sim-res-rotulo');
+        const mes = document.getElementById('sim-res-mes');
+        const ext = document.querySelectorAll<HTMLElement>('#sim-vivo .sim-extremos span');
+        if (modoSim === 'credito') {
+          if (passo2) passo2.textContent = '02 · Quanto vale essa conquista?';
+          if (rot) rot.textContent = 'A sua parcela, sem juros';
+          if (mes) mes.style.display = '';
+          credito.min = String(g.min);
+          credito.max = String(g.max);
+          credito.step = String(g.passo);
+          credito.value = String(g.padrao);
+          if (ext[0]) ext[0].textContent = 'R$ ' + int0(g.min);
+          if (ext[1]) ext[1].textContent = 'R$ ' + int0(g.max);
+        } else {
+          const pMin = parcelaDe(g.min);
+          const pMax = parcelaDe(g.max);
+          const pPad = parcelaDe(g.padrao);
+          if (passo2) passo2.textContent = '02 · Quanto cabe no seu bolso?';
+          if (rot) rot.textContent = 'Seu crédito, sem juros';
+          if (mes) mes.style.display = 'none';
+          credito.min = String(Math.floor(pMin));
+          credito.max = String(Math.ceil(pMax));
+          credito.step = String(Math.max(1, Math.round(parcelaDe(g.passo))));
+          credito.value = String(Math.round(pPad));
+          if (ext[0]) ext[0].textContent = 'R$ ' + num(pMin);
+          if (ext[1]) ext[1].textContent = 'R$ ' + num(pMax);
+        }
+        exib.c = parseFloat(credito.value);
+        pintarSim();
+      }
       credito?.addEventListener('input', () => {
-        const alvo = parseInt(credito.value, 10);
+        const alvo = parseFloat(credito.value);
         if (motionOk) {
           gsap.to(exib, { c: alvo, duration: 0.3, ease: 'power2.out', overwrite: true, onUpdate: pintarSim });
         } else {
           exib.c = alvo;
           pintarSim();
         }
+      });
+      document.querySelector('.sim-modo')?.addEventListener('click', (e) => {
+        const bt = (e.target as HTMLElement).closest('.sim-modo-btn') as HTMLElement | null;
+        const novo = bt?.dataset.modo as 'credito' | 'parcela' | undefined;
+        if (!novo || novo === modoSim) return;
+        modoSim = novo;
+        document.querySelectorAll('.sim-modo-btn').forEach((x) =>
+          x.setAttribute('aria-pressed', (x as HTMLElement).dataset.modo === novo ? 'true' : 'false')
+        );
+        aplicarModo();
       });
 
       const nomesSeg: Record<string, string> = {
@@ -1150,19 +1206,10 @@ const schemaSeo = {
           TX_ADM = g.txadm;
           F_RES = g.fres;
           SEGURO = g.seguro;
-          if (credito) {
-            credito.min = String(g.min);
-            credito.max = String(g.max);
-            credito.step = String(g.passo);
-            credito.value = String(g.padrao);
-          }
-          exib.c = g.padrao;
-          const extremos = document.querySelectorAll<HTMLElement>('#sim-vivo .sim-extremos span');
-          if (extremos[0]) extremos[0].textContent = 'R$ ' + g.min.toLocaleString('pt-BR');
-          if (extremos[1]) extremos[1].textContent = 'R$ ' + g.max.toLocaleString('pt-BR');
+          grupoAtual = g;
           const txEl = document.querySelector('.sim-taxa-val');
           if (txEl) txEl.textContent = g.taxaMensal + '% ao mês';
-          pintarSim();
+          aplicarModo();
           vivo?.removeAttribute('hidden');
           aguarde?.setAttribute('hidden', '');
         } else {
@@ -1203,9 +1250,13 @@ const schemaSeo = {
 
         const segNome = nomesSeg[segAtual] ?? segAtual;
         const segCap = segNome.charAt(0).toUpperCase() + segNome.slice(1);
-        const creditoRaw = (document.getElementById('sim-credito') as HTMLInputElement | null)?.value ?? '';
-        const creditoFmt = creditoRaw ? Number(creditoRaw).toLocaleString('pt-BR') : '';
-        const parcela = document.getElementById('sim-parcela')?.textContent?.trim() ?? '';
+        // Crédito e parcela REAIS, independentes do modo do toggle.
+        const drv = parseFloat((document.getElementById('sim-credito') as HTMLInputElement | null)?.value ?? '0') || 0;
+        const creditoReal = modoSim === 'credito' ? drv : creditoDe(drv);
+        const parcelaReal = modoSim === 'credito' ? parcelaDe(drv) : drv;
+        const creditoRaw = String(Math.round(creditoReal));
+        const creditoFmt = Math.round(creditoReal).toLocaleString('pt-BR');
+        const parcela = num(parcelaReal);
 
         // O "card" da simulação em texto: vai para o WhatsApp e, no campo
         // "resumo", também para o e-mail do lead. Por isso os campos opcionais
@@ -2011,12 +2062,18 @@ const schemaSeo = {
   }
 
   /* Hero */
+  /* Simulador em destaque no topo (inspiração Ademicon): reordena as seções. */
+  main { display: flex; flex-direction: column; }
+  main > .hero { order: 1; }
+  main > .contato { order: 2; }
+  main > .credibilidade { order: 3; }
+  main > .jornada { order: 4; }
   .hero {
     position: relative;
-    min-height: 100svh;
+    min-height: 72svh;
     display: grid;
     align-content: center;
-    padding: 7.5rem 2.5rem 5rem;
+    padding: 6rem 2.5rem 3.5rem;
     overflow: hidden;
     background:
       repeating-linear-gradient(0deg, transparent 0 31px, rgba(255, 160, 175, 0.06) 31px 32px),
@@ -3248,6 +3305,48 @@ const schemaSeo = {
     border-color: var(--seg-cor, var(--navy));
     color: var(--branco);
   }
+  /* Toggle "Simular por" (Crédito | Parcela), estilo Ademicon. */
+  .sim-modo {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: rgba(1, 33, 105, 0.06);
+    border-radius: 999px;
+    padding: 4px;
+    margin: 0 0 1.3rem;
+  }
+  .sim-modo-selo {
+    position: absolute;
+    z-index: 0;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    border-radius: 999px;
+    background: var(--vermelho);
+    box-shadow: 0 4px 10px -4px rgba(1, 33, 105, 0.5);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .sim-modo:has(.sim-modo-btn[data-modo='parcela'][aria-pressed='true']) .sim-modo-selo {
+    transform: translateX(100%);
+  }
+  .sim-modo-btn {
+    position: relative;
+    z-index: 1;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.6rem 1rem;
+    border: 0;
+    background: transparent;
+    color: var(--tinta-suave);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  .sim-modo-btn[aria-pressed='true'] { color: #fff; }
+  .sim-modo-btn:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+
   .sim-credito {
     display: flex;
     align-items: baseline;

@@ -2080,12 +2080,19 @@ const schemaSeo = {
   }
 
   /* Hero */
+  /* Simulador em destaque no topo (inspiração Ademicon): reordena as seções
+     sem mexer no markup. Ordem: hero, SIMULADOR, credibilidade, jornada. */
+  main { display: flex; flex-direction: column; }
+  main > .hero { order: 1; }
+  main > .contato { order: 2; }
+  main > .credibilidade { order: 3; }
+  main > .jornada { order: 4; }
   .hero {
     position: relative;
-    min-height: 100svh;
+    min-height: 72svh;
     display: grid;
     align-content: center;
-    padding: 7.5rem 2.5rem 5rem;
+    padding: 6rem 2.5rem 3.5rem;
     overflow: hidden;
     background:
       repeating-linear-gradient(0deg, transparent 0 31px, rgba(130, 175, 255, 0.06) 31px 32px),
