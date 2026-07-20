@@ -1136,6 +1136,9 @@ const schemaSeo = {
         if (res && t) {
           res.style.setProperty('--c1', t.c1);
           res.style.setProperty('--c2', t.c2);
+          res.classList.remove('sim-res-troca');
+          void (res as HTMLElement).offsetWidth;
+          res.classList.add('sim-res-troca');
         }
         const vivo = document.getElementById('sim-vivo');
         const aguarde = document.getElementById('sim-aguarde');
@@ -3113,6 +3116,30 @@ const schemaSeo = {
     display: grid;
     gap: 2.5rem;
   }
+  /* Compacto estilo Ademicon: no desktop o corpo vira 2 colunas (chips no topo
+     em largura total; valor/slider/parcela à esquerda, formulário à direita). */
+  @media (min-width: 50rem) {
+    .sim-grade { max-width: 58rem; }
+    .sim-corpo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 2.4rem;
+      align-items: start;
+    }
+    .sim-corpo > .sim-passo { grid-column: 1 / -1; grid-row: 1; }
+    #sim-chips { grid-column: 1 / -1; grid-row: 2; }
+    .sim-vivo { grid-column: 1; grid-row: 3; }
+    .sim-aguarde { grid-column: 1 / -1; grid-row: 3; }
+    .sim-contato {
+      grid-column: 2;
+      grid-row: 3;
+      margin-top: 0;
+      padding-top: 0;
+      border-top: 0;
+      border-left: 1px solid var(--linha-clara);
+      padding-left: 2.4rem;
+    }
+  }
   .sim-cabeca {
     text-align: center;
   }
@@ -3276,6 +3303,13 @@ const schemaSeo = {
   /* Resultado enxuto: a parcela é a estrela */
   /* O resultado da simulação ganha a pele da carta de crédito: bloco navy
      com chip, fixando o conceito sem aumentar a altura do simulador. */
+  @media (prefers-reduced-motion: no-preference) {
+    .sim-res-troca { animation: simResTroca 0.5s cubic-bezier(0.22, 1, 0.36, 1); transform-origin: center top; }
+  }
+  @keyframes simResTroca {
+    0% { transform: perspective(700px) rotateX(-16deg) scale(0.97); opacity: 0.45; }
+    100% { transform: perspective(700px) rotateX(0) scale(1); opacity: 1; }
+  }
   .sim-resultado {
     position: relative;
     margin: 0.4rem 0 1.25rem;
