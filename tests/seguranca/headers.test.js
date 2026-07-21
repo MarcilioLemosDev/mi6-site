@@ -19,12 +19,17 @@ test('SEC-05 headers de seguranca presentes', () => {
   assert.equal(mapa['x-frame-options'], 'DENY');
 });
 
-test('SEC-05 CSP report-only sem liberar script inline', () => {
-  const csp = mapa['content-security-policy-report-only'];
-  assert.ok(csp, 'faltou a CSP report-only');
+test('SEC-09 CSP em enforce, script-src estrito sem liberar inline', () => {
+  // Agora ENFORCE (nao mais report-only): a CSP bloqueia de fato.
+  const csp = mapa['content-security-policy'];
+  assert.ok(csp, 'faltou a CSP em enforce (Content-Security-Policy)');
+  assert.ok(!mapa['content-security-policy-report-only'], 'nao deve sobrar CSP report-only');
   assert.match(csp, /frame-ancestors 'none'/);
   assert.match(csp, /script-src 'self'/);
   assert.match(csp, /object-src 'none'/);
-  // Anti-teste-furado: script-src NÃO pode conter 'unsafe-inline'.
-  assert.ok(!/script-src[^;]*unsafe-inline/.test(csp), "script-src nao pode ter 'unsafe-inline'");
+  // Anti-teste-furado: script-src NAO pode conter 'unsafe-inline' (o valor do
+  // enforce; os scripts inline passam por hash SHA-256, nao por unsafe-inline).
+  const scriptSrc = csp.match(/script-src([^;]*)/)?.[1] ?? '';
+  assert.ok(!/unsafe-inline/.test(scriptSrc), "script-src nao pode ter 'unsafe-inline'");
+  assert.match(scriptSrc, /'sha256-[A-Za-z0-9+/=]+'/, 'script-src deve trazer hash(es) dos scripts inline');
 });
