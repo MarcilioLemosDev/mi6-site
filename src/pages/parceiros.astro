@@ -1,0 +1,692 @@
+---
+import '@fontsource/instrument-serif';
+import '@fontsource/instrument-serif/400-italic.css';
+import '@fontsource-variable/archivo';
+import '@fontsource/ibm-plex-mono';
+import Analytics from '@vercel/analytics/astro';
+
+// Página institucional "Seja Parceiro" (indexável). Apresenta os três modelos
+// de parceria comercial da MI6 com navegação dinâmica (três caixas que revelam
+// o detalhe de cada modelo sem recarregar) e um formulário de captação que usa
+// o mesmo endpoint /api/lead do restante do site (marcado por origem/segmento).
+// Sem números de comissão nem cláusulas de contrato: isso é conversa comercial,
+// não conteúdo de página. Identidade visual herdada das landings (serif
+// editorial, paleta Union Jack, provas concretas).
+const SITE = 'https://mi6consorcio.com.br';
+const url = `${SITE}/parceiros/`;
+const titulo = 'Seja Parceiro | MI6 Consórcio Nacional';
+const descricao =
+  'Venda consórcio como parceiro comercial autorizado da MI6: modelos 100% digital, físico e omnichannel, com método, marca e sistema de uma administradora autorizada pelo Banco Central.';
+
+// Os três modelos. Conteúdo derivado do contrato de parceria, sem expor
+// comissionamento nem cláusulas: descreve como funciona, o que a MI6 entrega e
+// o que o parceiro traz.
+const modelos = [
+  {
+    id: 'digital',
+    num: '01',
+    nome: '100% Digital',
+    linha: 'Venda online, com o tráfego e a marca da MI6',
+    tagline: 'Opere vendas de consórcio pela internet, com o método e a marca da MI6.',
+    comoFunciona:
+      'A MI6 cede ativos digitais sob a sua marca (perfis e uma página do site) e conduz tecnicamente as campanhas de tráfego com peças oficiais. Você custeia a mídia na sua própria conta de anúncios e a sua equipe atende, com exclusividade, os leads gerados.',
+    paraQuem: 'Times comerciais que querem operar 100% online, sem ponto físico.',
+    mi6: [
+      'Campanhas conduzidas por especialistas, com peças e materiais oficiais',
+      'Ativos digitais sob a marca MI6, em licença de uso',
+      'Sistema web de vendas rastreável, com login próprio',
+      'Treinamento oficial obrigatório e reciclagens',
+    ],
+    voce: ['Equipe de vendas própria e treinada', 'Verba de mídia (conta de anúncios sua)', 'CNPJ ativo'],
+    nota: 'Atuação exclusiva em consórcio para a MI6. Os dados dos leads permanecem sob a controladoria da MI6, conforme a LGPD.',
+  },
+  {
+    id: 'fisico',
+    num: '02',
+    nome: 'Físico',
+    linha: 'Sua operação de campo, autorizada MI6',
+    tagline: 'Leve o consórcio autorizado MI6 para a sua operação comercial de campo.',
+    comoFunciona:
+      'A sua equipe comercializa cotas em âmbito nacional, sem exclusividade territorial, seguindo as normas da MI6 e a regulação do Banco Central. Cada venda é formalizada no sistema web da MI6.',
+    paraQuem: 'Escritórios, corretores e times comerciais com presença local e carteira.',
+    mi6: [
+      'Materiais e formulários oficiais, com identidade visual unificada',
+      'Sistema web de vendas com login próprio',
+      'Relatórios de comissão',
+      'Suporte comercial',
+    ],
+    voce: ['Equipe de vendas própria', 'Presença comercial ativa', 'CNPJ ativo'],
+    nota: 'Parceria sem vínculo empregatício e sem exclusividade territorial.',
+  },
+  {
+    id: 'omnichannel',
+    num: '03',
+    nome: 'Omnichannel',
+    linha: 'Campo e digital, sob a mesma marca',
+    tagline: 'Una a operação de campo ao canal digital, sob o mesmo método e marca.',
+    comoFunciona:
+      'Combina os dois modelos: a sua equipe atua presencialmente e também gera e atende leads online, com o tráfego conduzido pela MI6 e as peças oficiais. Um caminho natural para escalar.',
+    paraQuem: 'Parceiros que já vendem no físico e querem crescer no digital, ou o contrário.',
+    mi6: [
+      'Tudo dos modelos Digital e Físico, integrados',
+      'Caminho para a categoria MASTER: desenvolver e ser remunerado por uma rede de parceiros',
+      'Sistema, materiais e ativos digitais em um só padrão',
+    ],
+    voce: ['Operação comercial ativa', 'Equipe própria', 'Ambição de crescer em rede'],
+    nota: 'A categoria MASTER é atribuída pela MI6 conforme critérios comerciais e operacionais.',
+  },
+];
+
+const oferece = [
+  { t: 'Campanhas conduzidas', d: 'Tráfego digital criado e gerido tecnicamente pela MI6, com peças oficiais.' },
+  { t: 'Sistema de vendas', d: 'Plataforma web com login próprio, para formalizar cada cota de forma rastreável.' },
+  { t: 'Treinamento oficial', d: 'Capacitação obrigatória da equipe e reciclagens a cada mudança de produto ou regra.' },
+  { t: 'Marca e materiais', d: 'Identidade visual unificada, materiais e formulários oficiais da MI6.' },
+  { t: 'Relatórios de comissão', d: 'Acompanhamento do comissionamento por cota comercializada.' },
+  { t: 'Regulação e respaldo', d: 'Administradora autorizada e fiscalizada pelo Banco Central do Brasil.' },
+];
+
+const passos = [
+  { t: 'Cadastro', d: 'Você preenche o formulário abaixo e conta o seu perfil e o modelo de interesse.' },
+  { t: 'Habilitação', d: 'Análise, contrato de parceria comercial (pessoa jurídica) e treinamento oficial.' },
+  { t: 'Operação', d: 'Liberamos sistema, materiais e, no digital, os ativos. Começo imediato.' },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Início', item: `${SITE}/` },
+        { '@type': 'ListItem', position: 2, name: 'Seja Parceiro', item: url },
+      ],
+    },
+    {
+      '@type': 'WebPage',
+      '@id': `${url}#pagina`,
+      name: titulo,
+      description: descricao,
+      url,
+      inLanguage: 'pt-BR',
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="canonical" href={url} />
+    <meta name="theme-color" content="#012169" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>{titulo}</title>
+    <meta name="description" content={descricao} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="MI6 Consórcio Nacional" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:url" content={url} />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descricao} />
+    <meta property="og:image" content={`${SITE}/og.png`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </head>
+  <body>
+    <header class="topo">
+      <a class="topo-logo" href="/" aria-label="MI6 Consórcio Nacional, página inicial">
+        <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
+      </a>
+      <nav class="topo-nav" aria-label="Navegação">
+        <a href="/">Site completo</a>
+        <a class="topo-cta" href="#candidatar">Quero ser parceiro</a>
+      </nav>
+    </header>
+
+    <nav class="trilha" aria-label="Você está em">
+      <a href="/">Início</a><span aria-hidden="true">/</span><span>Seja Parceiro</span>
+    </nav>
+
+    <main>
+      <section class="hero">
+        <p class="kicker">Parcerias comerciais · MI6</p>
+        <h1>Venda consórcio com a inteligência da MI6 por trás.</h1>
+        <p class="hero-sub">
+          Seja um parceiro comercial autorizado e construa a sua operação de vendas de consórcio
+          com o método, a marca e o sistema de uma administradora autorizada pelo Banco Central.
+          Escolha como quer atuar: <strong>digital</strong>, <strong>físico</strong> ou
+          <strong>omnichannel</strong>.
+        </p>
+        <div class="hero-acoes">
+          <a class="cta" href="#modelos">Ver os modelos</a>
+          <a class="cta-fantasma" href="#candidatar">Quero me candidatar</a>
+        </div>
+        <p class="hero-prova">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3z" /><path d="m8.5 12 2.5 2.5 4.5-5" /></svg>
+          Administradora autorizada pelo Banco Central do Brasil, ofício nº 33.288/2024. Filiada à ABAC.
+        </p>
+      </section>
+
+      <section class="modelos" id="modelos">
+        <h2>Escolha o seu modelo de parceria</h2>
+        <p class="secao-sub">Três formas de vender consórcio com a MI6. Toque em uma para ver como funciona.</p>
+
+        <div class="modelo-tabs" role="tablist" aria-label="Modelos de parceria">
+          {modelos.map((m, i) => (
+            <button
+              class="modelo-tab"
+              role="tab"
+              id={`tab-${m.id}`}
+              aria-controls={`painel-${m.id}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              data-modelo={m.id}
+            >
+              <span class="modelo-num">{m.num}</span>
+              <span class="modelo-nome">{m.nome}</span>
+              <span class="modelo-linha">{m.linha}</span>
+            </button>
+          ))}
+        </div>
+
+        <div class="modelo-paineis">
+          {modelos.map((m, i) => (
+            <article
+              class="modelo-painel"
+              role="tabpanel"
+              id={`painel-${m.id}`}
+              aria-labelledby={`tab-${m.id}`}
+              data-modelo={m.id}
+              hidden={i !== 0}
+            >
+              <p class="painel-tag">{m.tagline}</p>
+              <div class="painel-grade">
+                <div class="painel-bloco painel-como">
+                  <h3>Como funciona</h3>
+                  <p>{m.comoFunciona}</p>
+                  <p class="painel-quem"><strong>Para quem:</strong> {m.paraQuem}</p>
+                </div>
+                <div class="painel-bloco">
+                  <h3>A MI6 entrega</h3>
+                  <ul class="painel-lista painel-lista-sim">
+                    {m.mi6.map((x) => <li>{x}</li>)}
+                  </ul>
+                </div>
+                <div class="painel-bloco">
+                  <h3>Você traz</h3>
+                  <ul class="painel-lista painel-lista-voce">
+                    {m.voce.map((x) => <li>{x}</li>)}
+                  </ul>
+                </div>
+              </div>
+              <p class="painel-nota">{m.nota}</p>
+              <a class="cta painel-cta" href="#candidatar" data-modelo-cta={m.id}>
+                Quero ser parceiro {m.nome}
+              </a>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="secao">
+        <h2>O que a MI6 coloca do seu lado</h2>
+        <div class="oferece">
+          {oferece.map((o) => (
+            <div class="oferece-item">
+              <h3>{o.t}</h3>
+              <p>{o.d}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section class="secao">
+        <h2>Como se tornar parceiro</h2>
+        <ol class="passos">
+          {passos.map((p) => (
+            <li>
+              <strong>{p.t}.</strong> {p.d}
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section class="secao secao-form" id="candidatar">
+        <div class="form-cabeca">
+          <h2>Candidate-se para ser parceiro</h2>
+          <p class="secao-sub">
+            Conte para a gente quem você é. O time comercial da MI6 retorna para explicar as
+            condições do modelo <strong id="form-modelo-nome">100% Digital</strong>.
+          </p>
+        </div>
+        <form class="form" id="form-parceiro" novalidate>
+          <input type="hidden" name="modelo" id="form-modelo" value="digital" />
+          <div class="form-linha">
+            <label>
+              <span>Nome</span>
+              <input type="text" name="nome" autocomplete="name" placeholder="Seu nome" required />
+            </label>
+            <label>
+              <span>Empresa (se tiver)</span>
+              <input type="text" name="empresa" autocomplete="organization" placeholder="Nome da empresa" />
+            </label>
+          </div>
+          <div class="form-linha">
+            <label>
+              <span>WhatsApp</span>
+              <input type="tel" name="telefone" autocomplete="tel" placeholder="(00) 00000-0000" required />
+            </label>
+            <label>
+              <span>E-mail</span>
+              <input type="email" name="email" autocomplete="email" placeholder="voce@email.com" required />
+            </label>
+          </div>
+          <div class="form-linha">
+            <label>
+              <span>Cidade / UF</span>
+              <input type="text" name="cidade" autocomplete="address-level2" placeholder="Cidade e estado" />
+            </label>
+            <label>
+              <span>Mensagem (opcional)</span>
+              <input type="text" name="mensagem" placeholder="Conte um pouco da sua operação" />
+            </label>
+          </div>
+          <input type="text" name="confirme" class="mel" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <button type="submit" class="cta form-enviar">Quero ser parceiro</button>
+          <p class="form-lgpd">
+            Ao enviar, você concorda que a MI6 entre em contato sobre a parceria. Tratamos seus
+            dados conforme a <a href="/politica-de-privacidade/">Política de Privacidade</a>.
+          </p>
+          <p class="form-aviso" id="form-aviso" hidden>
+            Recebemos a sua candidatura. O time comercial da MI6 vai entrar em contato.
+            <a id="form-fallback" href="#" target="_blank" rel="noopener">Falar agora no WhatsApp</a>.
+          </p>
+        </form>
+      </section>
+    </main>
+
+    <footer class="rodape">
+      <p>
+        M.I6 Administradora de Consórcio Ltda. Autorizada e fiscalizada pelo Banco Central do
+        Brasil, Lei nº 11.795/2008, ofício nº 33.288/2024. Filiada à ABAC.
+      </p>
+      <p>SAC 0800 000 5228 · Ouvidoria 0800 000 5267</p>
+      <p><a href="/">Site completo</a> · <a href="/politica-de-privacidade/">Política de Privacidade</a></p>
+    </footer>
+
+    <Analytics />
+
+    <style is:global>
+      :root {
+        --navy: #012169;
+        --vermelho: #c8102e;
+        --tinta: #101728;
+        --tinta-suave: #525a68;
+        --papel: #f6f3ec;
+        --linha: rgba(1, 33, 105, 0.14);
+      }
+      *,
+      *::before,
+      *::after { box-sizing: border-box; }
+    </style>
+    <style>
+      body {
+        margin: 0;
+        font-family: 'Archivo Variable', 'Helvetica Neue', Arial, sans-serif;
+        color: var(--tinta);
+        background: #fff;
+        line-height: 1.6;
+      }
+      main { max-width: 68rem; margin: 0 auto; padding: 0 1.3rem; }
+
+      .topo {
+        max-width: 68rem;
+        margin: 0 auto;
+        padding: 1.1rem 1.3rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .topo-logo img { height: 1.8rem; width: auto; display: block; }
+      .topo-nav { display: flex; align-items: center; gap: 1.1rem; }
+      .topo-nav a { color: var(--navy); text-decoration: none; font-size: 0.9rem; }
+      .topo-cta {
+        background: var(--vermelho);
+        color: #fff !important;
+        padding: 0.5rem 0.95rem;
+        border-radius: 8px;
+        font-weight: 600;
+      }
+      .trilha {
+        max-width: 68rem;
+        margin: 0 auto;
+        padding: 0 1.3rem 0.4rem;
+        font-size: 0.78rem;
+        color: var(--tinta-suave);
+        display: flex;
+        gap: 0.45rem;
+      }
+      .trilha a { color: inherit; }
+
+      .kicker {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.68rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--vermelho);
+        margin: 0 0 0.6rem;
+      }
+      h1 {
+        font-family: 'Instrument Serif', Georgia, serif;
+        font-weight: 400;
+        font-size: clamp(2.3rem, 5.4vw, 3.7rem);
+        line-height: 1.04;
+        color: var(--navy);
+        margin: 0 0 1rem;
+        max-width: 18ch;
+      }
+      .hero { padding: 2rem 0 2.4rem; }
+      .hero-sub { margin: 0 0 1.5rem; max-width: 56ch; color: var(--tinta-suave); font-size: 1.05rem; }
+      .hero-sub strong { color: var(--tinta); }
+      .hero-acoes { display: flex; flex-wrap: wrap; gap: 0.9rem; align-items: center; }
+      .cta {
+        background: var(--vermelho);
+        color: #fff;
+        text-decoration: none;
+        font-weight: 700;
+        padding: 0.85rem 1.4rem;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        font-family: inherit;
+      }
+      .cta:hover { background: #e21236; }
+      .cta-fantasma { color: var(--navy); text-decoration: none; border-bottom: 1px solid var(--navy); padding-bottom: 2px; }
+      .hero-prova {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 1.6rem 0 0;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.66rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--tinta-suave);
+      }
+      .hero-prova svg { width: 1.05rem; height: 1.05rem; flex: none; fill: none; stroke: var(--vermelho); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+      h2 {
+        font-family: 'Instrument Serif', Georgia, serif;
+        font-weight: 400;
+        font-size: clamp(1.7rem, 3.4vw, 2.3rem);
+        color: var(--navy);
+        margin: 0 0 0.5rem;
+      }
+      .secao { padding: 2.6rem 0 0.4rem; }
+      .secao-sub { margin: 0 0 1.4rem; color: var(--tinta-suave); max-width: 52ch; }
+
+      /* ---- Navegação dinâmica dos modelos ---- */
+      .modelos { padding: 2.6rem 0 0.4rem; border-top: 2px solid var(--navy); margin-top: 2.4rem; }
+      .modelo-tabs {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.8rem;
+        margin: 1.4rem 0 1.6rem;
+      }
+      .modelo-tab {
+        text-align: left;
+        background: #fff;
+        border: 1.5px solid var(--linha);
+        border-radius: 14px;
+        padding: 1.1rem 1.1rem 1.2rem;
+        cursor: pointer;
+        font-family: inherit;
+        display: grid;
+        gap: 0.3rem;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+      }
+      .modelo-tab:hover { border-color: color-mix(in srgb, var(--navy) 45%, transparent); }
+      .modelo-tab:active { transform: translateY(1px); }
+      .modelo-num {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.14em;
+        color: var(--tinta-suave);
+      }
+      .modelo-nome { font-family: 'Instrument Serif', Georgia, serif; font-size: 1.5rem; color: var(--navy); line-height: 1.1; }
+      .modelo-linha { font-size: 0.85rem; color: var(--tinta-suave); }
+      .modelo-tab[aria-selected='true'] {
+        border-color: var(--navy);
+        box-shadow: inset 0 0 0 1px var(--navy);
+      }
+      .modelo-tab[aria-selected='true'] .modelo-num { color: var(--vermelho); }
+
+      .modelo-painel {
+        border: 1px solid var(--linha);
+        border-radius: 16px;
+        padding: 1.6rem 1.5rem 1.7rem;
+        background: var(--papel);
+        animation: painel-entra 0.28s ease both;
+      }
+      @keyframes painel-entra {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .modelo-painel { animation: none; }
+      }
+      .painel-tag {
+        font-family: 'Instrument Serif', Georgia, serif;
+        font-size: clamp(1.25rem, 2.6vw, 1.6rem);
+        color: var(--navy);
+        margin: 0 0 1.2rem;
+        max-width: 40ch;
+      }
+      .painel-grade { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 1.6rem; }
+      .painel-bloco h3 {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.66rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--tinta-suave);
+        margin: 0 0 0.7rem;
+      }
+      .painel-bloco p { margin: 0 0 0.7rem; font-size: 0.96rem; }
+      .painel-quem { color: var(--tinta-suave); }
+      .painel-quem strong { color: var(--navy); }
+      .painel-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; font-size: 0.94rem; }
+      .painel-lista li { position: relative; padding-left: 1.4rem; }
+      .painel-lista li::before {
+        position: absolute;
+        left: 0;
+        top: 0.05rem;
+        font-weight: 700;
+      }
+      .painel-lista-sim li::before { content: '+'; color: var(--vermelho); }
+      .painel-lista-voce li::before { content: '›'; color: var(--navy); }
+      .painel-nota {
+        margin: 1.4rem 0 1.2rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--linha);
+        font-size: 0.85rem;
+        color: var(--tinta-suave);
+      }
+      .painel-cta { display: inline-block; }
+
+      /* ---- Oferece ---- */
+      .oferece { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem 1.6rem; margin-top: 1.2rem; }
+      .oferece-item { border-top: 2px solid var(--navy); padding-top: 0.8rem; }
+      .oferece-item h3 { margin: 0 0 0.3rem; font-size: 1.02rem; color: var(--navy); }
+      .oferece-item p { margin: 0; color: var(--tinta-suave); font-size: 0.94rem; }
+
+      /* ---- Passos ---- */
+      .passos { margin: 1rem 0 0; padding: 0 0 0 1.2rem; max-width: 60ch; display: grid; gap: 0.9rem; }
+      .passos li::marker { color: var(--vermelho); font-weight: 700; }
+      .passos strong { color: var(--navy); }
+
+      /* ---- Formulário ---- */
+      .secao-form { background: var(--navy); color: #fff; margin: 2.8rem -1.3rem 0; padding: 2.8rem 1.3rem 3rem; border-radius: 20px 20px 0 0; }
+      .secao-form h2 { color: #fff; }
+      .secao-form .secao-sub { color: rgba(255, 255, 255, 0.75); }
+      .secao-form .secao-sub strong { color: #fff; }
+      .form-cabeca { max-width: 68rem; margin: 0 auto 1.4rem; }
+      .form { max-width: 42rem; margin: 0 auto; display: grid; gap: 0.9rem; }
+      .form-linha { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
+      .form label { display: grid; gap: 0.35rem; font-size: 0.8rem; color: rgba(255, 255, 255, 0.8); }
+      .form input {
+        font: inherit;
+        font-size: 0.95rem;
+        padding: 0.7rem 0.85rem;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.06);
+        color: #fff;
+      }
+      .form input::placeholder { color: rgba(255, 255, 255, 0.4); }
+      .form input:focus { outline: 2px solid var(--vermelho); outline-offset: 1px; border-color: transparent; }
+      .mel { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+      .form-enviar { margin-top: 0.4rem; justify-self: start; }
+      .form-lgpd { margin: 0.3rem 0 0; font-size: 0.76rem; color: rgba(255, 255, 255, 0.6); }
+      .form-lgpd a { color: #fff; }
+      .form-aviso {
+        margin: 0.6rem 0 0;
+        padding: 0.9rem 1rem;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        font-size: 0.92rem;
+      }
+      .form-aviso a { color: #fff; font-weight: 600; }
+
+      .rodape {
+        border-top: 1px solid var(--linha);
+        margin-top: 0;
+        padding: 1.8rem 1.3rem 2.4rem;
+        text-align: center;
+        font-size: 0.8rem;
+        color: var(--tinta-suave);
+      }
+      .rodape p { max-width: 68rem; margin: 0 auto 0.4rem; }
+      .rodape a { color: inherit; }
+
+      @media (max-width: 60rem) {
+        .painel-grade { grid-template-columns: 1fr; gap: 1.2rem; }
+        .oferece { grid-template-columns: 1fr 1fr; }
+      }
+      @media (max-width: 44rem) {
+        .modelo-tabs { grid-template-columns: 1fr; }
+        .oferece { grid-template-columns: 1fr; }
+        .form-linha { grid-template-columns: 1fr; }
+        .secao-form { border-radius: 0; }
+      }
+    </style>
+
+    <script>
+      // Importa a atribuição de canal compartilhada; o import faz o Astro
+      // empacotar este script como arquivo externo (mesma origem), então a CSP
+      // 'self' cobre sem precisar de hash inline.
+      import { canalEntrada } from '../scripts/canal';
+
+      const NOMES: Record<string, string> = {
+        digital: '100% Digital',
+        fisico: 'Físico',
+        omnichannel: 'Omnichannel',
+      };
+
+      // ---- Navegação dinâmica: troca de modelo sem recarregar ----
+      const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.modelo-tab'));
+      const paineis = Array.from(document.querySelectorAll<HTMLElement>('.modelo-painel'));
+      const campoModelo = document.getElementById('form-modelo') as HTMLInputElement | null;
+      const nomeModelo = document.getElementById('form-modelo-nome');
+
+      function selecionar(id: string) {
+        tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.modelo === id)));
+        paineis.forEach((p) => {
+          if (p.dataset.modelo === id) p.removeAttribute('hidden');
+          else p.setAttribute('hidden', '');
+        });
+        if (campoModelo) campoModelo.value = id;
+        if (nomeModelo) nomeModelo.textContent = NOMES[id] ?? id;
+      }
+
+      tabs.forEach((t) => t.addEventListener('click', () => selecionar(t.dataset.modelo || 'digital')));
+
+      // CTA dentro do painel: fixa o modelo e rola até o formulário.
+      document.querySelectorAll<HTMLAnchorElement>('[data-modelo-cta]').forEach((a) => {
+        a.addEventListener('click', () => selecionar(a.dataset.modeloCta || 'digital'));
+      });
+
+      // ---- Envio: registra o lead no mesmo /api/lead do site ----
+      const WHATSAPP = ((import.meta.env.PUBLIC_WHATSAPP as string | undefined) ?? '').replace(/\D/g, '');
+      const form = document.getElementById('form-parceiro') as HTMLFormElement | null;
+
+      form?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const mel = form.querySelector<HTMLInputElement>('.mel');
+        if (mel && mel.value) return; // honeypot
+        const val = (n: string) => (form.querySelector<HTMLInputElement>(`[name="${n}"]`)?.value ?? '').trim();
+        const nome = val('nome');
+        const telefone = val('telefone');
+        const email = val('email');
+        const empresa = val('empresa');
+        const cidade = val('cidade');
+        const mensagem = val('mensagem');
+        const modelo = campoModelo?.value || 'digital';
+        const modeloNome = NOMES[modelo] ?? modelo;
+
+        if (!nome || !telefone || !email) {
+          form.reportValidity();
+          return;
+        }
+
+        const linhas = [
+          `Olá! Sou ${nome} e quero ser parceiro da MI6.`,
+          '',
+          `Modelo: ${modeloNome}`,
+          empresa ? `Empresa: ${empresa}` : '',
+          cidade ? `Cidade: ${cidade}` : '',
+          telefone ? `WhatsApp: ${telefone}` : '',
+          email ? `E-mail: ${email}` : '',
+          mensagem ? `Mensagem: ${mensagem}` : '',
+        ].filter(Boolean);
+        const resumo = linhas.join('\n');
+        const urlZap = WHATSAPP ? `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(resumo)}` : '';
+
+        const lead = {
+          data_hora: new Date().toISOString(),
+          nome,
+          telefone,
+          email,
+          segmento: `parceria-${modelo}`,
+          credito: '',
+          parcela: '',
+          resumo,
+          origem: `site/mi6/parceiros|${canalEntrada()}`,
+          unidade: '',
+          confirme: mel?.value ?? '',
+        };
+        fetch('/api/lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(lead),
+        })
+          .then((r) => { if (!r.ok) console.warn('[MI6] candidatura de parceiro retornou', r.status); })
+          .catch((err) => console.error('[MI6] falha ao registrar candidatura:', err));
+
+        const aviso = document.getElementById('form-aviso');
+        const fallback = document.getElementById('form-fallback') as HTMLAnchorElement | null;
+        if (fallback) {
+          if (urlZap) { fallback.href = urlZap; fallback.removeAttribute('hidden'); }
+          else fallback.setAttribute('hidden', '');
+        }
+        aviso?.removeAttribute('hidden');
+        form.querySelector<HTMLButtonElement>('.form-enviar')?.setAttribute('disabled', '');
+        if (urlZap) window.open(urlZap, '_blank', 'noopener,noreferrer');
+      });
+    </script>
+  </body>
+</html>
