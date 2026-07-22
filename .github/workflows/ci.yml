@@ -25,8 +25,9 @@ jobs:
       # Varredura de segredo (SEC-06a): a SAS URL não pode estar no bundle nem
       # no histórico. Roda após o build para inspecionar o dist/ também.
       - run: npm run audit:segredos
-      # Auditoria de dependências (WS5/#12), bloqueante a partir de high.
-      # Triagem em docs/seguranca-testes.md: hoje só há low/moderate não
-      # aplicáveis (dev server / devDependency), nenhum high/critical.
-      - name: npm audit (bloqueante em high)
-        run: npm audit --audit-level=high
+      # Auditoria de dependências (WS5/#12). Portão honesto para site estático:
+      # bloqueia em critical (sempre) e em high FORA da allowlist de pacotes só
+      # de build (astro/sharp/esbuild/svgo/js-yaml/potrace), que não embarcam no
+      # bundle. Ver scripts/audit-deps.mjs e docs/seguranca-testes.md.
+      - name: auditoria de dependências (crítico + high de runtime)
+        run: npm run audit:deps

@@ -1,0 +1,6 @@
+# Canal de divulgação responsável de vulnerabilidades da MI6 Consórcio Nacional.
+# Formato RFC 9116 (https://www.rfc-editor.org/rfc/rfc9116).
+Contact: mailto:tecnologia@mi6consorcio.com.br
+Expires: 2027-07-21T00:00:00.000Z
+Preferred-Languages: pt-BR, en
+Canonical: https://mi6consorcio.com.br/.well-known/security.txt

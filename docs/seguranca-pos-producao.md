@@ -38,12 +38,19 @@ infraestrutura.
 - **Impacto:** abuso/custo se o honeypot e o teto de corpo não bastarem.
 - **Dono:** Vercel (Marcílio confirma o plano) + Eng. **Depende de:** plano da Vercel.
 
-### SEC-09 — CSP em enforce
-- **O quê:** após observar o `Content-Security-Policy-Report-Only` em produção
-  sem violações legítimas, trocar para `Content-Security-Policy` (enforce).
-- **Por quê:** report-only observa, não bloqueia.
-- **Impacto:** XSS desconhecido só é **bloqueado** no enforce.
-- **Dono:** Eng. **Depende de:** dados do report-only em produção.
+### SEC-09 — CSP em enforce ✅ FEITO (2026-07-21)
+- **O quê:** trocado `Content-Security-Policy-Report-Only` por
+  `Content-Security-Policy` (enforce) no `vercel.json`.
+- **Como ficou seguro:** `script-src` estrito, `'self'` mais o hash SHA-256 de
+  cada um dos 3 scripts inline do site (bootstrap do Vercel Analytics, script do
+  menu e do clique de segmento), **sem** `'unsafe-inline'`. `style-src` mantém
+  `'unsafe-inline'` porque a interface aplica estilos inline em runtime
+  (sliders, GSAP), que não são hasheáveis; risco de CSS injection é baixo.
+- **Anti-regressão:** `scripts/verificar-csp.mjs` roda no `build` e **falha o
+  build** se algum script inline não tiver hash na CSP, então a Vercel nunca
+  publica uma política que derrube um script legítimo.
+- **Verificação:** Chromium real (offline) sobre o `dist/` com a CSP do
+  `vercel.json` aplicada: 0 violações em 7 páginas.
 
 ### SEC-07b / SEC-12b — Alertas automáticos e anomalia de volume
 - **O quê:** alerta de falha do fluxo, alerta de custo, e detecção de pico de
