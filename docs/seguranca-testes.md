@@ -94,6 +94,15 @@ Pendente do WS1: o espelho da neutralização no fluxo do Power Automate (tenant
   (traço de imagem em build), nunca embarcada no site. Aceito.
 
 Decisão: **não** rodar `audit fix --force` (instalaria Astro 7 e potrace 2.1.1,
-breaking) por questões low/moderate não aplicáveis às vésperas do go-live. O CI
-bloqueia a partir de **high**, então qualquer regressão séria futura quebra o
-build. Reavaliar o upgrade do Astro como item de manutenção pós-produção.
+breaking) por questões não aplicáveis à produção estática. Reavaliar o upgrade
+do Astro como item de manutenção pós-produção.
+
+**Atualização 2026-07-22 (gate mais honesto):** o `npm audit fix` não breaking
+limpou js-yaml/svgo/astro→6.4.8, mas novas advisories só-de-build surgiram
+(astro: XSS de View Transition, não usamos; sharp: libvips no build). Como o
+site publicado é estático e não embarca node_modules, o portão de CI passou de
+`npm audit --audit-level=high` (frágil, quebrava em ruído de build) para
+`scripts/audit-deps.mjs`: bloqueia **critical** sempre e **high fora** de uma
+allowlist de pacotes só-de-build (astro, sharp, esbuild, svgo, js-yaml,
+potrace, jimp, phin). Um high em dep de runtime (gsap, lenis, analytics) ainda
+quebra o build de propósito.

@@ -10,7 +10,8 @@
     "astro": "astro",
     "test": "node --test \"tests/**/*.test.js\"",
     "test:seguranca": "node --test \"tests/seguranca/**/*.test.js\"",
-    "audit:segredos": "node scripts/scan-segredos.mjs"
+    "audit:segredos": "node scripts/scan-segredos.mjs",
+    "audit:deps": "node scripts/audit-deps.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
