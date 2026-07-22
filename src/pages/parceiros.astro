@@ -2,25 +2,25 @@
 import '@fontsource/instrument-serif';
 import '@fontsource/instrument-serif/400-italic.css';
 import '@fontsource-variable/archivo';
+import '@fontsource-variable/geist';
 import '@fontsource/ibm-plex-mono';
+import '@fontsource/ibm-plex-mono/500.css';
 import Analytics from '@vercel/analytics/astro';
 
-// Página institucional "Seja Parceiro" (indexável). Apresenta os três modelos
-// de parceria comercial da MI6 com navegação dinâmica (três caixas que revelam
-// o detalhe de cada modelo sem recarregar) e um formulário de captação que usa
-// o mesmo endpoint /api/lead do restante do site (marcado por origem/segmento).
-// Sem números de comissão nem cláusulas de contrato: isso é conversa comercial,
-// não conteúdo de página. Identidade visual herdada das landings (serif
-// editorial, paleta Union Jack, provas concretas).
+// Página institucional "Seja Parceiro" (indexável). Herda a identidade da HOME
+// (não das landings): tela navy cinematográfica, ritmo claro/escuro entre
+// seções, serif editorial com destaque em itálico, kickers em mono, hairlines
+// e vermelho só na ação. Navegação dinâmica: três modelos em que a caixa ativa
+// revela o detalhe sem recarregar e fixa o modelo no formulário. Sem números de
+// comissão nem cláusulas: isso é conversa comercial. Captação via /api/lead,
+// marcada por origem/segmento e com campos próprios (empresa, cidade, mensagem)
+// para a aba de parceiros da planilha.
 const SITE = 'https://mi6consorcio.com.br';
 const url = `${SITE}/parceiros/`;
 const titulo = 'Seja Parceiro | MI6 Consórcio Nacional';
 const descricao =
   'Venda consórcio como parceiro comercial autorizado da MI6: modelos 100% digital, físico e omnichannel, com método, marca e sistema de uma administradora autorizada pelo Banco Central.';
 
-// Os três modelos. Conteúdo derivado do contrato de parceria, sem expor
-// comissionamento nem cláusulas: descreve como funciona, o que a MI6 entrega e
-// o que o parceiro traz.
 const modelos = [
   {
     id: 'digital',
@@ -32,7 +32,7 @@ const modelos = [
       'A MI6 cede ativos digitais sob a sua marca (perfis e uma página do site) e conduz tecnicamente as campanhas de tráfego com peças oficiais. Você custeia a mídia na sua própria conta de anúncios e a sua equipe atende, com exclusividade, os leads gerados.',
     paraQuem: 'Times comerciais que querem operar 100% online, sem ponto físico.',
     mi6: [
-      'Campanhas conduzidas por especialistas, com peças e materiais oficiais',
+      'Campanhas conduzidas por especialistas, com peças oficiais',
       'Ativos digitais sob a marca MI6, em licença de uso',
       'Sistema web de vendas rastreável, com login próprio',
       'Treinamento oficial obrigatório e reciclagens',
@@ -50,7 +50,7 @@ const modelos = [
       'A sua equipe comercializa cotas em âmbito nacional, sem exclusividade territorial, seguindo as normas da MI6 e a regulação do Banco Central. Cada venda é formalizada no sistema web da MI6.',
     paraQuem: 'Escritórios, corretores e times comerciais com presença local e carteira.',
     mi6: [
-      'Materiais e formulários oficiais, com identidade visual unificada',
+      'Materiais e formulários oficiais, identidade unificada',
       'Sistema web de vendas com login próprio',
       'Relatórios de comissão',
       'Suporte comercial',
@@ -69,8 +69,8 @@ const modelos = [
     paraQuem: 'Parceiros que já vendem no físico e querem crescer no digital, ou o contrário.',
     mi6: [
       'Tudo dos modelos Digital e Físico, integrados',
-      'Caminho para a categoria MASTER: desenvolver e ser remunerado por uma rede de parceiros',
-      'Sistema, materiais e ativos digitais em um só padrão',
+      'Caminho para a categoria MASTER: desenvolver e ser remunerado por uma rede',
+      'Sistema, materiais e ativos em um só padrão',
     ],
     voce: ['Operação comercial ativa', 'Equipe própria', 'Ambição de crescer em rede'],
     nota: 'A categoria MASTER é atribuída pela MI6 conforme critérios comerciais e operacionais.',
@@ -78,18 +78,18 @@ const modelos = [
 ];
 
 const oferece = [
-  { t: 'Campanhas conduzidas', d: 'Tráfego digital criado e gerido tecnicamente pela MI6, com peças oficiais.' },
-  { t: 'Sistema de vendas', d: 'Plataforma web com login próprio, para formalizar cada cota de forma rastreável.' },
-  { t: 'Treinamento oficial', d: 'Capacitação obrigatória da equipe e reciclagens a cada mudança de produto ou regra.' },
-  { t: 'Marca e materiais', d: 'Identidade visual unificada, materiais e formulários oficiais da MI6.' },
-  { t: 'Relatórios de comissão', d: 'Acompanhamento do comissionamento por cota comercializada.' },
-  { t: 'Regulação e respaldo', d: 'Administradora autorizada e fiscalizada pelo Banco Central do Brasil.' },
+  { n: '01', t: 'Campanhas conduzidas', d: 'Tráfego digital criado e gerido tecnicamente pela MI6, com peças oficiais.' },
+  { n: '02', t: 'Sistema de vendas', d: 'Plataforma web com login próprio, para formalizar cada cota de forma rastreável.' },
+  { n: '03', t: 'Treinamento oficial', d: 'Capacitação obrigatória da equipe e reciclagens a cada mudança de produto ou regra.' },
+  { n: '04', t: 'Marca e materiais', d: 'Identidade visual unificada, materiais e formulários oficiais da MI6.' },
+  { n: '05', t: 'Relatórios de comissão', d: 'Acompanhamento do comissionamento por cota comercializada.' },
+  { n: '06', t: 'Regulação e respaldo', d: 'Administradora autorizada e fiscalizada pelo Banco Central do Brasil.' },
 ];
 
 const passos = [
-  { t: 'Cadastro', d: 'Você preenche o formulário abaixo e conta o seu perfil e o modelo de interesse.' },
-  { t: 'Habilitação', d: 'Análise, contrato de parceria comercial (pessoa jurídica) e treinamento oficial.' },
-  { t: 'Operação', d: 'Liberamos sistema, materiais e, no digital, os ativos. Começo imediato.' },
+  { n: '1', t: 'Cadastro', d: 'Você preenche o formulário abaixo e conta o seu perfil e o modelo de interesse.' },
+  { n: '2', t: 'Habilitação', d: 'Análise, contrato de parceria comercial (pessoa jurídica) e treinamento oficial.' },
+  { n: '3', t: 'Operação', d: 'Liberamos sistema, materiais e, no digital, os ativos. Começo imediato.' },
 ];
 
 const schema = {
@@ -102,14 +102,7 @@ const schema = {
         { '@type': 'ListItem', position: 2, name: 'Seja Parceiro', item: url },
       ],
     },
-    {
-      '@type': 'WebPage',
-      '@id': `${url}#pagina`,
-      name: titulo,
-      description: descricao,
-      url,
-      inLanguage: 'pt-BR',
-    },
+    { '@type': 'WebPage', '@id': `${url}#pagina`, name: titulo, description: descricao, url, inLanguage: 'pt-BR' },
   ],
 };
 ---
@@ -138,8 +131,9 @@ const schema = {
   </head>
   <body>
     <header class="topo">
-      <a class="topo-logo" href="/" aria-label="MI6 Consórcio Nacional, página inicial">
-        <img src="/imgs/logo-mi6.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
+      <a class="topo-marca" href="/" aria-label="MI6 Consórcio Nacional, página inicial">
+        <!-- Fundo navy: marca 100% branca (regra de marca), nunca o logo primário navy+vermelho -->
+        <img src="/imgs/logo-mi6-branco.png" alt="MI6 Consórcio Nacional" width="219" height="47" />
       </a>
       <nav class="topo-nav" aria-label="Navegação">
         <a href="/">Site completo</a>
@@ -147,32 +141,47 @@ const schema = {
       </nav>
     </header>
 
-    <nav class="trilha" aria-label="Você está em">
-      <a href="/">Início</a><span aria-hidden="true">/</span><span>Seja Parceiro</span>
-    </nav>
-
     <main>
       <section class="hero">
-        <p class="kicker">Parcerias comerciais · MI6</p>
-        <h1>Venda consórcio com a inteligência da MI6 por trás.</h1>
-        <p class="hero-sub">
-          Seja um parceiro comercial autorizado e construa a sua operação de vendas de consórcio
-          com o método, a marca e o sistema de uma administradora autorizada pelo Banco Central.
-          Escolha como quer atuar: <strong>digital</strong>, <strong>físico</strong> ou
-          <strong>omnichannel</strong>.
-        </p>
-        <div class="hero-acoes">
-          <a class="cta" href="#modelos">Ver os modelos</a>
-          <a class="cta-fantasma" href="#candidatar">Quero me candidatar</a>
+        <p class="coord" aria-hidden="true">PARCERIA COMERCIAL · ÂMBITO NACIONAL · MI6</p>
+        <div class="hero-grade">
+          <div class="hero-conteudo">
+            <h1>Venda consórcio com a <em>inteligência</em> da MI6 por trás.</h1>
+            <p class="hero-sub">
+              Seja um parceiro comercial autorizado e construa a sua operação de vendas com o
+              método, a marca e o sistema de uma administradora autorizada pelo Banco Central.
+              Escolha como atuar: digital, físico ou omnichannel.
+            </p>
+            <div class="hero-acoes">
+              <a class="cta" href="#modelos">Ver os modelos</a>
+              <a class="cta-fantasma" href="#candidatar">Quero me candidatar</a>
+            </div>
+            <p class="prova">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3z" /><path d="m8.5 12 2.5 2.5 4.5-5" /></svg>
+              Autorizada pelo Banco Central do Brasil, ofício nº 33.288/2024. Filiada à ABAC.
+            </p>
+          </div>
+
+          <!-- Credencial de parceiro: eco do motivo "cartão" da home, 100% em CSS -->
+          <div class="credencial" aria-hidden="true">
+            <span class="credencial-brilho"></span>
+            <div class="credencial-topo">
+              <img src="/imgs/logo-mi6-branco.png" alt="" width="219" height="47" />
+              <span class="credencial-chip"></span>
+            </div>
+            <p class="credencial-rotulo">Parceiro comercial autorizado</p>
+            <p class="credencial-nome">SUA OPERAÇÃO AQUI</p>
+            <div class="credencial-rodape">
+              <span>MI6 · CONSÓRCIO NACIONAL</span>
+              <span class="credencial-selo">BACEN</span>
+            </div>
+          </div>
         </div>
-        <p class="hero-prova">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3z" /><path d="m8.5 12 2.5 2.5 4.5-5" /></svg>
-          Administradora autorizada pelo Banco Central do Brasil, ofício nº 33.288/2024. Filiada à ABAC.
-        </p>
       </section>
 
       <section class="modelos" id="modelos">
-        <h2>Escolha o seu modelo de parceria</h2>
+        <p class="kicker">Os três modelos</p>
+        <h2>Escolha como quer atuar.</h2>
         <p class="secao-sub">Três formas de vender consórcio com a MI6. Toque em uma para ver como funciona.</p>
 
         <div class="modelo-tabs" role="tablist" aria-label="Modelos de parceria">
@@ -231,84 +240,77 @@ const schema = {
         </div>
       </section>
 
-      <section class="secao">
-        <h2>O que a MI6 coloca do seu lado</h2>
+      <section class="oferece-secao">
+        <p class="kicker">O que a MI6 coloca do seu lado</p>
+        <h2>Você não começa do zero.</h2>
         <div class="oferece">
           {oferece.map((o) => (
             <div class="oferece-item">
-              <h3>{o.t}</h3>
-              <p>{o.d}</p>
+              <span class="oferece-num">{o.n}</span>
+              <div>
+                <h3>{o.t}</h3>
+                <p>{o.d}</p>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-      <section class="secao">
-        <h2>Como se tornar parceiro</h2>
+      <section class="passos-secao">
+        <p class="kicker">Como se tornar parceiro</p>
+        <h2>Três passos até operar.</h2>
         <ol class="passos">
           {passos.map((p) => (
             <li>
-              <strong>{p.t}.</strong> {p.d}
+              <span class="passo-num">{p.n}</span>
+              <div>
+                <h3>{p.t}</h3>
+                <p>{p.d}</p>
+              </div>
             </li>
           ))}
         </ol>
       </section>
 
-      <section class="secao secao-form" id="candidatar">
-        <div class="form-cabeca">
-          <h2>Candidate-se para ser parceiro</h2>
-          <p class="secao-sub">
-            Conte para a gente quem você é. O time comercial da MI6 retorna para explicar as
-            condições do modelo <strong id="form-modelo-nome">100% Digital</strong>.
+      <section class="form-secao" id="candidatar">
+        <div class="form-card">
+          <p class="kicker kicker-navy">Candidatura</p>
+          <h2 class="h2-navy">Candidate-se para ser parceiro.</h2>
+          <p class="secao-sub secao-sub-navy">
+            Conte quem você é. O time comercial da MI6 retorna para explicar as condições do modelo
+            <strong id="form-modelo-nome">100% Digital</strong>.
           </p>
+          <form class="form" id="form-parceiro" novalidate>
+            <input type="hidden" name="modelo" id="form-modelo" value="digital" />
+            <div class="form-linha">
+              <label><span>Nome</span><input type="text" name="nome" autocomplete="name" placeholder="Seu nome" required /></label>
+              <label><span>Empresa (se tiver)</span><input type="text" name="empresa" autocomplete="organization" placeholder="Nome da empresa" /></label>
+            </div>
+            <div class="form-linha">
+              <label><span>WhatsApp</span><input type="tel" name="telefone" autocomplete="tel" placeholder="(00) 00000-0000" required /></label>
+              <label><span>E-mail</span><input type="email" name="email" autocomplete="email" placeholder="voce@email.com" required /></label>
+            </div>
+            <div class="form-linha">
+              <label><span>Cidade / UF</span><input type="text" name="cidade" autocomplete="address-level2" placeholder="Cidade e estado" /></label>
+              <label><span>Mensagem (opcional)</span><input type="text" name="mensagem" placeholder="Conte um pouco da sua operação" /></label>
+            </div>
+            <input type="text" name="confirme" class="mel" tabindex="-1" autocomplete="off" aria-hidden="true" />
+            <button type="submit" class="cta form-enviar">Quero ser parceiro</button>
+            <p class="form-lgpd">
+              Ao enviar, você concorda que a MI6 entre em contato sobre a parceria. Tratamos seus
+              dados conforme a <a href="/politica-de-privacidade/">Política de Privacidade</a>.
+            </p>
+            <p class="form-aviso" id="form-aviso" hidden>
+              Recebemos a sua candidatura. O time comercial da MI6 vai entrar em contato.
+              <a id="form-fallback" href="#" target="_blank" rel="noopener">Falar agora no WhatsApp</a>.
+            </p>
+          </form>
         </div>
-        <form class="form" id="form-parceiro" novalidate>
-          <input type="hidden" name="modelo" id="form-modelo" value="digital" />
-          <div class="form-linha">
-            <label>
-              <span>Nome</span>
-              <input type="text" name="nome" autocomplete="name" placeholder="Seu nome" required />
-            </label>
-            <label>
-              <span>Empresa (se tiver)</span>
-              <input type="text" name="empresa" autocomplete="organization" placeholder="Nome da empresa" />
-            </label>
-          </div>
-          <div class="form-linha">
-            <label>
-              <span>WhatsApp</span>
-              <input type="tel" name="telefone" autocomplete="tel" placeholder="(00) 00000-0000" required />
-            </label>
-            <label>
-              <span>E-mail</span>
-              <input type="email" name="email" autocomplete="email" placeholder="voce@email.com" required />
-            </label>
-          </div>
-          <div class="form-linha">
-            <label>
-              <span>Cidade / UF</span>
-              <input type="text" name="cidade" autocomplete="address-level2" placeholder="Cidade e estado" />
-            </label>
-            <label>
-              <span>Mensagem (opcional)</span>
-              <input type="text" name="mensagem" placeholder="Conte um pouco da sua operação" />
-            </label>
-          </div>
-          <input type="text" name="confirme" class="mel" tabindex="-1" autocomplete="off" aria-hidden="true" />
-          <button type="submit" class="cta form-enviar">Quero ser parceiro</button>
-          <p class="form-lgpd">
-            Ao enviar, você concorda que a MI6 entre em contato sobre a parceria. Tratamos seus
-            dados conforme a <a href="/politica-de-privacidade/">Política de Privacidade</a>.
-          </p>
-          <p class="form-aviso" id="form-aviso" hidden>
-            Recebemos a sua candidatura. O time comercial da MI6 vai entrar em contato.
-            <a id="form-fallback" href="#" target="_blank" rel="noopener">Falar agora no WhatsApp</a>.
-          </p>
-        </form>
       </section>
     </main>
 
     <footer class="rodape">
+      <img class="rodape-abac" src="/imgs/abac.svg" alt="ABAC" width="100" height="32" />
       <p>
         M.I6 Administradora de Consórcio Ltda. Autorizada e fiscalizada pelo Banco Central do
         Brasil, Lei nº 11.795/2008, ofício nº 33.288/2024. Filiada à ABAC.
@@ -322,11 +324,16 @@ const schema = {
     <style is:global>
       :root {
         --navy: #012169;
+        --navy-fundo: #021a4f;
+        --navy-escuro: #01133a;
         --vermelho: #c8102e;
+        --branco: #ffffff;
+        --papel: #f6f3ec;
         --tinta: #101728;
         --tinta-suave: #525a68;
-        --papel: #f6f3ec;
-        --linha: rgba(1, 33, 105, 0.14);
+        --gelo: rgba(255, 255, 255, 0.72);
+        --linha: rgba(255, 255, 255, 0.16);
+        --linha-clara: rgba(1, 33, 105, 0.16);
       }
       *,
       *::before,
@@ -335,269 +342,356 @@ const schema = {
     <style>
       body {
         margin: 0;
-        font-family: 'Archivo Variable', 'Helvetica Neue', Arial, sans-serif;
-        color: var(--tinta);
-        background: #fff;
+        font-family: 'Geist Variable', 'Archivo Variable', 'Helvetica Neue', Arial, sans-serif;
+        background:
+          radial-gradient(120% 60% at 82% -5%, rgba(200, 16, 46, 0.14), transparent 55%),
+          radial-gradient(90% 50% at 5% 0%, rgba(1, 33, 105, 0.6), transparent 60%),
+          var(--navy-fundo);
+        color: var(--branco);
         line-height: 1.6;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
       }
-      main { max-width: 68rem; margin: 0 auto; padding: 0 1.3rem; }
+      ::selection { background: var(--vermelho); color: var(--branco); }
+      :focus-visible { outline: 2px solid var(--vermelho); outline-offset: 3px; }
+      main { max-width: 70rem; margin: 0 auto; padding: 0 1.4rem; }
 
+      /* Topo: barra clara, habitat do logo primário (igual à home) */
       .topo {
-        max-width: 68rem;
+        max-width: 70rem;
         margin: 0 auto;
-        padding: 1.1rem 1.3rem;
+        padding: 1rem 1.4rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 1rem;
       }
-      .topo-logo img { height: 1.8rem; width: auto; display: block; }
-      .topo-nav { display: flex; align-items: center; gap: 1.1rem; }
-      .topo-nav a { color: var(--navy); text-decoration: none; font-size: 0.9rem; }
+      .topo-marca img { height: 1.9rem; width: auto; display: block; }
+      .topo-nav { display: flex; align-items: center; gap: 1.3rem; }
+      .topo-nav a { color: var(--gelo); text-decoration: none; font-size: 0.9rem; }
+      .topo-nav a:hover { color: #fff; }
       .topo-cta {
         background: var(--vermelho);
         color: #fff !important;
-        padding: 0.5rem 0.95rem;
-        border-radius: 8px;
+        padding: 0.55rem 1.05rem;
+        border-radius: 999px;
         font-weight: 600;
+        white-space: nowrap;
       }
-      .trilha {
-        max-width: 68rem;
-        margin: 0 auto;
-        padding: 0 1.3rem 0.4rem;
-        font-size: 0.78rem;
-        color: var(--tinta-suave);
-        display: flex;
-        gap: 0.45rem;
-      }
-      .trilha a { color: inherit; }
 
       .kicker {
         font-family: 'IBM Plex Mono', monospace;
         font-size: 0.68rem;
+        font-weight: 500;
         letter-spacing: 0.22em;
         text-transform: uppercase;
         color: var(--vermelho);
-        margin: 0 0 0.6rem;
+        margin: 0 0 0.9rem;
       }
+      .coord {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.66rem;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: var(--gelo);
+        margin: 0 0 1.6rem;
+      }
+
       h1 {
         font-family: 'Instrument Serif', Georgia, serif;
         font-weight: 400;
-        font-size: clamp(2.3rem, 5.4vw, 3.7rem);
-        line-height: 1.04;
-        color: var(--navy);
-        margin: 0 0 1rem;
-        max-width: 18ch;
+        font-size: clamp(2.5rem, 6vw, 4.3rem);
+        line-height: 1.02;
+        letter-spacing: -0.01em;
+        margin: 0 0 1.2rem;
+        max-width: 15ch;
       }
-      .hero { padding: 2rem 0 2.4rem; }
-      .hero-sub { margin: 0 0 1.5rem; max-width: 56ch; color: var(--tinta-suave); font-size: 1.05rem; }
-      .hero-sub strong { color: var(--tinta); }
-      .hero-acoes { display: flex; flex-wrap: wrap; gap: 0.9rem; align-items: center; }
+      h1 em { font-style: italic; color: #fff; position: relative; }
+      h1 em::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0.08em;
+        height: 0.08em;
+        background: var(--vermelho);
+      }
+      h2 {
+        font-family: 'Instrument Serif', Georgia, serif;
+        font-weight: 400;
+        font-size: clamp(1.9rem, 4vw, 2.9rem);
+        line-height: 1.06;
+        color: #fff;
+        margin: 0 0 0.6rem;
+      }
+      .secao-sub { margin: 0 0 1.8rem; color: var(--gelo); max-width: 52ch; font-size: 1.02rem; }
+
+      /* ---- Hero ---- */
+      .hero { padding: 2.4rem 0 3.4rem; }
+      .hero-grade {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+        gap: 3rem;
+        align-items: center;
+      }
+      .hero-sub { margin: 0 0 1.8rem; max-width: 46ch; color: var(--gelo); font-size: 1.08rem; }
+      .hero-acoes { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
       .cta {
         background: var(--vermelho);
         color: #fff;
         text-decoration: none;
         font-weight: 700;
-        padding: 0.85rem 1.4rem;
-        border-radius: 10px;
+        padding: 0.9rem 1.5rem;
+        border-radius: 999px;
         border: none;
         cursor: pointer;
         font-size: 1rem;
         font-family: inherit;
+        transition: transform 0.12s ease, background 0.2s ease;
       }
-      .cta:hover { background: #e21236; }
-      .cta-fantasma { color: var(--navy); text-decoration: none; border-bottom: 1px solid var(--navy); padding-bottom: 2px; }
-      .hero-prova {
+      .cta:hover { background: #e21236; transform: translateY(-1px); }
+      .cta-fantasma {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 0.9rem 0.2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+      }
+      .cta-fantasma:hover { border-bottom-color: #fff; }
+      .prova {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        margin: 1.6rem 0 0;
+        gap: 0.55rem;
+        margin: 2rem 0 0;
         font-family: 'IBM Plex Mono', monospace;
-        font-size: 0.66rem;
-        letter-spacing: 0.06em;
+        font-size: 0.64rem;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: var(--tinta-suave);
+        color: var(--gelo);
       }
-      .hero-prova svg { width: 1.05rem; height: 1.05rem; flex: none; fill: none; stroke: var(--vermelho); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+      .prova svg { width: 1.05rem; height: 1.05rem; flex: none; fill: none; stroke: var(--vermelho); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 
-      h2 {
+      /* Credencial de parceiro (motivo cartão da MI6) */
+      .credencial {
+        position: relative;
+        overflow: hidden;
+        border-radius: 18px;
+        padding: 1.5rem 1.6rem 1.4rem;
+        background: linear-gradient(150deg, #012a86, var(--navy-escuro) 78%);
+        border: 1px solid var(--linha);
+        box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.7);
+        display: grid;
+        gap: 0.55rem;
+        aspect-ratio: 1.586;
+        align-content: space-between;
+      }
+      .credencial-brilho {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(90% 60% at 85% 0%, rgba(200, 16, 46, 0.28), transparent 60%);
+        pointer-events: none;
+      }
+      .credencial-topo { display: flex; align-items: center; justify-content: space-between; }
+      .credencial-topo img { height: 1.4rem; width: auto; }
+      .credencial-chip {
+        width: 2.4rem;
+        height: 1.7rem;
+        border-radius: 6px;
+        background: linear-gradient(135deg, #d9c07a, #b8912f);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+      }
+      .credencial-rotulo {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.6rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--gelo);
+        margin: 0.6rem 0 0;
+      }
+      .credencial-nome {
         font-family: 'Instrument Serif', Georgia, serif;
-        font-weight: 400;
-        font-size: clamp(1.7rem, 3.4vw, 2.3rem);
-        color: var(--navy);
-        margin: 0 0 0.5rem;
+        font-size: 1.5rem;
+        color: #fff;
+        margin: 0;
+        letter-spacing: 0.02em;
       }
-      .secao { padding: 2.6rem 0 0.4rem; }
-      .secao-sub { margin: 0 0 1.4rem; color: var(--tinta-suave); max-width: 52ch; }
+      .credencial-rodape {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.56rem;
+        letter-spacing: 0.14em;
+        color: var(--gelo);
+      }
+      .credencial-selo { color: #fff; border: 1px solid var(--linha); border-radius: 999px; padding: 0.2rem 0.55rem; }
 
-      /* ---- Navegação dinâmica dos modelos ---- */
-      .modelos { padding: 2.6rem 0 0.4rem; border-top: 2px solid var(--navy); margin-top: 2.4rem; }
+      /* ---- Seções ---- */
+      .modelos, .oferece-secao, .passos-secao { padding: 3rem 0; border-top: 1px solid var(--linha); }
+
+      /* Navegação dinâmica dos modelos */
       .modelo-tabs {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 0.8rem;
-        margin: 1.4rem 0 1.6rem;
+        gap: 0.9rem;
+        margin: 1.6rem 0;
       }
       .modelo-tab {
         text-align: left;
-        background: #fff;
-        border: 1.5px solid var(--linha);
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--linha);
         border-radius: 14px;
-        padding: 1.1rem 1.1rem 1.2rem;
+        padding: 1.2rem 1.2rem 1.3rem;
         cursor: pointer;
         font-family: inherit;
+        color: #fff;
         display: grid;
-        gap: 0.3rem;
-        transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+        gap: 0.35rem;
+        transition: border-color 0.18s ease, background 0.18s ease, transform 0.1s ease;
       }
-      .modelo-tab:hover { border-color: color-mix(in srgb, var(--navy) 45%, transparent); }
+      .modelo-tab:hover { border-color: rgba(255, 255, 255, 0.4); background: rgba(255, 255, 255, 0.06); }
       .modelo-tab:active { transform: translateY(1px); }
       .modelo-num {
-        font-family: 'IBM Plex Mono', monospace;
-        font-size: 0.7rem;
-        letter-spacing: 0.14em;
-        color: var(--tinta-suave);
+        font-family: 'Instrument Serif', Georgia, serif;
+        font-size: 1.6rem;
+        color: var(--gelo);
+        line-height: 1;
       }
-      .modelo-nome { font-family: 'Instrument Serif', Georgia, serif; font-size: 1.5rem; color: var(--navy); line-height: 1.1; }
-      .modelo-linha { font-size: 0.85rem; color: var(--tinta-suave); }
+      .modelo-nome { font-family: 'Instrument Serif', Georgia, serif; font-size: 1.55rem; color: #fff; line-height: 1.05; }
+      .modelo-linha { font-size: 0.86rem; color: var(--gelo); }
       .modelo-tab[aria-selected='true'] {
-        border-color: var(--navy);
-        box-shadow: inset 0 0 0 1px var(--navy);
+        border-color: var(--vermelho);
+        background: linear-gradient(160deg, rgba(200, 16, 46, 0.16), rgba(255, 255, 255, 0.03));
       }
       .modelo-tab[aria-selected='true'] .modelo-num { color: var(--vermelho); }
 
+      /* Painel de detalhe: papel claro sobre a tela navy (ritmo claro/escuro) */
       .modelo-painel {
-        border: 1px solid var(--linha);
-        border-radius: 16px;
-        padding: 1.6rem 1.5rem 1.7rem;
+        border-radius: 18px;
+        padding: 1.9rem 1.8rem;
         background: var(--papel);
+        color: var(--tinta);
         animation: painel-entra 0.28s ease both;
       }
-      @keyframes painel-entra {
-        from { opacity: 0; transform: translateY(8px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .modelo-painel { animation: none; }
-      }
+      @keyframes painel-entra { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+      @media (prefers-reduced-motion: reduce) { .modelo-painel { animation: none; } }
       .painel-tag {
         font-family: 'Instrument Serif', Georgia, serif;
-        font-size: clamp(1.25rem, 2.6vw, 1.6rem);
+        font-size: clamp(1.3rem, 2.7vw, 1.75rem);
         color: var(--navy);
-        margin: 0 0 1.2rem;
-        max-width: 40ch;
+        margin: 0 0 1.3rem;
+        max-width: 42ch;
+        line-height: 1.15;
       }
-      .painel-grade { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 1.6rem; }
+      .painel-grade { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 1.8rem; }
       .painel-bloco h3 {
         font-family: 'IBM Plex Mono', monospace;
-        font-size: 0.66rem;
-        letter-spacing: 0.14em;
+        font-size: 0.64rem;
+        letter-spacing: 0.16em;
         text-transform: uppercase;
         color: var(--tinta-suave);
-        margin: 0 0 0.7rem;
+        margin: 0 0 0.8rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--linha-clara);
       }
       .painel-bloco p { margin: 0 0 0.7rem; font-size: 0.96rem; }
       .painel-quem { color: var(--tinta-suave); }
       .painel-quem strong { color: var(--navy); }
-      .painel-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; font-size: 0.94rem; }
+      .painel-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; font-size: 0.94rem; }
       .painel-lista li { position: relative; padding-left: 1.4rem; }
-      .painel-lista li::before {
-        position: absolute;
-        left: 0;
-        top: 0.05rem;
-        font-weight: 700;
-      }
+      .painel-lista li::before { position: absolute; left: 0; top: 0; font-weight: 700; }
       .painel-lista-sim li::before { content: '+'; color: var(--vermelho); }
       .painel-lista-voce li::before { content: '›'; color: var(--navy); }
-      .painel-nota {
-        margin: 1.4rem 0 1.2rem;
-        padding-top: 1rem;
-        border-top: 1px solid var(--linha);
-        font-size: 0.85rem;
-        color: var(--tinta-suave);
-      }
+      .painel-nota { margin: 1.5rem 0 1.3rem; padding-top: 1.1rem; border-top: 1px solid var(--linha-clara); font-size: 0.85rem; color: var(--tinta-suave); }
       .painel-cta { display: inline-block; }
 
-      /* ---- Oferece ---- */
-      .oferece { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem 1.6rem; margin-top: 1.2rem; }
-      .oferece-item { border-top: 2px solid var(--navy); padding-top: 0.8rem; }
-      .oferece-item h3 { margin: 0 0 0.3rem; font-size: 1.02rem; color: var(--navy); }
-      .oferece-item p { margin: 0; color: var(--tinta-suave); font-size: 0.94rem; }
+      /* O que a MI6 oferece: lista editorial, hairline, sem grade de cards iguais */
+      .oferece { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-top: 1.6rem; }
+      .oferece-item { display: flex; gap: 1rem; padding: 1.4rem 1.6rem 1.4rem 0; border-top: 1px solid var(--linha); }
+      .oferece-item:nth-child(even) { padding-left: 1.6rem; border-left: 1px solid var(--linha); }
+      .oferece-num { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--vermelho); padding-top: 0.25rem; }
+      .oferece-item h3 { margin: 0 0 0.25rem; font-size: 1.05rem; color: #fff; }
+      .oferece-item p { margin: 0; color: var(--gelo); font-size: 0.93rem; }
 
-      /* ---- Passos ---- */
-      .passos { margin: 1rem 0 0; padding: 0 0 0 1.2rem; max-width: 60ch; display: grid; gap: 0.9rem; }
-      .passos li::marker { color: var(--vermelho); font-weight: 700; }
-      .passos strong { color: var(--navy); }
+      /* Passos */
+      .passos { list-style: none; margin: 1.6rem 0 0; padding: 0; display: grid; gap: 0; }
+      .passos li { display: flex; gap: 1.3rem; padding: 1.5rem 0; border-top: 1px solid var(--linha); align-items: baseline; }
+      .passo-num { font-family: 'Instrument Serif', Georgia, serif; font-size: 2.6rem; color: var(--vermelho); line-height: 0.8; flex: none; width: 2.4rem; }
+      .passos h3 { margin: 0 0 0.2rem; font-size: 1.15rem; color: #fff; }
+      .passos p { margin: 0; color: var(--gelo); max-width: 56ch; }
 
-      /* ---- Formulário ---- */
-      .secao-form { background: var(--navy); color: #fff; margin: 2.8rem -1.3rem 0; padding: 2.8rem 1.3rem 3rem; border-radius: 20px 20px 0 0; }
-      .secao-form h2 { color: #fff; }
-      .secao-form .secao-sub { color: rgba(255, 255, 255, 0.75); }
-      .secao-form .secao-sub strong { color: #fff; }
-      .form-cabeca { max-width: 68rem; margin: 0 auto 1.4rem; }
-      .form { max-width: 42rem; margin: 0 auto; display: grid; gap: 0.9rem; }
+      /* Formulário: card papel (contraste com a tela navy) */
+      .form-secao { padding: 3rem 0 4rem; }
+      .form-card {
+        background: var(--papel);
+        color: var(--tinta);
+        border-radius: 22px;
+        padding: 2.6rem 2.2rem 2.8rem;
+        box-shadow: 0 40px 80px -50px rgba(0, 0, 0, 0.8);
+      }
+      .kicker-navy { color: var(--vermelho); }
+      .h2-navy { color: var(--navy); }
+      .secao-sub-navy { color: var(--tinta-suave); }
+      .secao-sub-navy strong { color: var(--navy); }
+      .form { max-width: 44rem; display: grid; gap: 0.9rem; margin-top: 0.4rem; }
       .form-linha { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
-      .form label { display: grid; gap: 0.35rem; font-size: 0.8rem; color: rgba(255, 255, 255, 0.8); }
+      .form label { display: grid; gap: 0.35rem; font-size: 0.78rem; color: var(--tinta-suave); font-weight: 500; }
       .form input {
         font: inherit;
         font-size: 0.95rem;
-        padding: 0.7rem 0.85rem;
+        padding: 0.72rem 0.85rem;
         border-radius: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.22);
-        background: rgba(255, 255, 255, 0.06);
-        color: #fff;
+        border: 1px solid var(--linha-clara);
+        background: #fff;
+        color: var(--tinta);
       }
-      .form input::placeholder { color: rgba(255, 255, 255, 0.4); }
+      .form input::placeholder { color: #9aa1ad; }
       .form input:focus { outline: 2px solid var(--vermelho); outline-offset: 1px; border-color: transparent; }
       .mel { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
       .form-enviar { margin-top: 0.4rem; justify-self: start; }
-      .form-lgpd { margin: 0.3rem 0 0; font-size: 0.76rem; color: rgba(255, 255, 255, 0.6); }
-      .form-lgpd a { color: #fff; }
-      .form-aviso {
-        margin: 0.6rem 0 0;
-        padding: 0.9rem 1rem;
-        border-radius: 10px;
-        background: rgba(255, 255, 255, 0.1);
-        font-size: 0.92rem;
-      }
-      .form-aviso a { color: #fff; font-weight: 600; }
+      .form-lgpd { margin: 0.3rem 0 0; font-size: 0.76rem; color: var(--tinta-suave); }
+      .form-lgpd a { color: var(--navy); }
+      .form-aviso { margin: 0.6rem 0 0; padding: 0.9rem 1rem; border-radius: 10px; background: rgba(1, 33, 105, 0.08); font-size: 0.92rem; color: var(--tinta); }
+      .form-aviso a { color: var(--vermelho); font-weight: 600; }
 
       .rodape {
         border-top: 1px solid var(--linha);
-        margin-top: 0;
-        padding: 1.8rem 1.3rem 2.4rem;
+        margin-top: 1rem;
+        padding: 2.2rem 1.4rem 2.6rem;
         text-align: center;
         font-size: 0.8rem;
-        color: var(--tinta-suave);
+        color: var(--gelo);
       }
-      .rodape p { max-width: 68rem; margin: 0 auto 0.4rem; }
-      .rodape a { color: inherit; }
+      .rodape-abac { height: 1.9rem; width: auto; margin: 0 auto 1rem; display: block; filter: brightness(0) invert(1); opacity: 0.85; }
+      .rodape p { max-width: 60rem; margin: 0 auto 0.4rem; }
+      .rodape a { color: #fff; }
 
-      @media (max-width: 60rem) {
-        .painel-grade { grid-template-columns: 1fr; gap: 1.2rem; }
-        .oferece { grid-template-columns: 1fr 1fr; }
+      @media (max-width: 62rem) {
+        .hero-grade { grid-template-columns: 1fr; gap: 2rem; }
+        .credencial { max-width: 26rem; }
+        .painel-grade { grid-template-columns: 1fr; gap: 1.3rem; }
       }
-      @media (max-width: 44rem) {
+      @media (max-width: 46rem) {
+        /* Cabeçalho enxuto: só marca + CTA (a marca já leva à home; o link
+           "Site completo" permanece no rodapé). Evita estouro lateral. */
+        .topo-nav a:not(.topo-cta) { display: none; }
+        .topo { padding: 0.85rem 1.1rem; }
         .modelo-tabs { grid-template-columns: 1fr; }
         .oferece { grid-template-columns: 1fr; }
+        .oferece-item, .oferece-item:nth-child(even) { padding-left: 0; border-left: 0; }
         .form-linha { grid-template-columns: 1fr; }
-        .secao-form { border-radius: 0; }
+        .form-card { padding: 1.8rem 1.3rem 2rem; }
+        main { padding: 0 1.1rem; }
       }
     </style>
 
     <script>
-      // Importa a atribuição de canal compartilhada; o import faz o Astro
-      // empacotar este script como arquivo externo (mesma origem), então a CSP
-      // 'self' cobre sem precisar de hash inline.
+      // Import faz o Astro empacotar este script como arquivo externo (mesma
+      // origem), então a CSP 'self' cobre sem hash inline.
       import { canalEntrada } from '../scripts/canal';
 
-      const NOMES: Record<string, string> = {
-        digital: '100% Digital',
-        fisico: 'Físico',
-        omnichannel: 'Omnichannel',
-      };
+      const NOMES: Record<string, string> = { digital: '100% Digital', fisico: 'Físico', omnichannel: 'Omnichannel' };
 
-      // ---- Navegação dinâmica: troca de modelo sem recarregar ----
       const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.modelo-tab'));
       const paineis = Array.from(document.querySelectorAll<HTMLElement>('.modelo-painel'));
       const campoModelo = document.getElementById('form-modelo') as HTMLInputElement | null;
@@ -614,20 +708,17 @@ const schema = {
       }
 
       tabs.forEach((t) => t.addEventListener('click', () => selecionar(t.dataset.modelo || 'digital')));
-
-      // CTA dentro do painel: fixa o modelo e rola até o formulário.
       document.querySelectorAll<HTMLAnchorElement>('[data-modelo-cta]').forEach((a) => {
         a.addEventListener('click', () => selecionar(a.dataset.modeloCta || 'digital'));
       });
 
-      // ---- Envio: registra o lead no mesmo /api/lead do site ----
       const WHATSAPP = ((import.meta.env.PUBLIC_WHATSAPP as string | undefined) ?? '').replace(/\D/g, '');
       const form = document.getElementById('form-parceiro') as HTMLFormElement | null;
 
       form?.addEventListener('submit', (e) => {
         e.preventDefault();
         const mel = form.querySelector<HTMLInputElement>('.mel');
-        if (mel && mel.value) return; // honeypot
+        if (mel && mel.value) return;
         const val = (n: string) => (form.querySelector<HTMLInputElement>(`[name="${n}"]`)?.value ?? '').trim();
         const nome = val('nome');
         const telefone = val('telefone');
@@ -638,12 +729,9 @@ const schema = {
         const modelo = campoModelo?.value || 'digital';
         const modeloNome = NOMES[modelo] ?? modelo;
 
-        if (!nome || !telefone || !email) {
-          form.reportValidity();
-          return;
-        }
+        if (!nome || !telefone || !email) { form.reportValidity(); return; }
 
-        const linhas = [
+        const resumo = [
           `Olá! Sou ${nome} e quero ser parceiro da MI6.`,
           '',
           `Modelo: ${modeloNome}`,
@@ -652,8 +740,7 @@ const schema = {
           telefone ? `WhatsApp: ${telefone}` : '',
           email ? `E-mail: ${email}` : '',
           mensagem ? `Mensagem: ${mensagem}` : '',
-        ].filter(Boolean);
-        const resumo = linhas.join('\n');
+        ].filter(Boolean).join('\n');
         const urlZap = WHATSAPP ? `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(resumo)}` : '';
 
         const lead = {
@@ -662,8 +749,9 @@ const schema = {
           telefone,
           email,
           segmento: `parceria-${modelo}`,
-          credito: '',
-          parcela: '',
+          empresa,
+          cidade,
+          mensagem,
           resumo,
           origem: `site/mi6/parceiros|${canalEntrada()}`,
           unidade: '',

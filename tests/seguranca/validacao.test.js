@@ -76,3 +76,32 @@ test('sanitizarLead: CRLF removido dos campos discretos', () => {
   const s = sanitizarLead({ ...leadBom, nome: 'Maria\r\nEvil' });
   assert.ok(!/[\r\n]/.test(s.nome));
 });
+
+// --- campos do formulario de parceiro (empresa, cidade, mensagem) ---
+test('sanitizarLead: empresa com formula e neutralizada', () => {
+  const s = sanitizarLead({ ...leadBom, empresa: '=HYPERLINK("http://mau")' });
+  assert.ok(s.empresa.startsWith("'"), `empresa nao neutralizada: ${s.empresa}`);
+});
+
+test('sanitizarLead: mensagem com formula e neutralizada', () => {
+  const s = sanitizarLead({ ...leadBom, mensagem: '@SUM(A1:A9)' });
+  assert.ok(s.mensagem.startsWith("'"), `mensagem nao neutralizada: ${s.mensagem}`);
+});
+
+test('sanitizarLead: cidade limpa tag e CRLF', () => {
+  const s = sanitizarLead({ ...leadBom, cidade: 'Porto Alegre<b>\r\nBcc:x' });
+  assert.ok(!/[<>\r\n]/.test(s.cidade), `sobrou caractere perigoso: ${s.cidade}`);
+});
+
+test('sanitizarLead: campos de parceiro ausentes viram string vazia (lead comum)', () => {
+  const s = sanitizarLead(leadBom);
+  assert.equal(s.empresa, '');
+  assert.equal(s.cidade, '');
+  assert.equal(s.mensagem, '');
+});
+
+test('sanitizarLead: legitimo preserva empresa e cidade com acento', () => {
+  const s = sanitizarLead({ ...leadBom, empresa: 'Conceição & Cia', cidade: 'São Paulo / SP' });
+  assert.equal(s.empresa, 'Conceição & Cia');
+  assert.equal(s.cidade, 'São Paulo / SP');
+});
