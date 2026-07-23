@@ -46,9 +46,17 @@ infraestrutura.
   menu e do clique de segmento), **sem** `'unsafe-inline'`. `style-src` mantém
   `'unsafe-inline'` porque a interface aplica estilos inline em runtime
   (sliders, GSAP), que não são hasheáveis; risco de CSS injection é baixo.
-- **Anti-regressão:** `scripts/verificar-csp.mjs` roda no `build` e **falha o
-  build** se algum script inline não tiver hash na CSP, então a Vercel nunca
-  publica uma política que derrube um script legítimo.
+- **Anti-regressão:** `scripts/verificar-csp.mjs` roda **só no CI**
+  (`npm run verificar:csp`), NUNCA no comando de build da Vercel. Motivo
+  aprendido na marra: quando estava dentro do `build`, ele saía != 0 no build
+  da Vercel e **derrubou todos os deploys por dias**. Fica no CI como guarda dos
+  nossos scripts de componente.
+- **Hash por ambiente:** o `@vercel/analytics` injeta um bootstrap inline
+  DIFERENTE no build da Vercel e no local (tamanhos e hashes distintos:
+  `SsQz…` na Vercel, `xBLR…` local). A CSP lista os hashes dos DOIS, senão o
+  enforce bloquearia o Analytics em produção. Risco residual: um bump de versão
+  do Analytics muda o hash da Vercel e o Analytics para de carregar (só ele; o
+  site segue). Rever ao atualizar a dependência.
 - **Verificação:** Chromium real (offline) sobre o `dist/` com a CSP do
   `vercel.json` aplicada: 0 violações em 7 páginas.
 
