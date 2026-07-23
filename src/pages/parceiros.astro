@@ -19,7 +19,7 @@ const SITE = 'https://mi6consorcio.com.br';
 const url = `${SITE}/parceiros/`;
 const titulo = 'Seja Parceiro | MI6 Consórcio Nacional';
 const descricao =
-  'Venda consórcio como parceiro comercial autorizado da MI6: modelos 100% digital, físico e omnichannel, com método, marca e sistema de uma administradora autorizada pelo Banco Central.';
+  'Venda consórcio como parceiro autorizado da MI6: modelos 100% digital, físico e omnichannel, com método, marca e sistema de uma administradora autorizada pelo Banco Central.';
 
 const modelos = [
   {
@@ -45,7 +45,7 @@ const modelos = [
     num: '02',
     nome: 'Físico',
     linha: 'Sua operação de campo, autorizada MI6',
-    tagline: 'Leve o consórcio autorizado MI6 para a sua operação comercial de campo.',
+    tagline: 'Leve o consórcio autorizado MI6 para a sua operação de campo.',
     comoFunciona:
       'A sua equipe comercializa cotas em âmbito nacional, sem exclusividade territorial, seguindo as normas da MI6 e a regulação do Banco Central. Cada venda é formalizada no sistema web da MI6.',
     paraQuem: 'Escritórios, corretores e times comerciais com presença local e carteira.',
@@ -53,9 +53,9 @@ const modelos = [
       'Materiais e formulários oficiais, identidade unificada',
       'Sistema web de vendas com login próprio',
       'Relatórios de comissão',
-      'Suporte comercial',
+      'Suporte de vendas',
     ],
-    voce: ['Equipe de vendas própria', 'Presença comercial ativa', 'CNPJ ativo'],
+    voce: ['Equipe de vendas própria', 'Presença ativa no seu mercado', 'CNPJ ativo'],
     nota: 'Parceria sem vínculo empregatício e sem exclusividade territorial.',
   },
   {
@@ -72,7 +72,7 @@ const modelos = [
       'Caminho para a categoria MASTER: desenvolver e ser remunerado por uma rede',
       'Sistema, materiais e ativos em um só padrão',
     ],
-    voce: ['Operação comercial ativa', 'Equipe própria', 'Ambição de crescer em rede'],
+    voce: ['Operação de vendas ativa', 'Equipe própria', 'Ambição de crescer em rede'],
     nota: 'A categoria MASTER é atribuída pela MI6 conforme critérios comerciais e operacionais.',
   },
 ];
@@ -88,7 +88,7 @@ const oferece = [
 
 const passos = [
   { n: '1', t: 'Cadastro', d: 'Você preenche o formulário abaixo e conta o seu perfil e o modelo de interesse.' },
-  { n: '2', t: 'Habilitação', d: 'Análise, contrato de parceria comercial (pessoa jurídica) e treinamento oficial.' },
+  { n: '2', t: 'Habilitação', d: 'Análise, contrato de parceria (pessoa jurídica) e treinamento oficial.' },
   { n: '3', t: 'Operação', d: 'Liberamos sistema, materiais e, no digital, os ativos. Começo imediato.' },
 ];
 
@@ -143,12 +143,12 @@ const schema = {
 
     <main>
       <section class="hero">
-        <p class="coord" aria-hidden="true">PARCERIA COMERCIAL · ÂMBITO NACIONAL · MI6</p>
+        <p class="coord" aria-hidden="true">PARCERIAS · ÂMBITO NACIONAL · MI6</p>
         <div class="hero-grade">
           <div class="hero-conteudo">
             <h1>Venda consórcio com a <em>inteligência</em> da MI6 por trás.</h1>
             <p class="hero-sub">
-              Seja um parceiro comercial autorizado e construa a sua operação de vendas com o
+              Seja um parceiro autorizado e construa a sua operação de vendas com o
               método, a marca e o sistema de uma administradora autorizada pelo Banco Central.
               Escolha como atuar: digital, físico ou omnichannel.
             </p>
@@ -169,7 +169,7 @@ const schema = {
               <img src="/imgs/logo-mi6-branco.png" alt="" width="219" height="47" />
               <span class="credencial-chip"></span>
             </div>
-            <p class="credencial-rotulo">Parceiro comercial autorizado</p>
+            <p class="credencial-rotulo">Parceiro autorizado</p>
             <p class="credencial-nome">SUA OPERAÇÃO AQUI</p>
             <div class="credencial-rodape">
               <span>MI6 · CONSÓRCIO NACIONAL</span>
@@ -277,7 +277,7 @@ const schema = {
           <p class="kicker kicker-navy">Candidatura</p>
           <h2 class="h2-navy">Candidate-se para ser parceiro.</h2>
           <p class="secao-sub secao-sub-navy">
-            Conte quem você é. O time comercial da MI6 retorna para explicar as condições do modelo
+            Conte quem você é. O time da MI6 retorna para explicar as condições do modelo
             <strong id="form-modelo-nome">100% Digital</strong>.
           </p>
           <form class="form" id="form-parceiro" novalidate>
@@ -301,7 +301,7 @@ const schema = {
               dados conforme a <a href="/politica-de-privacidade/">Política de Privacidade</a>.
             </p>
             <p class="form-aviso" id="form-aviso" hidden>
-              Recebemos a sua candidatura. O time comercial da MI6 vai entrar em contato.
+              Recebemos a sua candidatura. O time da MI6 vai entrar em contato.
               <a id="form-fallback" href="#" target="_blank" rel="noopener">Falar agora no WhatsApp</a>.
             </p>
           </form>
