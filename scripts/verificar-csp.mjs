@@ -1,14 +1,19 @@
-// Guarda de CSP (roda depois do `astro build`). O cabecalho
-// Content-Security-Policy em `vercel.json` traz script-src ESTRITO: 'self'
-// mais o hash SHA-256 de cada script inline do site (bootstrap do Vercel
-// Analytics + os poucos scripts de componente que o Astro embute no HTML).
+// Guarda de CSP. RODA SO NO CI (npm run verificar:csp), NUNCA dentro do build
+// de deploy da Vercel: como ele sai != 0 quando acha divergencia, se estivesse
+// no comando de build da Vercel derrubaria TODO deploy (foi o que aconteceu e
+// travou a producao por dias).
 //
-// Risco que isso elimina: se alguem editar um desses scripts (ou o Astro/o
-// Analytics mudarem de versao e a saida minificada mudar), o hash muda e a
-// CSP passaria a BLOQUEAR o script em producao, quebrando em silencio. Este
-// verificador recalcula os hashes a partir de `dist/` e FALHA O BUILD se
-// algum hash de script inline nao estiver na CSP. Assim a Vercel nunca
-// publica uma CSP que derrube um script legitimo.
+// O cabecalho Content-Security-Policy em `vercel.json` traz script-src ESTRITO:
+// 'self' mais o hash SHA-256 de cada script inline. Atencao: o `@vercel/
+// analytics` injeta um bootstrap inline DIFERENTE no build da Vercel e no build
+// local (conteudos e hashes distintos), entao a CSP lista os hashes dos DOIS
+// ambientes. Os scripts de componente (menu, clique de segmento) sao nossos e
+// deterministicos, entao tem hash unico e estavel.
+//
+// O que este guarda pega: se alguem editar um script de componente, o hash
+// muda e some da CSP; o CI falha e obriga a atualizar antes do merge. Ele
+// valida a cobertura do build LOCAL (o do CI); os hashes do ambiente Vercel
+// ficam na CSP por conta da reconciliacao manual documentada.
 import { readFile, readdir } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import path from 'node:path';

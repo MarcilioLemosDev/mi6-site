@@ -20,6 +20,12 @@ jobs:
       - run: npx playwright install --with-deps chromium
       # Build ANTES dos testes: o teste de XSS serve o dist/.
       - run: npm run build
+      # Guarda de CSP: confere que os scripts inline do build têm hash na CSP.
+      # Roda AQUI (CI), NUNCA dentro do build de deploy da Vercel: se travar o
+      # build da Vercel, derruba todo deploy. (A Vercel injeta um bootstrap do
+      # Analytics diferente do local, com outro hash; por isso a CSP lista os
+      # hashes dos dois ambientes e este guarda só valida a cobertura local.)
+      - run: npm run verificar:csp
       # Portão de segurança (WS6): a suíte tem de passar para o merge seguir.
       - run: npm test
       # Varredura de segredo (SEC-06a): a SAS URL não pode estar no bundle nem
